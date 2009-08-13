@@ -1,6 +1,17 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Persist" do
+  describe 'http_client setup' do
+    it 'should not raise an error loading the default adapter' do 
+      lambda{ Persist.set_http_adapter }.should_not raise_error
+    end
+    
+    it 'should add rest methods to the Persist module' do
+      Persist.set_http_adapter
+      Persist.should respond_to(:get)
+    end      
+  end  
+  
   it 'gem should allow persistance on all objects'
   it 'gem should allow persistance with a class declaration'
   it 'gem should allow persistance via module inclusion'
