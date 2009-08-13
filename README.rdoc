@@ -1,9 +1,19 @@
 = persist
 
-Description goes here.
+Persist is a Ruby object persistence library, backed by CouchDB. 
 
-== Note on Patches/Pull Requests
- 
+== Usage
+
+...
+
+== Installation 
+
+...
+
+== Contributing
+
+Bug fixes and features are welcome. 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
