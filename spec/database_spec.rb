@@ -33,21 +33,47 @@ describe Persist::Database do
     
     it 'should put together a database uri from the server and name' do 
       db = Database.new('&&things::for_us')
-      db.uri.should == 'http://127.0.0.1:5984/things__for_us'
+      db.uri.should == 'http://127.0.0.1:5984/persist_things__for_us'
     end    
   end
   
   describe 'create' do
-    it 'should create a couchdb database for this instance if it doesn\'t yet exist'
+    before(:each) do
+      Persist.delete( Database.new('things').uri ) rescue nil
+    end  
+    
+    it '#exists? should be false if the database doesn\'t yet exist in CouchDB land' do
+      db = Database.new('things')
+      db.should_not be_exists
+    end
+    
+    it '#exists? should be true if the database exists' do
+      pending('must create create method first')
+    end  
+    
+    it 'should create a couchdb database for this instance if it doesn\'t yet exist' do 
+      db = Database.create('things')
+      db.should be_exists
+    end
+      
     it 'create should not raise an error if the database already exists'
   end    
   
-  it '#to_s should display the uri'
+  it '#to_s should display the uri' do
+    db = Database.new('things')
+    db.to_s.should == db.uri
+  end  
   
   it '#info raise an error if the database doesn\'t exist' do 
-    Persist.set_http_adapter
     db = Database.new('things')
     lambda{ db.info }.should raise_error( Persist::ResourceNotFound )
+  end 
+  
+  it 'should #delete! itself' do 
+    db = Database.create('things')
+    db.should be_exists
+    db.delete! 
+    db.should_not be_exist
   end  
   
   

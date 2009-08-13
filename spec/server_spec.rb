@@ -57,11 +57,25 @@ describe Persist::Server do
     end  
   end   
   
-  describe 'managing databases' do 
-    it 'should create databases'
-    it 'should show all_databases as an array'
-    it 'should only show databases for the namespace of the server'
-    it 'should delete_all! databases for the namespace'  
+  describe 'managing databases' do
+    it 'should have a convenience method for creating databases' do 
+      @server.database!('first')
+      Persist::Database.new('first').should be_exists
+    end
+      
+    it 'should show all_databases related to this server as an array' do
+      @server.database!('second')
+      dbs = @server.databases
+      dbs.class.should == Array
+      dbs.size.should == 2
+      dbs.first.class.should == Persist::Database 
+    end
+      
+    it 'should delete_all! databases for the namespace' do 
+      @server.databases.size.should == 2
+      @server.delete_all!
+      @server.databases.size.should == 0
+    end    
   end   
      
 end  

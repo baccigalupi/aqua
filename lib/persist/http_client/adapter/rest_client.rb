@@ -28,11 +28,12 @@ module RestClientAdapter
       yield
     rescue Exception => e
       ending = e.class.to_s.match(/[a-z0-9_]*\z/i)
-      if defined?( "Persist::#{ending}".constantize)
-        raise "Persist::#{ending}".constantize, e.message
-      else
+      begin
+        error = "Persist::#{ending}".constantize
+      rescue
         raise e
-      end    
+      end
+      raise error, e.message    
     end    
   end  
   

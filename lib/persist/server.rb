@@ -24,37 +24,46 @@ module Persist
     
     # DATABASE MANAGMENT -----------------
     
-    # Lists all databases on the server
-    def databases
-      Persist.get "#{@uri}/_all_dbs"
+    # Lists all database names on the server
+    def database_names
+      dbs = Persist.get( "#{@uri}/_all_dbs" )
+      dbs.select{|name| name.match(/\A#{namespace}/)}
     end
     
-    def namespaced_name( name ) 
+    def databases
+      dbs = [] 
+      database_names.each do |db_name|
+        dbs << Database.new( db_name.gsub(/\A#{namespace}/, ''), :server => self )
+      end
+      dbs  
+    end  
+    
+    # Deletes all databases named for this namespace (i.e. this server)
+    # Use with caution ... it is a permanent and undoable change
+    def delete_all! 
+      databases.each{|db| db.delete! }
+    end  
+    
+    def namespaced( name ) 
       "#{namespace}#{name}"
     end  
 
     # Returns a CouchRest::Database for the given name
     def database(name)
-      Persist::Database.new( namespaced_name(name), :server => self )
+      db = Persist::Database.new( name, :server => self )
+      db.exists? ? db : nil
     end
 
     # Creates the database if it doesn't exist
     def database!(name)
-      create_db(namespaced_name(name)) rescue nil
-      database(namespaced_name(name))
+      Database.create( name, :server => self )  
     end
 
     # GET the welcome message
     def info
       Persist.get "#{@uri}/"
     end
-
-    # Create a database
-    def create_db(name)
-      Persist.put "#{@uri}/#{namespaced_name(name)}"
-      database(namespaced_name(name))
-    end
-
+    
     # Restart the CouchDB instance
     def restart!
       Persist.post "#{@uri}/_restart"

@@ -5,6 +5,4 @@ require 'irb'
 require 'ruby-debug'
 require File.dirname(__FILE__) + "/../lib/persist" 
 
-Persist.set_http_adapter
-
 IRB.start if __FILE__ == $0      

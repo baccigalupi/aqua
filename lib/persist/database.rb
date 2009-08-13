@@ -18,16 +18,25 @@ module Persist
       @name = name
       @server = (opts[:server] || Persist.server || Server.new)
       @host =   @server.uri
-      @path =   "/#{Persist.escape(@name)}"
+      @path =   "/#{namespaced(Persist.escape(@name))}"
       @uri =    @host + @path
       # @streamer = Streamer.new(self) # TODO: add this in
       @bulk_save_cache = []
       # self.bulk_save_cache_limit = server.uuids_count  # must be smaller than the uuid count
-    end
+    end 
+    
+    def namespaced( name ) 
+      server.namespaced( name )
+    end  
     
     def self.create( name, opts={} )
       db = new(name, opts)
-      db.save
+      begin
+        Persist.put( db.uri )
+      rescue Exception => e # catch database already exists errors ... 
+        raise e unless e.class == RequestFailed && e.message.match(/412/) 
+      end
+      db    
     end
     
     # checks to see if the database exists on the couchdb server
@@ -35,13 +44,10 @@ module Persist
       begin 
         info 
         true
-      rescue RestClient::ResourceNotFound  
+      rescue Persist::ResourceNotFound  
         false
       end  
     end  
-    
-    def save
-    end    
     
     # returns the database's uri
     def to_s
@@ -52,6 +58,11 @@ module Persist
     def info
       Persist.get( uri )
     end
+     
+    # DELETE the database. Use with caution as it cannot be undone!
+    def delete!
+      Persist.delete( uri )
+    end  
     
     # # Query the <tt>_all_docs</tt> view. Accepts all the same arguments as view.
     # def documents(params = {})

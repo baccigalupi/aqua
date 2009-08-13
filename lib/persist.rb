@@ -81,12 +81,12 @@ module Persist
     @server = s
   end
   
-  # auto loads the default http_adapter if Persist gets used without configuration
+  # auto loads the default http_adapter if Persist gets used without configuring it first
   class << self     
-    def method_missing( method )
+    def method_missing( method, *args )
       if @adapter.nil?
-        http_adapter
-        self.send( method.to_sym )
+        set_http_adapter # loads up the adapter related stuff
+        send( method.to_sym, eval(args.map{|value| "'#{value}'"}.join(', ')) )
       end    
     end
   end  
