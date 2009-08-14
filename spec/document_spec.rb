@@ -32,7 +32,7 @@ describe Persist::Document do
     
     it 'should set the id with the initialization hash' do 
       @doc.id.should == 'my_slug/thaz-right'
-      @doc[:id].should == nil
+      @doc[:_id].should == 'my_slug%2Fthaz-right'
     end
     
     it 'should not set the rev and it should discard those keys' do
@@ -102,7 +102,7 @@ describe Persist::Document do
       doc_id = @doc.id
       doc_rev = @doc.rev
       @doc.save
-      @doc.id.should_not == doc_id
+      @doc[:_id].should_not == doc_id
       @doc.rev.should_not == doc_rev
     end      
      
@@ -117,8 +117,48 @@ describe Persist::Document do
       doc.class.should == Persist::Document
       doc.rev.should_not be_nil
     end
-          
+  end 
+  
+  describe 'updating' do
+    before(:each) do  
+      @params = {
+        :id => 'my_slug/thaz-right',
+        :rev => "shouldn't change yo!",
+        :more => "my big stuff"
+      } 
+      @doc = Document.new( @db, @params )
+    end  
+    
+    it 'saving after a change should change the revision number' do 
+      @doc.save 
+      rev = @doc.rev
+      _id = @doc[:_id]
+      id = @doc[:id] 
+      @doc['more'] = 'less ... really'
+      @doc['newness'] = 'overrated'
+      @doc.save
+      @doc.id.should == id
+      @doc[:_id].should == _id
+      @doc.rev.should_not == rev
+    end
+      
+    it 'saving after a change should retain changed data' do
+      @doc.save 
+      @doc['more'] = 'less ... really'
+      @doc['newness'] = 'overrated'
+      @doc.save
+        
+      @doc['more'].should == 'less ... really'
+      @doc['newness'].should == 'overrated'
+    end  
+  end
+  
+  describe 'deleting' do
   end   
+  
+  describe 'revision history (not reliable, don\'t use for serious applications)' do
+    
+  end     
   
   describe 'attachments' do 
     it 'nothing to see here yet, move along'

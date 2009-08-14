@@ -13,7 +13,7 @@ module Persist
         raise ArgumentError, 'First argument must be Persist::Database, whatcha doin?'
       end 
       hash = Mash.new( hash ) unless hash.empty?
-      self.id = hash.delete(:id)
+      self.id = hash.delete(:id) if hash[:id]
       hash.delete(:rev) # and don't save it anywhere, thank you! 
       hash.delete(:_rev)
       hash.delete(:_id)
@@ -80,15 +80,35 @@ module Persist
       else    
         result 
       end 
-    end   
+    end 
+    
+    # DELETE the document from CouchDB that has the given <tt>_id</tt> and
+    # <tt>_rev</tt>.
+    #
+    # If <tt>bulk</tt> is true (false by default) the deletion is recorded for bulk-saving (bulk-deletion :) later.
+    # Bulk saving happens automatically when #bulk_save_cache limit is exceded, or on the next non bulk save.
+    def delete(defer = false)
+      raise ArgumentError, "Unsaved documents can't be deleted" if new_document?       
+      if defer
+        database.add_to_bulk_cache( { '_id' => self['_id'], '_rev' => rev, '_deleted' => true } )
+      else
+        delete_now  
+      end
+    end
+    
+    def delete_now 
+      Persist.delete( "#{uri}?rev=#{rev}" )
+    end
     
     # setters and getters couchdb document specifics -------------------------
     def id
-      self[:_id]
+      self[:id]
     end
     
     def id=( str )
-      self[:_id] = str
+      self[:id] = str
+      self[:_id] = escape_doc_id 
+      str
     end  
     
     def rev
@@ -122,7 +142,7 @@ module Persist
     end 
     
     def escape_doc_id
-      self[:_id].match(/^_design\/(.*)/) ? "_design/#{CGI.escape($1)}" : CGI.escape(id)
+      id.match(/^_design\/(.*)/) ? "_design/#{CGI.escape($1)}" : CGI.escape(id)
     end  
 
     def encode_attachments(attachments)

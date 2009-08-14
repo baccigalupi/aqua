@@ -30,8 +30,6 @@ Spec::Rake::SpecTask.new(:rcov) do |spec|
 end
 
 
-
-
 task :default => :spec
 
 require 'rake/rdoctask'
@@ -43,7 +41,19 @@ Rake::RDocTask.new do |rdoc|
   end
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "persist #{version}"
+  rdoc.title = "Persist #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+end   
+
+STATS_DIRECTORIES = [
+  %w(Persist            lib/persist),
+  %w(Specs              spec)
+].collect { |name, dir| [ name, "#{File.dirname(__FILE__)}/#{dir}" ] }.select { |name, dir| File.directory?(dir) }
+
+desc "Report code statistics (KLOCs, etc) on the gem"
+task :stats do
+  require File.dirname(__FILE__) + '/extras/code_statistics'
+  CodeStatistics.new(*STATS_DIRECTORIES).to_s
 end
+
