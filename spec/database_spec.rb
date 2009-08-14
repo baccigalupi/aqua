@@ -47,34 +47,57 @@ describe Persist::Database do
       db.should_not be_exists
     end
     
-    it '#exists? should be true if the database exists' do
-      pending('must create create method first')
-    end  
-    
     it 'should create a couchdb database for this instance if it doesn\'t yet exist' do 
       db = Database.create('things')
       db.should be_exists
     end
       
-    it 'create should not raise an error if the database already exists'
+    it 'create should not raise an error if the database already exists' do
+      db = Database.create('things')
+      db.should be_exists
+      lambda{ Database.create('things')}.should_not raise_error 
+    end  
   end    
   
-  it '#to_s should display the uri' do
-    db = Database.new('things')
-    db.to_s.should == db.uri
+  describe 'misc managment stuff' do 
+    it '#to_s should display the uri' do
+      db = Database.new('things')
+      db.to_s.should == db.uri
+    end  
+  
+    it '#info raise an error if the database doesn\'t exist' do 
+      db = Database.new('things')
+      db.delete! if db.exists?
+      lambda{ db.info }.should raise_error( Persist::ResourceNotFound )
+    end
+  
+    it '#info should provide a hash of detail if it exists' do
+      db = Database.create('things')
+      info = db.info
+      info.class.should == Hash
+      info['db_name'].should == 'persist_things'
+    end   
+  
+    it 'should #delete! itself' do 
+      db = Database.create('things')
+      db.should be_exists
+      db.delete! 
+      db.should_not be_exist
+    end
+  end   
+  
+  describe 'document managment' do
+    before(:each) do
+      @db = Database.create('docs_are_us')
+    end
+    
+    it '#documents should return a hash' do 
+      @db.documents.class.should == Hash
+    end  
+    
+    it 'should get all documents' do
+      pending
+    end  
   end  
-  
-  it '#info raise an error if the database doesn\'t exist' do 
-    db = Database.new('things')
-    lambda{ db.info }.should raise_error( Persist::ResourceNotFound )
-  end 
-  
-  it 'should #delete! itself' do 
-    db = Database.create('things')
-    db.should be_exists
-    db.delete! 
-    db.should_not be_exist
-  end  
-  
-  
+
 end  

@@ -15,6 +15,7 @@ require 'persist/support/string_extensions'
 require 'persist/http_client/rest_api'
 require 'persist/server'
 require 'persist/database'
+require 'persist/document'
 
 
 module Persist

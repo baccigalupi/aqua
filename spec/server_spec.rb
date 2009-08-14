@@ -2,7 +2,6 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Persist::Server do
   before(:each) do
-    Persist.set_http_adapter
     Server = Persist::Server unless defined?( Server )
     @server = Server.new 
   end
@@ -58,6 +57,10 @@ describe Persist::Server do
   end   
   
   describe 'managing databases' do
+    before(:all) do 
+      Server.new.delete_all! # this is kind of circular testing here ... 
+    end
+      
     it 'should have a convenience method for creating databases' do 
       @server.database!('first')
       Persist::Database.new('first').should be_exists

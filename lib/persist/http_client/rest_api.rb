@@ -7,50 +7,31 @@ module RestAPI
     @adapter
   end     
   
-  def put(uri, object = nil)
-    hash = object.to_persist if doc
-    begin
-      JSON.parse( RestAPI.adapter.put( uri, hash ) )
-    rescue Exception => e
-      if $DEBUG
-        raise "Error while sending a PUT request #{uri}\n#to_persist hash: #{hash.inspect}\n#{e}"
-      else
-        raise e
-      end
-    end
+  def put(uri, doc = nil)
+    hash = doc.to_json if doc
+    response = RestAPI.adapter.put( uri, hash )
+    JSON.parse( response )
   end
 
-  def get(uri)
-    begin
-      JSON.parse( RestAPI.adapter.get(uri), :max_nesting => false)
-    rescue => e
-      if $DEBUG
-        raise "Error while sending a GET request #{uri}\n: #{e}"
-      else
-        raise e
-      end
-    end
+  def get(uri) 
+    response = RestAPI.adapter.get(uri)
+    JSON.parse( response , :max_nesting => false)
   end
 
   def post(uri, doc = nil)
-    hash = doc.to_persist if doc
-    begin
-      JSON.parse( RestAPI.adapter.post(uri, hash))
-    rescue Exception => e
-      if $DEBUG
-        raise "Error while sending a POST request #{uri}\n#to_persist hash: #{hash.inspect}\n#{e}"
-      else
-        raise e
-      end
-    end
+    hash = doc.to_json if doc 
+    response = RestAPI.adapter.post(uri, hash)
+    JSON.parse( response )
   end
 
-  def delete(uri)
-    JSON.parse(RestAPI.adapter.delete(uri))
+  def delete(uri) 
+    response = RestAPI.adapter.delete(uri)
+    JSON.parse( response )
   end
 
-  def copy(uri, destination) 
-    JSON.parse(RestAPI.adapter.copy(uri, {'Destination' => destination}))
+  def copy(uri, destination)
+    response = RestAPI.adapter.copy(uri, {'Destination' => destination}) 
+    JSON.parse( response )
   end 
 
 end

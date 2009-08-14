@@ -3,7 +3,7 @@ require "base64"
 module Persist
   class Database
     attr_reader :server, :host, :name, :uri, :path
-    attr_accessor :bulk_save_cache, :bulk_save_cache_limit
+    attr_accessor :bulk_cache
      
     # Create a database representation from a name. Does not actually create a database on couchdb
     # does not ensure that the database actually exists either. Just creates a ruby representation
@@ -21,8 +21,7 @@ module Persist
       @path =   "/#{namespaced(Persist.escape(@name))}"
       @uri =    @host + @path
       # @streamer = Streamer.new(self) # TODO: add this in
-      @bulk_save_cache = []
-      # self.bulk_save_cache_limit = server.uuids_count  # must be smaller than the uuid count
+      @bulk_cache = []
     end 
     
     def namespaced( name ) 
@@ -65,16 +64,32 @@ module Persist
     end  
     
     # # Query the <tt>_all_docs</tt> view. Accepts all the same arguments as view.
-    # def documents(params = {})
-    #   keys = params.delete(:keys)
-    #   url = Persist.paramify_url "#{@root}/_all_docs", params
-    #   if keys
-    #     Persist.post(url, {:keys => keys})
-    #   else
-    #     Persist.get url
-    #   end
-    # end
-    #   
+    def documents(params = {})
+      keys = params.delete(:keys)
+      url = Persist.paramify_url( "#{uri}/_all_docs", params )
+      if keys
+        Persist.post(url, {:keys => keys})
+      else
+        Persist.get url
+      end
+    end   
+    
+    # BULK ACTIVITIES ------------------------------------------
+    def add_to_bulk_cache( doc ) 
+      if server.uuid_count/2.0 > bulk_cache.count
+        self.bulk_cache << doc 
+      else
+        bulk_save
+        self.bulk_cache << doc
+      end    
+    end
+    
+    def bulk_save
+      docs = bulk_cache
+      self.bulk_save_cache = []
+      Persist.post( "#{uri}/_bulk_docs", {:docs => docs} )
+    end
+    
     # # load a set of documents by passing an array of ids
     # def get_bulk(ids)
     #   documents(:keys => ids, :include_docs => true)

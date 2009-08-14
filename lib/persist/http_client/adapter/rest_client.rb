@@ -50,7 +50,7 @@ module RestClientAdapter
   end
 
   def self.put(uri, hash, headers={})
-    convert_exception do 
+    convert_exception do
       RestClient.put(uri, hash, headers)
     end  
   end
