@@ -46,14 +46,21 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end   
 
-STATS_DIRECTORIES = [
+PERSIST_DIRECTORIES = [
   %w(Persist            lib/persist),
   %w(Specs              spec)
 ].collect { |name, dir| [ name, "#{File.dirname(__FILE__)}/#{dir}" ] }.select { |name, dir| File.directory?(dir) }
 
+COUCHREST_DIRECTORIES = [
+  %w(CouchRest          lib/couchrest/lib),
+  %w(Specs              lib/couchrest/spec/couchrest)
+].collect { |name, dir| [ name, "#{File.dirname(__FILE__)}/#{dir}" ] }.select { |name, dir| File.directory?(dir) }
+
+
 desc "Report code statistics (KLOCs, etc) on the gem"
 task :stats do
   require File.dirname(__FILE__) + '/extras/code_statistics'
-  CodeStatistics.new(*STATS_DIRECTORIES).to_s
+  CodeStatistics.new(*COUCHREST_DIRECTORIES).to_s
+  CodeStatistics.new(*PERSIST_DIRECTORIES).to_s
 end
 

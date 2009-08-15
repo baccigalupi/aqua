@@ -3,8 +3,14 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'persist'
 require 'spec'
 require 'spec/autorun'
+                    
+ 
+def require_fixtures
+  Dir[ File.dirname(__FILE__) + "/object_fixtures/**/*.rb" ].each do |file|
+    require file
+  end
+end  
 
 
 Spec::Runner.configure do |config|
-  
 end

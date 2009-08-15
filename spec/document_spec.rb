@@ -3,11 +3,11 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe Persist::Document do
   before(:each) do 
     Document = Persist::Document unless defined?( Document )
-    @db = Persist::Database.create('my_class')
+    puts (@db = Persist::Database.create('my_class')).inspect
   end
   
-  after(:each) do 
-    @db.delete!
+  after(:each) do
+    puts @db.delete!.inspect
   end    
   
   describe 'initialization' do

@@ -1,21 +1,34 @@
 # require gems
-require 'rubygems'
-begin
-  require 'json'
-rescue LoadError
-  raise "JSON constant not found. Please install a JSON library." unless Kernel.const_defined?("JSON")
+require 'rubygems' 
+require 'ruby2ruby'
+# Pick your json poison. Just make sure that in adds the JSON constant
+unless defined?(JSON)
+  begin
+    require 'json'
+  rescue LoadError
+    raise LoadError, "JSON constant not found. Please install a JSON library"
+  end  
 end
+# There is also a dependency on the http_client of your choosing. Currently only ...
+# require 'rest_client'
+# It is required when a libarary is configured. If the library is not configured then it will 
+# automatically load the default: rest_client
 
+# non-gem language libraries
 require 'cgi'
 
 # require local libs
 $:.unshift File.join(File.dirname(__FILE__))
+  # support aka. monkey pathches
 require 'persist/support/mash'
 require 'persist/support/string_extensions'
-require 'persist/http_client/rest_api'
-require 'persist/server'
-require 'persist/database'
-require 'persist/document'
+  # couchdb interface 
+require 'persist/stores/couchdb/http_client/rest_api'
+require 'persist/stores/couchdb/server'
+require 'persist/stores/couchdb/database'
+require 'persist/stores/couchdb/document' 
+  # object packaging
+require 'persist/object/pack'
 
 
 module Persist
@@ -55,7 +68,7 @@ module Persist
     @adapter = mod_string
     mod = @adapter.gsub(/Adapter/, '')
     file = mod.underscore
-    require "persist/http_client/adapter/#{file}"
+    require "persist/stores/couchdb/http_client/adapter/#{file}"
     RestAPI.adapter = "#{mod_string}".constantize
     extend(::RestAPI)
     @adapter  # return the adapter 
