@@ -4,6 +4,14 @@
 # people can write params[:key] instead of params['key']
 # and they get the same value for both keys.
 unless defined?(HashWithIndifferentAccess)
+  class Hash
+    def with_indifferent_access
+      hash = HashWithIndifferentAccess.new(self)
+      hash.default = self.default
+      hash
+    end
+  end  
+  
   class HashWithIndifferentAccess < Hash
     def initialize(constructor = {})
       if constructor.is_a?(Hash)

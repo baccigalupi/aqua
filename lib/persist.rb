@@ -26,7 +26,8 @@ require 'persist/support/string_extensions'
 require 'persist/stores/couchdb/http_client/rest_api'
 require 'persist/stores/couchdb/server'
 require 'persist/stores/couchdb/database'
-require 'persist/stores/couchdb/document' 
+require 'persist/stores/couchdb/document'
+require 'persist/stores/store' 
   # object packaging
 require 'persist/object/pack'
 
@@ -72,7 +73,11 @@ module Persist
     RestAPI.adapter = "#{mod_string}".constantize
     extend(::RestAPI)
     @adapter  # return the adapter 
-  end 
+  end
+  
+  def self.set_storage_engine( engine="CouchDB" ) 
+    # TODO: make this happen
+  end   
   
   def self.paramify_url( url, params = {} )
     if params && !params.empty?
