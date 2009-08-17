@@ -3,10 +3,6 @@
 # module should minimally provide this interface to the object:
 #
 #   InstanceMethods
-#     initialize
-#       @params none, or optional arguments used internally; we don't care.
-#       @return [Aqua::Storage] new storage object
-#
 #     commit
 #       @params none, or optional arguments used internally; we don't care.
 #       @return [Aqua::Storage] saved storage object

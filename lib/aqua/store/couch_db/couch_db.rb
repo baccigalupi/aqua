@@ -67,8 +67,9 @@ module Aqua
       def self.server( namespace=nil )
         namespace ||= :aqua
         namespace = namespace.to_sym unless namespace.class == Symbol
-        s = servers[ namespace ]
-        s = servers[namespace.to_sym] = Server.new( :namespace => namespace ) unless s   
+        s = servers[ namespace ] 
+        s = servers[namespace.to_sym] = Server.new( :namespace => namespace ) unless s 
+        s  
       end 
       
       

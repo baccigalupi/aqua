@@ -26,7 +26,8 @@ describe CouchDB do
     end
     
     it 'should create a default server if no argument is passed' do 
-      server = CouchDB.server
+      server = CouchDB.server 
+      server.should_not be_nil
       CouchDB.servers.should_not be_empty
       CouchDB.servers[:aqua].should == server
       server.namespace.should == 'aqua'
@@ -49,11 +50,17 @@ describe CouchDB do
     it 'should list the servers in use' do
       CouchDB.server(:noodle)
       CouchDB.servers.size.should == 3 
-      puts CouchDB.servers.inspect
       CouchDB.servers.each do |key, server|
         server.class.should == Aqua::Store::CouchDB::Server
       end   
-    end 
+    end
+    
+    it 'should allow the addition of customized servers' do
+      new_host = 'http://newhost.com:8888' 
+      CouchDB.servers[:custom] = CouchDB::Server.new( :server => new_host )
+      CouchDB.servers.size.should == 4
+      CouchDB.servers[:custom].uri.should == new_host
+    end   
   end  
 
   describe 'helper methods' do 

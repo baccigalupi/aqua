@@ -42,13 +42,16 @@ module Aqua
         # Deletes all databases named for this namespace (i.e. this server)
         # Use with caution ... it is a permanent and undoable change
         def delete_all! 
-          databases.each{|db| db.delete! }
-        end  
-    
-        def namespaced( name ) 
-          "#{namespace}#{name}"
-        end  
-
+          databases.each{ |db| db.delete! }
+        end 
+        
+        # Deletes all database with the less exection raising method: database.delete. This will
+        # only raise errors related to request problems, and not errors related to the database not
+        # being found for deletion. 
+        def delete_all 
+          databases.each{ |db| db.delete }
+        end 
+        
         # Returns a CouchRest::Database for the given name
         def database(name)
           db = Database.new( name, :server => self )
@@ -62,12 +65,12 @@ module Aqua
 
         # GET the welcome message
         def info
-          CouchDB.get "#{@uri}/"
+          CouchDB.get "#{uri}/"
         end
     
         # Restart the CouchDB instance
         def restart!
-          CouchDB.post "#{@uri}/_restart"
+          CouchDB.post "#{uri}/_restart"
         end
     
         # counts the number of uuids available, used by Database to limit bulk save
