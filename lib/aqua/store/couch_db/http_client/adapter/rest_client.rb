@@ -1,25 +1,3 @@
-# Prefer a different HTTP Client? Write your own! Test it and send me a pull request to your fork.
-# Make sure any exceptions raised in the library are converted to the appropriate 
-#   Persist exceptions:  
-#   
-# 
-# Your adapter module should implement theses methods:
-# 
-# def self.get(uri, headers=nil)
-# end
-# 
-# def self.post(uri, hash, headers=nil)
-# end
-# 
-# def self.put(uri, hash, headers=nil)
-# end
-# 
-# def self.delete(uri, headers=nil)
-# end
-# 
-# def self.copy(uri, headers)
-# end 
-
 require 'rest_client'
 
 module RestClientAdapter
@@ -29,7 +7,7 @@ module RestClientAdapter
     rescue Exception => e
       ending = e.class.to_s.match(/[a-z0-9_]*\z/i)
       begin
-        error = "Persist::#{ending}".constantize
+        error = "Aqua::Store::CouchDB::#{ending}".constantize
       rescue
         raise e
       end

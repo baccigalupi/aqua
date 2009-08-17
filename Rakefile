@@ -41,13 +41,19 @@ Rake::RDocTask.new do |rdoc|
   end
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "Persist #{version}"
+  rdoc.title = "Aqua #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
-end   
+end
 
-PERSIST_DIRECTORIES = [
-  %w(Persist            lib/persist),
+# Need to create or include rake task for YARD
+# YARD::Tags::Library.define_tag("API", :api)    
+ 
+# Statistics ====================================
+AQUA_DIRECTORIES = [
+  %w(Aqua::Store         lib/aqua/store), 
+  %w(Aqua::Object        lib/aqua/object),
+  %w(Aqua/Support        lib/aqua/support),
   %w(Specs              spec)
 ].collect { |name, dir| [ name, "#{File.dirname(__FILE__)}/#{dir}" ] }.select { |name, dir| File.directory?(dir) }
 
@@ -59,8 +65,8 @@ COUCHREST_DIRECTORIES = [
 
 desc "Report code statistics (KLOCs, etc) on the gem"
 task :stats do
-  require File.dirname(__FILE__) + '/extras/code_statistics'
+  require File.dirname(__FILE__) + '/utils/code_statistics'
+  CodeStatistics.new(*AQUA_DIRECTORIES).to_s
   CodeStatistics.new(*COUCHREST_DIRECTORIES).to_s
-  CodeStatistics.new(*PERSIST_DIRECTORIES).to_s
 end
 

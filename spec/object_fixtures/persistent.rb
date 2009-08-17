@@ -1,4 +1,4 @@
 class Persistent 
-  include Persist::Pack
+  include Aqua::Pack
 end  
   

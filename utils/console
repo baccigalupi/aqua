@@ -3,6 +3,6 @@
 require 'rubygems'
 require 'irb'
 require 'ruby-debug'
-require File.dirname(__FILE__) + "/../lib/persist" 
+require File.dirname(__FILE__) + "/../lib/aqua" 
 
 IRB.start if __FILE__ == $0      

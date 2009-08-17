@@ -1,3 +1,20 @@
+# HTTP Adapters should implement the following to be used with the RestAPI module
+# 
+# def self.get(uri, headers=nil)
+# end
+# 
+# def self.post(uri, hash, headers=nil)
+# end
+# 
+# def self.put(uri, hash, headers=nil)
+# end
+# 
+# def self.delete(uri, headers=nil)
+# end
+# 
+# def self.copy(uri, headers)
+# end        
+
 module RestAPI
   def self.adapter=( klass )
     @adapter = klass

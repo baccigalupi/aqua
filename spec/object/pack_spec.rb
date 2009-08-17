@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require_fixtures
 
-describe Persist::Pack do 
+describe Aqua::Pack do 
   describe 'packing classes' do 
     it 'should pack class variables'
     it 'should pack class level instance variables'
@@ -24,6 +24,25 @@ describe Persist::Pack do
 
     it 'should save its class name as an attribute'
     it 'should determine the database a'
+  end
+  
+  describe 'instances' do
+    it 'simple attributes should be saved in record by default'
+    it 'more complex attributes should be saved to their own database by default'
+    it 'non-collection attributes should have options for saving internally, externally or stubbed'
+    it 'should save singleton methods'
+  end
+  
+  describe 'collections' do
+    it 'collection attributes should have options for saving internally, externally or stubbed'
   end 
+  
+  it 'should recursively save complex objects'
+  
+  describe 'classes' do
+    it 'should be saved into the design document' 
+    it 'class declaration "persist" should take options for namespacing ... and other configuration options'
+  end  
+   
    
 end  

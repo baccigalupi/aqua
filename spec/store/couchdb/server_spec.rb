@@ -1,8 +1,10 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe Persist::Server do
+Aqua.set_storage_engine('CouchDB') # to initialize the Aqua::Store namespace
+
+describe 'Aqua::Store::CouchDB::Server' do
   before(:each) do
-    Server = Persist::Server unless defined?( Server )
+    Server = Aqua::Store::CouchDB::Server unless defined?( Server )
     @server = Server.new 
   end
   
@@ -17,12 +19,12 @@ describe Persist::Server do
     end
     
     it 'should have a database prefix for namespacing the collection of persistance databases' do
-      @server.namespace.should == 'persist_'
+      @server.namespace.should == 'aqua_'
     end
     
     it 'should have a settable namespace' do
-      server = Server.new(:namespace => 'not_persist') 
-      server.namespace.should == 'not_persist'
+      server = Server.new(:namespace => 'not_aqua') 
+      server.namespace.should == 'not_aqua'
     end
     
     it 'should escape alpha-numeric, plus hyphen and underscore, characters from the namespace' do 
@@ -40,7 +42,7 @@ describe Persist::Server do
     it 'should retain a set of uuids to prevent collision' do
       token = @server.next_uuid( 2 )
       @server.next_uuid.should_not == token
-      Persist.should_receive(:get).and_return({'uuids' => []}) # because we have run out of uuids on the last request
+      Aqua::Store::CouchDB.should_receive(:get).and_return({'uuids' => []}) # because we have run out of uuids on the last request
       @server.next_uuid
     end   
     
@@ -51,7 +53,7 @@ describe Persist::Server do
     end  
     
     it 'should restart the couchdb server' do
-      Persist.should_receive(:post).with("#{@server.uri}/_restart" ) 
+      Aqua::Store::CouchDB.should_receive(:post).with("#{@server.uri}/_restart" ) 
       @server.restart!
     end  
   end   
@@ -63,7 +65,7 @@ describe Persist::Server do
       
     it 'should have a convenience method for creating databases' do 
       @server.database!('first')
-      Persist::Database.new('first').should be_exists
+      Aqua::Store::CouchDB::Database.new('first').should be_exists
     end
       
     it 'should show all_databases related to this server as an array' do
@@ -71,7 +73,7 @@ describe Persist::Server do
       dbs = @server.databases
       dbs.class.should == Array
       dbs.size.should == 2
-      dbs.first.class.should == Persist::Database 
+      dbs.first.class.should == Aqua::Store::CouchDB::Database 
     end
       
     it 'should delete_all! databases for the namespace' do 

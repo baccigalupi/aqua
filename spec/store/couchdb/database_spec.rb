@@ -1,8 +1,10 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe Persist::Database do
+Aqua.set_storage_engine('CouchDB') # to initialize the Aqua::Store namespace
+
+describe 'Aqua::Store::CouchDB::Database' do
   before(:each) do
-    Database = Persist::Database unless defined?( Database )
+    Database = Aqua::Store::CouchDB::Database unless defined?( Database )
   end
      
   describe 'initialization' do 
@@ -19,16 +21,16 @@ describe Persist::Database do
     it 'should default to Server.new when no server supplied' do
       db = Database.new('things')
       db.server.should_not be_nil
-      db.server.uri.should == Persist::Server.new.uri
+      db.server.uri.should == Aqua::Store::CouchDB::Server.new.uri
     end
       
     it 'if a server is supplied it will be used instead' do 
       # this can save you some memory, so there isn't an instance of the server for each class
       new_host = 'http://newhost.com:8888' 
-      Persist.server = Persist::Server.new( :server => new_host )
+      Aqua::Store::CouchDB.server = Aqua::Store::CouchDB::Server.new( :server => new_host )
       db = Database.new('things')
       db.server.uri.should == new_host
-      Persist.server = nil # reset for future runs
+      Aqua::Store::CouchDB.server = nil # reset for future runs
     end
     
     it 'should put together a database uri from the server and name' do 
@@ -39,7 +41,7 @@ describe Persist::Database do
   
   describe 'create' do
     before(:each) do
-      Persist.delete( Database.new('things').uri ) rescue nil
+      Aqua::Store::CouchDB.delete( Database.new('things').uri ) rescue nil
     end  
     
     it '#exists? should be false if the database doesn\'t yet exist in CouchDB land' do
@@ -68,7 +70,7 @@ describe Persist::Database do
     it '#info raise an error if the database doesn\'t exist' do 
       db = Database.new('things')
       db.delete! if db.exists?
-      lambda{ db.info }.should raise_error( Persist::ResourceNotFound )
+      lambda{ db.info }.should raise_error( Aqua::Store::CouchDB::ResourceNotFound )
     end
   
     it '#info should provide a hash of detail if it exists' do

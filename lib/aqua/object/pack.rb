@@ -1,7 +1,7 @@
 # This module is responsible for packing objects into Storage Objects
 # The Storage Object is expected to be a Mash-Like thing (Hash with indifferent access).
 # It is the job of the storage engine to convert the Mash into the actual storage data.
-module Persist::Pack
+module Aqua::Pack
   
   def self.included( klass ) 
     klass.class_eval do
@@ -20,7 +20,7 @@ module Persist::Pack
     # 
     # @example
     # class User 
-    #   include Persist::Object
+    #   include Aqua::Object
     #   attr_accessor :username, :email, :password, :password_confirmation, :cryped_password, :salt
     #   hide_instance_variables :password, :password_confirmation 
     #   # ... lots more user code ...
@@ -72,7 +72,7 @@ module Persist::Pack
       
       def _pack
         class_name = self.class.to_s
-        self.__pack = Persist::Document.new( Persist::Database.new( class_name ) ) # Persist::Store.new # TODO: switch ... temporarily using CouchDB directly
+        self.__pack = Aqua::Storage.new
         self.__pack[:class] = class_name
         _pack_properties
         _pack_singletons
@@ -94,7 +94,7 @@ module Persist::Pack
       end    
       
       def _save_to_store 
-        # self._doc = Persist::Document.new ...
+        # self._doc = Aqua::Document.new ...
         # _doc.commit # with exception catching et. al.
       end
       
@@ -104,5 +104,5 @@ module Persist::Pack
     public  
   end # InstanceMethods     
   
-end # Persist::Pack 
+end # Aqua::Pack 
   

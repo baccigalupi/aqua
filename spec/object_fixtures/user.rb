@@ -1,5 +1,5 @@
 class User
-  include Persist::Pack
+  include Aqua::Pack
   
   attr_accessor :name
   attr_accessor :dob 
