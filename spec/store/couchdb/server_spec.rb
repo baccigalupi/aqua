@@ -8,7 +8,7 @@ describe 'Aqua::Store::CouchDB::Server' do
     @server = Server.new 
   end
   
-  describe 'initialization' do 
+  describe 'initialization' do
     it 'should have a default uri "http://127.0.0.1:5984"' do
       @server.uri.should == 'http://127.0.0.1:5984' 
     end
@@ -19,7 +19,7 @@ describe 'Aqua::Store::CouchDB::Server' do
     end
     
     it 'should have a database prefix for namespacing the collection of persistance databases' do
-      @server.namespace.should == 'aqua_'
+      @server.namespace.should == 'aqua'
     end
     
     it 'should have a settable namespace' do

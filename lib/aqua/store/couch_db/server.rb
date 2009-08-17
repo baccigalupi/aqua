@@ -12,11 +12,11 @@ module Aqua
           opts = Mash.new(opts) unless opts.empty?
           self.uri =              opts[:server] || 'http://127.0.0.1:5984'
           self.uuid_batch_count = opts[:uuid_batch_count] || 1000 
-          self.namespace =        opts[:namespace] 
+          self.namespace =        opts[:namespace].to_s 
         end 
     
         def namespace=( name )
-          default = 'aqua_'
+          default = 'aqua'
           name ||= default
           name = CouchDB.escape( name )
           name = default if name.empty? 

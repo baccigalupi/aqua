@@ -14,18 +14,6 @@ module Aqua
       class ServerBrokeConnection < IOError; end
       class Conflict              < ArgumentError; end  
       
-      # A convenience method for escaping a string,
-      # namespaced classes with :: notation will be converted to __ 
-      # all other non-alpha numeric characters besides hyphens and underscores are removed 
-      # @param [String] to be converted
-      # @return [String] converted
-      # @api private
-      def self.escape( str )
-        str.gsub!('::', '__')
-        str.gsub!(/[^a-z0-9\-_]/, '')
-        str
-      end  
-  
       # Returns a string describing the http adapter in use, or loads the default and returns a similar string
       # @return [String] A string identifier for the HTTP adapter in use
       def self.http_adapter
@@ -65,6 +53,27 @@ module Aqua
         @adapter  # return the adapter 
       end
       
+      # Store of CouchDB Servers used by Aqua. Each is identified by its namespace.
+      # @api private
+      def self.servers
+        @servers ||= {}
+      end
+      
+      # Reader for getting or initializtion and getting a server by namespace. Used by various parts of store
+      # to define storage strategies. Also conserves memory so that there is only one instance of a Server per
+      # namespace. 
+      # @param [String] Server Namespace
+      # @api private
+      def self.server( namespace=nil )
+        namespace ||= :aqua
+        namespace = namespace.to_sym unless namespace.class == Symbol
+        s = servers[ namespace ]
+        s = servers[namespace.to_sym] = Server.new( :namespace => namespace ) unless s   
+      end 
+      
+      
+      # TEXT HELPERS ================================================
+      
       # This comes from the CouchRest Library and its licence applies. 
       # It is included in this library as LICENCE_COUCHREST.
       # The method breaks the parameters into a url query string.
@@ -81,29 +90,25 @@ module Aqua
           url = "#{url}?#{query}"
         end
         url
-      end
+      end 
       
-      # Store of CouchDB Servers used by Aqua. Each is identified by its namespace.
+      # A convenience method for escaping a string,
+      # namespaced classes with :: notation will be converted to __ 
+      # all other non-alpha numeric characters besides hyphens and underscores are removed 
+      # @param [String] to be converted
+      # @return [String] converted
       # @api private
-      def self.servers
-        @servers ||= {}
-      end
+      def self.escape( str )
+        str.gsub!('::', '__')
+        str.gsub!(/[^a-z0-9\-_]/, '')
+        str
+      end  
       
-      # Reader for getting or initializtion and getting a server by namespace. Used by various parts of store
-      # to define storage strategies. Also conserves memory so that there is only one instance of a Server per
-      # namespace. 
-      # @param [String] Server Namespace
-      # @api private
-      def self.server( namespace=nil )
-        namespace ||= :aqua
-        namespace = namespace.to_sym unless namespace.class == Symbol
-        s = servers[ namespace ]
-        s = servers[namespace.to_sym] = Server.new( namespace ) unless s   
-      end
-  
       
+      # AUTOLOADING ---------
+      # auto loads the default http_adapter if Aqua gets used without configuring it first
+        
       class << self     
-        # auto loads the default http_adapter if Aqua gets used without configuring it first
         def method_missing( method, *args )
           if @adapter.nil?
             set_http_adapter # loads up the adapter related stuff

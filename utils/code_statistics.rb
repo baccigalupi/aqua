@@ -26,8 +26,6 @@
 
 class CodeStatistics 
 
-  TEST_TYPES = %w(Units Functionals Unit\ tests Functional\ tests Integration\ tests Specs)
-
   def initialize(*pairs)
     @pairs      = pairs
     @statistics = calculate_statistics
@@ -86,13 +84,13 @@ class CodeStatistics
 
     def calculate_code
       code_loc = 0
-      @statistics.each { |k, v| code_loc += v['codelines'] unless TEST_TYPES.include? k }
+      @statistics.each { |k, v| code_loc += v['codelines'] unless k.match('Spec') }
       code_loc
     end
 
     def calculate_tests
       test_loc = 0
-      @statistics.each { |k, v| test_loc += v['codelines'] if TEST_TYPES.include? k }
+      @statistics.each { |k, v| test_loc += v['codelines'] if k.match('Spec') }
       test_loc
     end
 
@@ -110,7 +108,7 @@ class CodeStatistics
       m_over_c   = (statistics["methods"] / statistics["classes"])   rescue m_over_c = 0
       loc_over_m = (statistics["codelines"] / statistics["methods"]) - 2 rescue loc_over_m = 0
 
-      start = if TEST_TYPES.include? name
+      start = if name.match(/Spec/)
         "| #{name.ljust(20)} "
       else
         "| #{name.ljust(20)} " 

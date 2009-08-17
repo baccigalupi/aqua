@@ -54,7 +54,8 @@ AQUA_DIRECTORIES = [
   %w(Aqua::Store         lib/aqua/store), 
   %w(Aqua::Object        lib/aqua/object),
   %w(Aqua/Support        lib/aqua/support),
-  %w(Specs              spec)
+  %w(Aqua::Store/Specs   spec/store),
+  %w(Aqua::Object/Specs  spec/object)
 ].collect { |name, dir| [ name, "#{File.dirname(__FILE__)}/#{dir}" ] }.select { |name, dir| File.directory?(dir) }
 
 COUCHREST_DIRECTORIES = [
