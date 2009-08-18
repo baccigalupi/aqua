@@ -76,7 +76,7 @@ module Aqua
         # counts the number of uuids available, used by Database to limit bulk save
         def uuid_count
           if uuids 
-            uuids.count 
+            uuids.size 
           else
             load_uuids  
             uuid_batch_count

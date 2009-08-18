@@ -119,7 +119,7 @@ module Aqua
           #
           # @api private
           def save_now( mask_exception = true ) 
-            begin 
+            begin
               result = CouchDB.put( uri, self )
             rescue Exception => e
               if mask_exception
@@ -205,7 +205,8 @@ module Aqua
           def delete_now
             revisions.each do |rev_id| 
               CouchDB.delete( "#{uri}?rev=#{rev_id}" )
-            end   
+            end
+            true   
           end
           
           # Gets revision history, which is needed by Delete to remove all versions of a document
@@ -221,7 +222,7 @@ module Aqua
               return active_revisions
             end    
             hash['_revs_info'].each do |rev_hash|
-              active_revisions << rev_hash['rev'] if rev_hash['status'] == 'disk'
+              active_revisions << rev_hash['rev'] if ['disk', 'available'].include?( rev_hash['status'] )
             end
             active_revisions  
           end  
@@ -250,16 +251,43 @@ module Aqua
           end  
         
           # setters and getters couchdb document specifics -------------------------
+          
+          # Gets the document id. In this engine id and _id are different data. The main reason for this is that
+          # CouchDB needs a relatively clean string as the key, where as the user can assign a messy string to
+          # the id. The user can continue to use the messy string since the engine also has access to the _id.
+          # 
+          # @returns [String]
+          #
+          # @api public 
           def id
             self[:id]
           end
-    
+          
+          # Allows the id to be set. If the id is changed after creation, then the CouchDB document for the old
+          # id is deleted, and the _rev is set to nil, making it a new document. The id can only be a string (right now).
+          #
+          # @return [String, false] Will return the string it received if it is indeed a string. Otherwise it will
+          # return false.
+          #
+          # @api public 
           def id=( str )
-            self[:id] = str
-            self[:_id] = escape_doc_id 
-            str
+            if str.respond_to?(:match)
+              escaped = escape_for_id( str )
+              
+              # CLEANUP: do a bulk delete request on the old id, now that it has changed
+              delete(true) if !new? && escaped != self[:_id]
+              
+              self[:id] = str
+              self[:_id] = escaped 
+              str 
+            end  
           end  
     
+          # Returns CouchDB document revision identifier.
+          # 
+          # @return [String]
+          #
+          # @api semi-public
           def rev
             self[:_rev]
           end
@@ -269,10 +297,13 @@ module Aqua
               self[:_rev] = str
             end   
           public 
-    
+          
+          # Updates the id and rev after a document is successfully saved.
+          # @param [Hash] Result returned by CouchDB document save
+          # @api private
           def update_version( result ) 
-            self.id  = result['id']
-            self.rev = result['rev']
+            self.id     = result['id']
+            self.rev    = result['rev']
           end  
     
           # Returns true if the document has never been saved or false if it has been saved.
@@ -295,26 +326,38 @@ module Aqua
             end    
           end  
         
-          # gets a uuid from the server if one doesn't exist, otherwise escapes existing uuid
+          # gets a uuid from the server if one doesn't exist, otherwise escapes existing id.
+          # @api private
           def ensure_id
             self[:_id] = ( id ? escape_doc_id : database.server.next_uuid )
           end 
-    
+          
+          # Escapes document id. Different strategies for design documents and normal documents.
+          # @api private
           def escape_doc_id
-            id.match(/^_design\/(.*)/) ? "_design/#{CGI.escape($1)}" : CGI.escape(id)
-          end  
-
-          def encode_attachments(attachments)
-            attachments.each do |key, value|
-              next if value['stub']
-              value['data'] = base64(value['data'])
-            end
-            attachments
+            escape_for_id( id )
           end
+          
+          # Escapes a string for id usage
+          # @api private
+          def escape_for_id( str )
+            str.match(/^_design\/(.*)/) ? "_design/#{CGI.escape($1)}" : CGI.escape(str)
+          end    
+          
 
-          def base64(data)
-            Base64.encode64(data).gsub(/\s/,'')
-          end  
+          # TODO: Attachments
+          # def encode_attachments(attachments)
+          #   attachments.each do |key, value|
+          #     next if value['stub']
+          #     value['data'] = base64(value['data'])
+          #   end
+          #   attachments
+          # end
+          # 
+          # def base64(data)
+          #   Base64.encode64(data).gsub(/\s/,'')
+          # end
+            
         end # InstanceMethods           
         
       end # StoreMethods

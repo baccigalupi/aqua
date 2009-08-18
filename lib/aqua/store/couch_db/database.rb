@@ -159,7 +159,7 @@ module Aqua
     
         # BULK ACTIVITIES ------------------------------------------
         def add_to_bulk_cache( doc ) 
-          if server.uuid_count/2.0 > bulk_cache.count
+          if server.uuid_count/2.0 > bulk_cache.size
             self.bulk_cache << doc 
           else
             bulk_save
@@ -169,7 +169,7 @@ module Aqua
     
         def bulk_save
           docs = bulk_cache
-          self.bulk_save_cache = []
+          self.bulk_cache = []
           CouchDB.post( "#{uri}/_bulk_docs", {:docs => docs} )
         end
     

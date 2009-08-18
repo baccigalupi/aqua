@@ -36,11 +36,64 @@ describe 'CouchDB::StorageMethods' do
       @doc.rev.should == nil 
       @doc[:rev].should == nil  
     end
+  end 
+  
+  describe 'core attributes' do
+    
+    describe 'revisions' do
+      before(:each) do
+        CouchDB.server.delete_all  
+      end  
+    
+      it 'should be an empty array for a new record' do 
+        @doc.revisions.should == []
+      end 
+    
+      it 'should have one value after the document is saved' do
+        @doc.save!
+        @doc.revisions.size.should == 1
+        @doc.revisions.first.should == @doc[:_rev]
+      end
+    
+      it 'should continue adding revisions with each save' do
+        @doc.save!
+        @doc['new_attr'] = 'my new attribute, yup!'
+        @doc.save!
+        @doc.revisions.size.should == 2
+      end     
+    end    
     
     it 'rev should not be publicly settable' do 
       lambda{ @doc.rev = 'my_rev' }.should raise_error
-    end  
-  end
+    end 
+    
+    describe 'changing the id, post save' do
+      before(:each) do
+        CouchDB.server.delete_all
+        @doc.save!
+        @doc.id = 'something/new_and_fresh'
+      end  
+      
+      it 'should change the id' do 
+        @doc.id.should == 'something/new_and_fresh'
+      end
+        
+      it 'should change the _id' do
+        @doc[:_id].should == 'something%2Fnew_and_fresh'
+      end
+        
+      it 'should successfully save' do
+        lambda{ @doc.save! }.should_not raise_error
+        @doc.retrieve['id'].should == 'something/new_and_fresh'
+      end
+        
+      it 'should delete earlier versions on save' do 
+        @doc.save!
+        lambda{ CouchDB.get( "#{@doc.database.uri}/aqua/my_slug%2Fthaz-right") }.should raise_error
+      end  
+    end   
+  
+  end  
   
   describe 'database' do 
     before(:each) do
@@ -88,22 +141,6 @@ describe 'CouchDB::StorageMethods' do
            
   end  
   
-  describe 'revisions' do
-    before(:each) do
-      CouchDB.server.delete_all  
-    end  
-    
-    it 'should be an empty array for a new record' do 
-      @doc.revisions.should == []
-    end 
-    
-    it 'should have one value after the document is saved' do
-      @doc.save!
-      @doc.revisions.size.should == 1
-      @doc.revisions.first.should == @doc[:_rev]
-    end   
-  end  
-  
   describe 'save/create' do 
     before(:each) do
       CouchDB.server.delete_all  
@@ -120,7 +157,7 @@ describe 'CouchDB::StorageMethods' do
       return_value.id.should == @doc.id
     end
     
-    it 'save should return false if it did not work' do
+    it 'saving should return false if it did not work' do
       @doc.save
       @doc[:_rev] = nil # should cause a conflict error HTTP 409 in couchdb
       lambda{ @doc.save }.should_not raise_error
@@ -171,9 +208,28 @@ describe 'CouchDB::StorageMethods' do
       CouchDB.server.delete_all  
     end  
     
-    it 'should #delete a record'
-    it 'should return false'
-    it 'should raise an error on failure when #delete! is used'
+    it 'should #delete a record' do
+      @doc.save!
+      @doc.delete
+      @doc.should_not be_exists
+    end
+    
+    it 'should return true on successful #delete' do
+      @doc.save!
+      @doc.delete.should == true
+    end  
+      
+    it 'should return false when it fails' do 
+      @doc.save!
+      CouchDB.should_receive(:delete).and_raise( CouchDB::Conflict )
+      @doc.delete.should == false
+    end
+      
+    it 'should raise an error on failure when #delete! is used' do 
+      @doc.save!
+      CouchDB.should_receive(:delete).and_raise( CouchDB::Conflict )
+      lambda { @doc.delete! }.should raise_error
+    end  
   end  
   
   describe 'updating' do
@@ -202,8 +258,8 @@ describe 'CouchDB::StorageMethods' do
         
       @doc['more'].should == 'less ... really'
       @doc['newness'].should == 'overrated'
+      @doc.retrieve['more'].should == 'less ... really'
     end  
   end
-          
-      
+
 end
