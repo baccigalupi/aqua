@@ -3,16 +3,39 @@
 # module should minimally provide this interface to the object:
 #
 #   InstanceMethods
+#     @inteface_level optional If no initialization is included. Then the Mash initialization will be used.
+#     initialize( hash )
+#       @param [optional Hash]
+#       @return [Aqua::Storage] the new storage instance
+#     
+#     @interface_level mandatory
 #     commit
-#       @params none, or optional arguments used internally; we don't care.
 #       @return [Aqua::Storage] saved storage object
 #       @raise [Aqua::ObjectNotFound] if another error occurs in the engine, that should be raised instead 
 #         any of the Aqua Exceptions 
+# 
+#     @interface_level mandatory
+#     id
+#       @params none
+#       @return id object, whether String, Fixnum or other object as the store chooses
+# 
+#     @interface_level mandatory
+#     id=( custom_id )
+#       The library expects to save an object with a custom id. Id= method can set limits on the 
+#       types of objects that can be used as an id. Minimally it should support Strings. 
+#       @params String, Fixnum, or any other reasonable class
+#
+#     @interface_level mandatory
+#     new?
+#       The equivalent of AR's new_record? and can be used to set create hooks or determine how to handle
+#       object queries about whether it has changed. 
+#       @return [true, false]
 #   
 #    ClassMethods
-#     load( id ) 
+#     @interface_level mandatory
+#     load( id, class ) 
 #       The'load'  
-#       @params id
+#       @params [String, Fixnum] The id used by the system to 
 #       @return [Aqua::Storage]
 #       @raise [Aqua::ResourceNotFound] if another error occurs in the engine, that should be raised instead 
 #         any of the Aqua Exceptions 

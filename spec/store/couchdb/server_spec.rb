@@ -1,12 +1,16 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 Aqua.set_storage_engine('CouchDB') # to initialize the Aqua::Store namespace
-
+Server = Aqua::Store::CouchDB::Server unless defined?( Server )
+    
 describe 'Aqua::Store::CouchDB::Server' do
   before(:each) do
-    Server = Aqua::Store::CouchDB::Server unless defined?( Server )
-    @server = Server.new 
+    @server = Server.new
   end
+  
+  before(:all) do 
+    Server.new.delete_all
+  end  
   
   describe 'initialization' do
     it 'should have a default uri "http://127.0.0.1:5984"' do
@@ -60,7 +64,8 @@ describe 'Aqua::Store::CouchDB::Server' do
   
   describe 'managing databases' do
     before(:all) do 
-      Server.new.delete_all! # this is kind of circular testing here ... 
+      Server.new.delete_all # this is kind of circular testing here ... 
+      Server.new.databases.size.should == 0
     end
       
     it 'should have a convenience method for creating databases' do 
@@ -75,9 +80,14 @@ describe 'Aqua::Store::CouchDB::Server' do
       dbs.size.should == 2
       dbs.first.class.should == Aqua::Store::CouchDB::Database 
     end
+    
+    it 'should show default database in the list of databases' do
+      Aqua::Store::CouchDB::Database.create!
+      @server.databases.size.should == 3
+    end  
       
     it 'should delete_all! databases for the namespace' do 
-      @server.databases.size.should == 2
+      @server.databases.size.should == 3
       @server.delete_all!
       @server.databases.size.should == 0
     end    

@@ -2,7 +2,6 @@ require File.dirname(__FILE__) + '/http_client/rest_api'
 require File.dirname(__FILE__) + '/server'
 require File.dirname(__FILE__) + '/database'
 require File.dirname(__FILE__) + '/storage_methods'
-require File.dirname(__FILE__) + '/document' # not strictly necessary, since the storage methods are what is used
 
 module Aqua
   module Store
@@ -53,7 +52,8 @@ module Aqua
         @adapter  # return the adapter 
       end
       
-      # Store of CouchDB Servers used by Aqua. Each is identified by its namespace.
+      # Cache of CouchDB Servers used by Aqua. Each is identified by its namespace.
+      #
       # @api private
       def self.servers
         @servers ||= {}
@@ -62,6 +62,7 @@ module Aqua
       # Reader for getting or initializtion and getting a server by namespace. Used by various parts of store
       # to define storage strategies. Also conserves memory so that there is only one instance of a Server per
       # namespace. 
+      #
       # @param [String] Server Namespace
       # @api private
       def self.server( namespace=nil )
@@ -70,6 +71,14 @@ module Aqua
         s = servers[ namespace ] 
         s = servers[namespace.to_sym] = Server.new( :namespace => namespace ) unless s 
         s  
+      end
+      
+      # Clears the cached servers. So far this is most useful for testing. 
+      # API will depend on usefulness outside this. 
+      #
+      # @api private
+      def self.clear_servers
+        @servers = {}
       end 
       
       
@@ -96,14 +105,29 @@ module Aqua
       # A convenience method for escaping a string,
       # namespaced classes with :: notation will be converted to __ 
       # all other non-alpha numeric characters besides hyphens and underscores are removed 
+      #
       # @param [String] to be converted
       # @return [String] converted
+      #
       # @api private
       def self.escape( str )
         str.gsub!('::', '__')
         str.gsub!(/[^a-z0-9\-_]/, '')
         str
       end  
+      
+      # DATABASE STRATEGIES ----------------------------------
+      # This library was built with to be flexible but have some sensible defaults. Database strategies is 
+      # one of those areas. You can configure the CouchDB module to use one of three ways of managing data
+      # into databases: 
+      #   * :single - This is the default. It uses the CouchDB.server(:aqua) to build a single database where
+      #         all the documents are stored. 
+      #   * :per_class - This strategy is the opposite of the single strategy in that each class has it's own
+      #         database. This will make complex cross class lookups more difficult.
+      #   * :configured - Each class configures its own database and server namespace. Any server not 
+      #         configured will default to the CouchDB.server. Any database not configured will default to the
+      #         default database ... that set by the server namespace.
+      # TODO: store these strategies; give feedback to documents about the appropriate database. 
       
       
       # AUTOLOADING ---------

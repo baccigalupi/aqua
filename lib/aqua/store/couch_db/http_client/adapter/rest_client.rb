@@ -6,12 +6,16 @@ module RestClientAdapter
       yield
     rescue Exception => e
       ending = e.class.to_s.match(/[a-z0-9_]*\z/i)
-      begin
-        error = "Aqua::Store::CouchDB::#{ending}".constantize
-      rescue
-        raise e
-      end
-      raise error, e.message    
+      if e.message.match(/409\z/)
+        raise Aqua::Store::CouchDB::Conflict, e.message
+      else  
+        begin
+          error = "Aqua::Store::CouchDB::#{ending}".constantize
+        rescue
+          raise e
+        end
+        raise error, e.message 
+      end     
     end    
   end  
   

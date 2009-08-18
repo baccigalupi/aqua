@@ -5,8 +5,8 @@ module Aqua
   module Store 
     module CouchDB
       class Server
-        attr_accessor :uri, :uuid_batch_count, :http_client, :uuids
-        attr_reader :namespace, :uuids
+        attr_accessor :uri, :uuid_batch_count, :uuids
+        attr_reader :namespace
     
         def initialize(opts={})
           opts = Mash.new(opts) unless opts.empty?
@@ -28,13 +28,13 @@ module Aqua
         # Lists all database names on the server
         def database_names
           dbs = CouchDB.get( "#{@uri}/_all_dbs" )
-          dbs.select{|name| name.match(/\A#{namespace}/)}
+          dbs.select{|name| name.match(/\A#{namespace}_?/)}
         end
     
         def databases
           dbs = [] 
           database_names.each do |db_name|
-            dbs << Database.new( db_name.gsub(/\A#{namespace}/, ''), :server => self )
+            dbs << Database.new( db_name.gsub(/\A#{namespace}_|\A#{namespace}\z/, '') , :server => self )
           end
           dbs  
         end  

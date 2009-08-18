@@ -47,7 +47,8 @@ Rake::RDocTask.new do |rdoc|
 end
 
 # Need to create or include rake task for YARD
-# YARD::Tags::Library.define_tag("API", :api)    
+# YARD::Tags::Library.define_tag("API", :api) 
+# YARD::Tags::Library.defind_tag("Inteface Specifications", :interface_level)   
  
 # Statistics ====================================
 AQUA_DIRECTORIES = [

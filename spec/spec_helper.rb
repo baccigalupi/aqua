@@ -6,7 +6,7 @@ require 'spec/autorun'
                     
  
 def require_fixtures
-  Dir[ File.dirname(__FILE__) + "/object_fixtures/**/*.rb" ].each do |file|
+  Dir[ File.dirname(__FILE__) + "/object/object_fixtures/**/*.rb" ].each do |file|
     require file
   end
 end  

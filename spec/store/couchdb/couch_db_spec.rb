@@ -21,6 +21,15 @@ describe CouchDB do
   end
   
   describe 'servers' do
+    before(:all) do 
+      CouchDB.servers.delete(:all)
+    end
+    
+    it 'should #clear_servers' do 
+      CouchDB.clear_servers
+      CouchDB.servers.should == {}
+    end  
+      
     it '#servers should return an empty hash by default' do
       CouchDB.servers.should == {}
     end
@@ -63,7 +72,7 @@ describe CouchDB do
     end   
   end  
 
-  describe 'helper methods' do 
+  describe 'text helper methods' do 
     describe 'escaping names' do 
       it 'should escape :: module/class separators with a double underscore __' do
         string = CouchDB.escape('not::kosher')
@@ -86,5 +95,10 @@ describe CouchDB do
       end  
     end     
   end  
+
+  describe 'database strategies' do
+    # TODO: figure this out
+  end  
+
 end    
   
