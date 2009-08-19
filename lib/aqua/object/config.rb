@@ -3,6 +3,7 @@ module Aqua::Config
   def self.included( klass ) 
     klass.class_eval do
       extend ClassMethods
+      configure_aqua
       
       hide_attributes :_aqua_opts
     end  
@@ -10,7 +11,7 @@ module Aqua::Config
   
   module ClassMethods
     def configure_aqua(opts={})
-      @_aqua_opts = Mash( _aqua_config_defaults ).merge!(opts)
+      @_aqua_opts = Mash.new( _aqua_opts ).merge!(opts)
     end
     
     private
@@ -22,7 +23,7 @@ module Aqua::Config
       end
       
       def _aqua_opts
-        @_aqua_opts
+        @_aqua_opts ||= _aqua_config_defaults
       end   
     public   
   end

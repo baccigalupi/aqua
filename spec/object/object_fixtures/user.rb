@@ -14,5 +14,7 @@ class User
     _storable_attributes
   end
   
-       
+  def self.aquatic_options
+    _aqua_opts
+  end       
 end 
