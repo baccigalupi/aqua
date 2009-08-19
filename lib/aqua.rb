@@ -25,8 +25,8 @@ require 'aqua/support/mash'
 require 'aqua/support/string_extensions'
   # storage 
 require 'aqua/store/storage' 
-  # object packaging
-require 'aqua/object/pack'
+  # object methods
+require 'aqua/object/tank'
 
 
 # LIBRARY SETUP -----------------------------------

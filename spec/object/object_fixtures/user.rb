@@ -1,11 +1,18 @@
 class User
-  include Aqua::Pack
+  include Aqua::Tank
   
-  attr_accessor :name
-  attr_accessor :dob 
+  attr_accessor :name, :dob, :username, :log, :password
+  hide_attributes :password
   
+  # convenience methods for inspection during testing 
   def to_store
     _pack
     __pack
-  end  
+  end
+  
+  def visible_attr 
+    _storable_attributes
+  end
+  
+       
 end 

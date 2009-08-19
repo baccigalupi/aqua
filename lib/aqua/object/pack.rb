@@ -9,8 +9,8 @@ module Aqua::Pack
       include InstanceMethods
       
       # TODO: these should be protected as well as hidden
-      attr_accessor :_store, :__pack
-      hide_instance_variables :_store, :__pack 
+      attr_accessor   :_store, :__pack
+      hide_attributes :_store, :__pack 
     end  
   end 
   
@@ -27,15 +27,15 @@ module Aqua::Pack
     # end
     # In this case it is useful for omitting sensitive information while persisting the object, but 
     # maintaining the password and confirmation temporarily requires the use of instance variables.
-    def hide_instance_variables( *ivars )
+    def hide_attributes( *ivars )
       ivars.each do |ivar|
         raise ArgumentError, '' unless ivar.class == Symbol
-        _unsaved_instance_variables << ivar
+        _hidden_attributes << "@#{ivar}"
       end  
     end
     
-    def _unsaved_instance_variables 
-      @_unsaved_instance_variables ||= []
+    def _hidden_attributes 
+      @_hidden_attributes ||= []
     end 
           
   end # ClassMethods
@@ -78,12 +78,14 @@ module Aqua::Pack
         _pack_singletons
       end
       
+      def _storable_attributes
+        (instance_variables||[]) - self.class._hidden_attributes
+      end  
+      
       def _pack_properties
         self.__pack[:properties] = {}
-        ( (instance_variables||[]) - self.class._unsaved_instance_variables ).each do |ivar| 
+          _storable_attributes.each do |ivar| 
           value = instance_variable_get( ivar ) 
-          puts ivar.inspect
-          puts value.inspect
           # TODO more logic should be here to determine whether 
           # a variable is appropriate for internal storage
           self.__pack[:properties][ivar] = value
