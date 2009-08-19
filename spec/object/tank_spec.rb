@@ -7,6 +7,18 @@ describe Aqua::Tank do
     User.should respond_to(:aquatic)
   end
   
+  it 'should add an instance method :aquatic? that identifies whether an object is aquatic' do 
+    Object.new.should respond_to( :aquatic? )
+    Object.new.should_not be_aquatic
+    User.new.should be_aquatic
+  end
+  
+  it 'should add class method :aquatic? that identifies whether a class is aquatic' do
+    Object.should respond_to( :aquatic? )
+    Object.should_not be_aquatic
+    User.should be_aquatic
+  end    
+  
   it 'should add the class method :super_aquatic to all objects'
   
   describe 'declaring a class as aquatic' do

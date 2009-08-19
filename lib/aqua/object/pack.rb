@@ -3,6 +3,8 @@
 # It is the job of the storage engine to convert the Mash into the actual storage data.
 module Aqua::Pack
   
+  AQUA_SIMPLE_CLASSES = [String, Array, Hash, Mash, HashWithIndifferentAccess, OpenStruct]
+  
   def self.included( klass ) 
     klass.class_eval do
       extend ClassMethods
@@ -102,7 +104,15 @@ module Aqua::Pack
       
       def _clear__pack
         self.__pack = nil
-      end    
+      end
+      
+      def _simple_classes
+        AQUA_SIMPLE_CLASSES
+      end
+      
+      def _pack_instructions 
+        #self.class.
+      end        
     public  
   end # InstanceMethods     
   

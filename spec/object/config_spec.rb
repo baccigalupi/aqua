@@ -33,7 +33,12 @@ describe Aqua::Config do
     opts[:database].should == 'newer_than_that'
     opts[:embed].should_not be_false
     opts[:embed][:stub].class.should == Array 
-  end        
+  end 
+  
+  it 'should receive options passed to the class "aquatic" declaration' do
+    opts = Log.aquatic_options
+    opts[:embed].should == true
+  end         
    
 end  
    

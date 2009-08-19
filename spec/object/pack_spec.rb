@@ -50,8 +50,18 @@ describe Aqua::Pack do
         @pack[:properties].should_not be_nil
         @pack[:properties].should respond_to(:keys)
       end 
-        
+      
       describe 'simple conversions' do 
+        it 'should maintain a list of simple storage classes that are embedded and not converted' do 
+          user = User.new
+          classes = user.simple_classes # ports to _simple_classes
+          classes.class.should == Array
+          classes.each do |klass|
+            klass.class.should == Class
+          end
+          classes.should == [String, Array, Hash, Mash, HashWithIndifferentAccess, OpenStruct]  
+        end 
+        
         it 'should pack strings as strings' do 
           @pack[:properties][:@username].should == 'kane'
         end  
@@ -60,10 +70,16 @@ describe Aqua::Pack do
           @pack[:properties][:@name].should == ['Kane', 'Baccigalupi']
         end  
     
-        it 'should pack hashes as a Hash of keys and' 
+        it 'should pack an hash containing only strings/symbols for keys and values, as a hash containing strings' do
+          @user.name = {:first => 'Kane', :last => 'Baccigalupi'}
+          pack = @user.to_store
+          pack[:properties][:@name].should == {'first' => 'Kane', 'last' => 'Baccigalupi'}
+        end   
       end
       
-      describe 'packing objects'  
+      describe 'packing objects' do
+        it 'aquatic objects should have _pack_instructions'
+      end   
     end
     
   end
