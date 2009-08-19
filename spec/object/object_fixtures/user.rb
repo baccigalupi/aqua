@@ -5,14 +5,16 @@ class User
     :created_at,# Time
     :dob,       # Date
     :username,  # simple string 
-    :log,       # an Object 
+    :log,       # an Aquatic Object 
     :password   # hidden value
+    :grab_bag   # non Aquatic Object
   hide_attributes :password
   
   
   # convenience methods for inspection during testing
   # ------------------------------------------------- 
-  # for testing what the pack looks like
+  
+  # for testing how the pack internally fuctions
   def to_store
     _pack
     __pack
@@ -20,7 +22,7 @@ class User
   
   def simple_classes
     _simple_classes
-  end  
+  end 
   
   # for testing whether attributse are hidden
   def visible_attr 

@@ -14,6 +14,10 @@ module Aqua::Config
       @_aqua_opts = Mash.new( _aqua_opts ).merge!(opts)
     end
     
+    def _aqua_opts
+      @_aqua_opts ||= _aqua_config_defaults
+    end   
+    
     private
       def _aqua_config_defaults
         {
@@ -21,10 +25,6 @@ module Aqua::Config
           :embed => false,  # options false, true, or :stub => [:attributes, :to_save, :in_the_other_object]
         }
       end
-      
-      def _aqua_opts
-        @_aqua_opts ||= _aqua_config_defaults
-      end   
     public   
   end
 

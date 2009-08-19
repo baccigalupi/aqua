@@ -10,7 +10,13 @@ module Aqua::Unpack
   module ClassMethods
   end
   
-  module InstanceMethods
+  module InstanceMethods 
+    # repacking notes for numbers
+    # Integer:  Integer( value )
+    # Fixnum:   eval( value )
+    # Bignum:   eval( value )
+    # Float:    Float( value )
+    # Rational: Rational( value[0], value[1])
   end
 
 end       

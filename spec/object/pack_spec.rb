@@ -3,10 +3,14 @@ require_fixtures
 
 describe Aqua::Pack do
   before(:each) do
+    @log = Log.new
+    @log.message = "Hello World! This is a log entry"
+    @log.created_at = Time.now
     @user = User.new
     @user.username = 'kane'
     @user.name = ['Kane', 'Baccigalupi']
     @user.dob = Date.parse('12/23/69')
+    @user.log = @log
     @pack = @user.to_store
   end   
   
@@ -52,16 +56,6 @@ describe Aqua::Pack do
       end 
       
       describe 'simple conversions' do 
-        it 'should maintain a list of simple storage classes that are embedded and not converted' do 
-          user = User.new
-          classes = user.simple_classes # ports to _simple_classes
-          classes.class.should == Array
-          classes.each do |klass|
-            klass.class.should == Class
-          end
-          classes.should == [String, Array, Hash, Mash, HashWithIndifferentAccess, OpenStruct]  
-        end 
-        
         it 'should pack strings as strings' do 
           @pack[:properties][:@username].should == 'kane'
         end  
@@ -77,8 +71,21 @@ describe Aqua::Pack do
         end   
       end
       
+      # TODO: deal with inheritance from array and hash, how to initialize, how to save data
+      
       describe 'packing objects' do
-        it 'aquatic objects should have _pack_instructions'
+        it 'aquatic objects should have packing instructions in the form of #_embed_me' do
+          @user._embed_me.should == false
+          Log.new._embed_me.should == true
+          User.configure_aqua( :embed => {:stub =>  [:username, :name] } ) 
+          @user._embed_me.should == { 'stub' => [:username, :name] }
+          # reset for future tests
+          User.configure_aqua( :embed => false )
+        end 
+        
+        it '_pack should pack non-aquatic objects internally' do 
+          
+        end   
       end   
     end
     
