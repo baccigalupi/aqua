@@ -8,8 +8,6 @@ module Aqua::Pack
       extend ClassMethods
       include InstanceMethods
       
-      # TODO: these should probably be protected as well as hidden
-      attr_accessor   :_store, :__pack
       hide_attributes :_store, :__pack 
     end  
   end 
@@ -88,10 +86,17 @@ module Aqua::Pack
       (instance_variables||[]) - self.class._hidden_attributes
     end  
        
-    
-    # Private methods are all prefaced by an underscore to prevent
+    # Private/protected methods are all prefaced by an underscore to prevent
     # clogging the object instance space. Some of the public ones above are too!
+    protected
+      
+      # __pack is an Aqua::Storage object into which the object respresentation is packed
+      # _store is the current state of the storage of the object on CouchDB. It is used lazily
+      # and will be empty unless it is needed for unpacking or checking for changed data.
+      attr_accessor   :_store, :__pack
+      
     private
+      
       def _commit( mask_exception = true ) 
         result = true
         begin
@@ -141,7 +146,13 @@ module Aqua::Pack
         return_hash
       end  
       
-      # 
+      # Packs an object into data and meta data. Works recursively sending out to array, hash, etc.  
+      # object packers, which send their values back to _pack_object
+      #
+      # @params Object to pack
+      # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+      #
+      # @api private
       def _pack_object( obj ) 
         klass = obj.class
         if klass == String

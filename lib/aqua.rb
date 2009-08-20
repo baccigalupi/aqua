@@ -51,8 +51,10 @@ module Aqua
   # 
   # @example Internal library loading from a string
   #   Aqua.set_storage_engine( "CouchDB" )
+  #
   # @example External library loading from a gem. :module argument is the gem's module responsible for implementing the storage methods
   #   Aqua.set_storage_engine( :require => 'my_own/storage_gem', :module => 'MyOwn::StorageGem::StorageMethods' )
+  #
   # @example External library loading from a non-gem external library. 
   #   Aqua.set_storage_engine( :require => '/absolute/path/to/library', :module => 'My::StorageLib::StorageMethods' )
   #
