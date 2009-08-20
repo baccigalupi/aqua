@@ -23,7 +23,7 @@ module Aqua::Pack
     #   include Aqua::Object
     #   attr_accessor :username, :email, :password, :password_confirmation, :cryped_password, :salt
     #   hide_instance_variables :password, :password_confirmation 
-    #   # ... lots more user code ...
+    #   # ... lots more user code here ...
     # end
     # In this case it is useful for omitting sensitive information while persisting the object, but 
     # maintaining the password and confirmation temporarily requires the use of instance variables.
@@ -36,6 +36,7 @@ module Aqua::Pack
     
     # Reader method for accessing hidden attributes. 
     # @return [Array] containing strings representing instance variables
+    # @api private
     def _hidden_attributes 
       @_hidden_attributes ||= []
     end 
@@ -109,13 +110,27 @@ module Aqua::Pack
        
       # Object packing methods ------------
       
-      # Recursively examines each ivar and converts it to a hash, array, string combo
+      # Examines each ivar and converts it to a hash, array, string combo
       # @api private
       def _pack_properties
-        self.__pack[:data] = _pack_ivars( self ) 
+        self.__pack[:data] = _pack_ivars( self )
+        initializations = _pack_initializations( self )
+        self.__pack[:initialization] = initializations unless initializations.empty?
       end
       
-      # Examines an object for its ivars, packs each into a hash
+      def _pack_initializations( obj )
+        ancestors = obj.class.ancestors
+        initializations = {}
+        if ancestors.include?( Array )
+          initializations = _pack_array( obj )
+        elsif ancestors.include?( Hash ) 
+          initializations = _pack_hash( obj )
+        end
+        initializations 
+      end  
+      
+      # Examines an object for its ivars, packs each into a hash 
+      # @api private
       def _pack_ivars( obj )
         return_hash = {}
         vars = obj.aquatic? ? obj._storable_attributes : obj.instance_variables
@@ -126,13 +141,14 @@ module Aqua::Pack
         return_hash
       end  
       
+      # 
       def _pack_object( obj ) 
         klass = obj.class
         if klass == String
           obj
         elsif [TrueClass, FalseClass].include?( klass )
           { 'class' => klass.to_s }  
-        elsif [Time, Date, Fixnum,Bignum, Float ].include?( klass )
+        elsif [Time, Date, Fixnum, Bignum, Float ].include?( klass )
           {
             'class' => klass.to_s,
             'data' => obj.to_s
@@ -144,27 +160,29 @@ module Aqua::Pack
           } 
         else # a more complex object, including an array or a hash like thing 
           return_hash = {}
-          if (obj.aquatic? && obj._embed_me == true)
+          if obj.aquatic? # TODO distinguish between internal storage, stubbing and external (obj.aquatic? && obj._embed_me == true)
             return_hash = obj._pack    
           elsif !obj.aquatic?
-            ancestors = klass.ancestors
-            if ancestors.include?( Array )
-              return_hash['initialization'] = _pack_array( obj )
-            elsif ancestors.include?( Hash ) 
-              return_hash['initialization'] = _pack_hash( obj )
-            end
+            initialization = _pack_initializations( obj )
+            return_hash['initialization'] = initialization unless initialization.empty?
             data = _pack_ivars( obj )
             return_hash['data'] = data unless data.empty?
             return_hash['class'] = klass.to_s  
-          elsif obj._embed_me.class == Hash
-            return_hash['stub'] = _stub( obj )
-          else
-            return_hash['stub'] = _pack_to_external(obj)
+          # TODO: distinguish between internal storage, stubbing and external (obj.aquatic? && obj._embed_me == true) 
+          # elsif obj._embed_me.class == Hash
+          #   return_hash = _stub( obj )
+          # else
+          #   return_hash = _pack_to_external(obj)
           end
           return_hash        
         end           
       end   
       
+      # The portion of the recursive mechanism that packs up hashes
+      # @param [Hash] or Hash derived object
+      # @return [Hash] The parsed Hash representation of the argument Hash
+      # 
+      # @api private
       def _pack_hash( hash )
         return_hash = {}
         hash.each do |key, value|
@@ -174,6 +192,11 @@ module Aqua::Pack
         return_hash  
       end
       
+      # The portion of the recursive mechanism that packs up arrays
+      # @param [Array] or Array derived object
+      # @return [Array] The parsed Array representation of the argument Array
+      # 
+      # @api private
       def _pack_array( arr )
         return_arr = []
         arr.each do |obj|

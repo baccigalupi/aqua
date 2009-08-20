@@ -47,15 +47,6 @@ describe Aqua::Pack do
     end
   end    
   
-  it 'aquatic objects should have packing instructions in the form of #_embed_me' do
-    @user._embed_me.should == false
-    Log.new._embed_me.should == true
-    User.configure_aqua( :embed => {:stub =>  [:username, :name] } ) 
-    @user._embed_me.should == { 'stub' => [:username, :name] }
-    # reset for future tests
-    User.configure_aqua( :embed => false )
-  end   
-  
   describe 'packing up object instances:' do
     it 'should save its class name as an attribute on the pack document' do
       @pack[:class].should == 'User'
@@ -157,11 +148,50 @@ describe Aqua::Pack do
         end  
          
         describe 'embeddable aquatic' do
+          it 'aquatic objects should have packing instructions in the form of #_embed_me' do
+            @user._embed_me.should == false
+            Log.new._embed_me.should == true
+            User.configure_aqua( :embed => {:stub =>  [:username, :name] } ) 
+            @user._embed_me.should == { 'stub' => [:username, :name] }
+            # reset for future tests
+            User.configure_aqua( :embed => false )
+          end   
+  
           it 'should save their data correctly' do
-          @pack[:data][:@log].keys.should == ['class', 'data']
-          @pack[:data][:@log]['data'].keys.should == ['@created_at', '@message'] 
-          @pack[:data][:@log]['data']['@message'].should == "Hello World! This is a log entry"
-        end
+            @pack[:data][:@log].keys.should == ['class', 'data']
+            @pack[:data][:@log]['data'].keys.should == ['@created_at', '@message'] 
+            @pack[:data][:@log]['data']['@message'].should == "Hello World! This is a log entry"
+          end 
+        
+          it 'should correctly pack Array derivatives' do 
+            class Arrayed < Array
+              aquatic
+              attr_accessor :my_accessor
+            end
+            arrayish = Arrayed['a', 'b', 'c', 'd']
+            arrayish.my_accessor = 'Newt'
+            pack = arrayish._pack
+            pack.keys.sort.should == ['class', 'data', 'initialization']
+            pack['initialization'].class.should == Array
+            pack['initialization'].should == ['a', 'b', 'c', 'd']
+            pack['data']['@my_accessor'].should == 'Newt'   
+          end
+          
+          it 'should correctly pack Hash derivative' do
+            class Hashed < Hash
+              aquatic
+              attr_accessor :my_accessor
+            end
+            hashish = Hashed.new
+            hashish['1'] = '2'
+            hashish.my_accessor = 'Newt'
+            pack = hashish._pack
+            pack.keys.sort.should == ['class', 'data', 'initialization']
+            pack['initialization'].class.should == HashWithIndifferentAccess
+            pack['initialization'].should == {'1' => '2'}
+            pack['data']['@my_accessor'].should == 'Newt'
+          end    
+        
         end
         
         describe 'non-aquatic' do
@@ -315,6 +345,8 @@ describe Aqua::Pack do
         end
         
       end   
+    
+    
     end
     
   end
