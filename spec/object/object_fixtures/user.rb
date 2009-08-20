@@ -6,19 +6,19 @@ class User
     :dob,       # Date
     :username,  # simple string 
     :log,       # an Aquatic Object 
-    :password   # hidden value
+    :password,  # hidden value
     :grab_bag   # non Aquatic Object
   hide_attributes :password
+  
+  def initialize( hash={} )
+    hash.each do |key, value|
+      send( "#{key}=", value )
+    end  
+  end  
   
   
   # convenience methods for inspection during testing
   # ------------------------------------------------- 
-  
-  # for testing how the pack internally fuctions
-  def to_store
-    _pack
-    __pack
-  end
   
   def simple_classes
     _simple_classes

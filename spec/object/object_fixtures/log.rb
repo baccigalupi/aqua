@@ -3,6 +3,11 @@ class Log
   
   attr_accessor :created_at, :message
   
+  def initialize( hash={} )
+    hash.each do |key, value|
+      send( "#{key}=", value )
+    end  
+  end  
   
   # convenience methods for inspection during testing
   # ------------------------------------------------- 

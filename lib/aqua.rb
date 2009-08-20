@@ -17,6 +17,7 @@ end
 
 # non-gem language libraries
 require 'cgi'
+require 'time'
 
 # require local libs
 $:.unshift File.join(File.dirname(__FILE__))
