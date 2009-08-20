@@ -123,6 +123,38 @@ describe Aqua::Pack do
             @date.should == Date.parse( @pack[:data][:@dob]['data'] )
           end 
         end      
+        
+        describe 'Numbers' do
+          def pack_grab_bag( value )
+            @user.grab_bag = value
+            @user._pack[:data][:@grab_bag]
+          end 
+          
+          it 'should pack Fixnums with correct class and value' do 
+            pack = pack_grab_bag( 42 )
+            pack[:class].should == 'Fixnum'
+            pack[:data].should == '42'
+          end
+          
+          it 'should pack Bignums with correct class and value' do 
+            pack = pack_grab_bag( 123456789123456789 )
+            pack[:class].should == 'Bignum'
+            pack[:data].should == '123456789123456789'
+          end 
+          
+          it 'should pack Floats with correct class and value' do 
+            pack = pack_grab_bag( 3.2 )
+            pack[:class].should == 'Float'
+            pack[:data].should == '3.2'
+          end 
+          
+          it 'should pack Rationals with the correct class and values' do
+            pack = pack_grab_bag( Rational( 1, 17 ) )
+            pack[:class].should == 'Rational'
+            pack[:data].should == ['1', '17']
+          end    
+          
+        end  
          
         describe 'embeddable aquatic' do
           it 'should save their data correctly' do

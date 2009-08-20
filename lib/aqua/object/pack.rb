@@ -132,7 +132,7 @@ module Aqua::Pack
           obj
         elsif [TrueClass, FalseClass].include?( klass )
           { 'class' => klass.to_s }  
-        elsif [Time, Date, Fixnum, Integer, Bignum, Float ].include?( klass )
+        elsif [Time, Date, Fixnum,Bignum, Float ].include?( klass )
           {
             'class' => klass.to_s,
             'data' => obj.to_s
