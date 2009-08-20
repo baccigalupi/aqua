@@ -8,7 +8,11 @@ module Aqua::Pack
       extend ClassMethods
       include InstanceMethods
       
-      hide_attributes :_store, :__pack 
+      unless instance_methods.include?( 'id=' ) || new.instance_variables.include?( '@id' )
+        attr_accessor :id
+      end
+      
+      hide_attributes :_store, :__pack, :id, :_rev 
     end  
   end 
   
@@ -61,6 +65,7 @@ module Aqua::Pack
     def _pack
       class_name = self.class.to_s
       self.__pack = Aqua::Storage.new
+      self.__pack.id = @id if @id 
       self.__pack[:class] = class_name
       _pack_properties
       _pack_singletons
@@ -91,9 +96,15 @@ module Aqua::Pack
     protected
       
       # __pack is an Aqua::Storage object into which the object respresentation is packed
+      
       # _store is the current state of the storage of the object on CouchDB. It is used lazily
       # and will be empty unless it is needed for unpacking or checking for changed data.
-      attr_accessor   :_store, :__pack
+      
+      # _rev is needed for CouchDB store, since updates require the rev information. We could
+      # do without this accessor, but it would mean that an extra get request would have to be
+      # made with each PUT request so that the latest _rev could be obtained. 
+      
+      attr_accessor :_store, :__pack, :_rev
       
     private
       
@@ -102,7 +113,6 @@ module Aqua::Pack
         begin
           _pack
           _save_to_store
-          _clear__pack
         rescue Exception => e
           if mask_exception
             result = false
@@ -110,7 +120,14 @@ module Aqua::Pack
             raise e
           end    
         end
-        result ? self : result    
+        if result
+          self.id =   __pack.id
+          self._rev = __pack.rev
+          _clear_accessors
+          self
+        else
+          result
+        end    
       end    
        
       # Object packing methods ------------
@@ -223,12 +240,12 @@ module Aqua::Pack
       end    
       
       def _save_to_store 
-        # self._doc = Aqua::Document.new ...
-        # _doc.commit # with exception catching et. al.
+        __pack.commit
       end
       
-      def _clear__pack
+      def _clear_accessors
         self.__pack = nil
+        self._store = nil
       end
               
     public  

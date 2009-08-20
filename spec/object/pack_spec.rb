@@ -1,6 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require_fixtures
 
+Aqua.set_storage_engine('CouchDB') # to initialize CouchDB
+CouchDB = Aqua::Store::CouchDB unless defined?( CouchDB )
+
 describe Aqua::Pack do
   before(:each) do
     @time = Time.now
@@ -14,7 +17,6 @@ describe Aqua::Pack do
       :log => @log,
       :password => 'my secret!' 
     )
-    @pack = @user._pack
   end
   
   describe 'packing classes' do 
@@ -45,12 +47,31 @@ describe Aqua::Pack do
       @user.visible_attr.should_not include('@_store')
       @user.class._hidden_attributes.should include('@_store')
     end
+    
+    it 'should not pack hidden variables' do
+      @pack = @user._pack
+      @pack[:data].keys.should_not include("@password")
+    end  
   end    
   
   describe 'packing up object instances:' do
+    before(:each) do
+      @pack = @user._pack
+    end  
+    
     it 'should save its class name as an attribute on the pack document' do
       @pack[:class].should == 'User'
     end
+    
+    it 'should add an :id accessor if :id is not already an instance method' do 
+      @user.should respond_to(:id=)
+    end
+    
+    it 'should pack an id if an id is present' # TODO
+    
+    it 'should not pack an id if an id is not present' do
+      @pack.id.should be_nil
+    end  
     
     describe 'instance variables, ' do
       it 'should be in a hash-like object with the key :data' do 
@@ -341,14 +362,54 @@ describe Aqua::Pack do
               user_2._pack[:data][:@grab_bag].should == @grab_bag[:initialization][:random_struct]
             end
           end    
-                
         end
-        
       end   
+    end
+  end
+  
+  describe 'committing packed objects to the store' do 
+    before(:each) do 
+      CouchDB.server.delete_all
+    end
+      
+    it 'commit! should not raise errors on successful save' do
+      lambda{ @user.commit! }.should_not raise_error
+    end 
     
+    it 'commit! should raise error on failure' do
+      CouchDB.should_receive(:put).at_least(:once).and_return( CouchDB::Conflict )
+      lambda{ @user.commit! }.should raise_error
+    end  
     
+    it 'commit! should assign an id back to the object' do
+      @user.commit!
+      @user.id.should_not be_nil
+      @user.id.should_not == @user.object_id
     end
     
-  end
+    it 'commit! should assign the _rev to the parent object' do
+      @user.commit!
+      @user.instance_variable_get('@_rev').should_not be_nil
+    end    
+    
+    it 'commit! should save the record to CouchDB' do
+      @user.commit!  
+      lambda{ CouchDB.get( "http://127.0.0.1:5984/aqua/#{@user.id}") }.should_not raise_error
+    end
+    
+    it 'commit should save the record and return self' do 
+      @user.commit.should == @user
+    end
+    
+    it 'commit should not raise an error on falure' do 
+      CouchDB.should_receive(:put).at_least(:once).and_return( CouchDB::Conflict )
+      lambda{ @user.commit }.should_not raise_error
+    end 
+    
+    it 'commit should return false on failure' do
+      CouchDB.should_receive(:put).at_least(:once).and_return( CouchDB::Conflict )
+      @user.commit.should == false
+    end      
+  end  
    
 end  
