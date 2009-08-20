@@ -142,7 +142,7 @@ module Aqua::Pack
             'class' => klass.to_s,
             'data' => obj.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2)
           } 
-        else # a more complex object 
+        else # a more complex object, including an array or a hash like thing 
           return_hash = {}
           if (obj.aquatic? && obj._embed_me == true)
             return_hash = obj._pack    
@@ -184,7 +184,8 @@ module Aqua::Pack
       
       
       def _pack_singletons
-        # TODO: figure out 1.8 and 1.9 compatibility issues. Also learn the library usage, without any docs :(
+        # TODO: figure out 1.8 and 1.9 compatibility issues. 
+        # Also learn the library usage, without any docs :(
       end    
       
       def _save_to_store 

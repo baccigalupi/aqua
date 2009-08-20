@@ -11,7 +11,8 @@ describe Aqua::Pack do
       :name => ['Kane', 'Baccigalupi'],
       :dob => @date,
       :created_at => @time,
-      :log => @log 
+      :log => @log,
+      :password => 'my secret!' 
     )
     @pack = @user._pack
   end
@@ -224,13 +225,59 @@ describe Aqua::Pack do
               @grab_bag[:data].keys.should == ['@udder'] 
             end
             
-            it 'should store the array values' do
+            it 'should store the simple array values' do
               @grab_bag[:initialization].should_not be_nil
-            end  
-                  
+              @grab_bag[:initialization].class.should == Array
+              @grab_bag[:initialization].should include('cat')
+              @grab_bag[:initialization].should include('octopus')
+            end 
+            
+            it 'should store the more complex array values correctly' do
+              user_2 = User.new(:grab_bag => @struct) # this has already been tested in the set above
+              user_2._pack[:data][:@grab_bag].should == @grab_bag[:initialization].last
+            end   
           end
           
           describe 'Classes inherited from Hash' do
+            before(:each) do
+              @struct = OpenStruct.new(
+                :gerbil => true, 
+                :cat => 'yup, that too!', 
+                :disaster => ['pow', 'blame', 'chase', 'spew'],
+                :nipples => 'yes'
+              )  
+              @hash_derivative = CannedHash.new( 
+                :ingredients => ['Corned Beef', 'Potatoes', 'Tin Can'],
+                :healthometer => false,
+                :random_struct => @struct 
+              )
+              @hash_derivative.yum # sets an instance variable
+              @user.grab_bag = @hash_derivative
+              pack = @user._pack
+              @grab_bag = pack[:data][:@grab_bag]
+            end
+            
+            it 'should correctly map the class name' do
+              @grab_bag[:class].should == 'CannedHash'
+            end
+            
+            it 'should store the instance variables' do 
+              @grab_bag[:data].keys.should == ['@yum'] 
+            end
+            
+            it 'should store the simple hash values' do
+              @grab_bag[:initialization].should_not be_nil
+              @grab_bag[:initialization].class.should == HashWithIndifferentAccess
+              
+              @grab_bag[:initialization].keys.should include('ingredients')
+              @grab_bag[:initialization].keys.should include('healthometer')
+              @grab_bag[:initialization].keys.should include('random_struct')
+            end 
+            
+            it 'should store the more complex hash values correctly' do
+              user_2 = User.new(:grab_bag => @struct) # this has already been tested in the set above
+              user_2._pack[:data][:@grab_bag].should == @grab_bag[:initialization][:random_struct]
+            end
           end    
                 
         end
