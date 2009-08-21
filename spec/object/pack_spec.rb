@@ -28,6 +28,13 @@ describe Aqua::Pack do
     it 'should be saved into the design document' 
   end 
   
+  describe 'stubing objects' do 
+    it 'should save as a stub any aquatic object declared as unembeddable'
+    it 'should have class "stub"'
+    it 'should have an object id'
+    it 'should cache any methods declared in the class opts for that class'
+  end  
+  
   describe 'hiding attributes' do
     it 'should add a class method for designating hidden instance variables' do
       User.should respond_to( :hide_attributes )
@@ -71,7 +78,13 @@ describe Aqua::Pack do
     
     it 'should not pack an id if an id is not present' do
       @pack.id.should be_nil
-    end  
+    end
+    
+    it 'should pack the _rev if it is present' do
+      @user.instance_variable_set("@_rev", '1-2222222')
+      pack = @user._pack 
+      pack[:_rev].should == '1-2222222'
+    end    
     
     describe 'instance variables, ' do
       it 'should be in a hash-like object with the key :data' do 
@@ -103,12 +116,12 @@ describe Aqua::Pack do
           it 'should save as a hash with the class and to_s as the value' do
             time_hash = @pack[:data][:@created_at] 
             time_hash['class'].should == 'Time'
-            time_hash['data'].class.should == String
+            time_hash['initialization'].class.should == String
           end
         
           it 'the value should be reconstitutable with Time.parse' do 
             # comparing times directly never works for me. It is probably a micro second issue or something
-            @time.to_s.should == Time.parse( @pack[:data][:@created_at]['data'] ).to_s
+            @time.to_s.should == Time.parse( @pack[:data][:@created_at]['initialization'] ).to_s
           end 
         end
         
@@ -116,11 +129,11 @@ describe Aqua::Pack do
           it 'should save as a hash with only the class' do 
             @user.grab_bag = true
             pack = @user._pack
-            pack[:data][:@grab_bag].should == {'class' => 'TrueClass'}
+            pack[:data][:@grab_bag].should == {'class' => 'TrueClass', 'initialization' => 'true'}
             
             @user.grab_bag = false
             pack = @user._pack
-            pack[:data][:@grab_bag].should == {'class' => 'FalseClass'}
+            pack[:data][:@grab_bag].should == {'class' => 'FalseClass', 'initialization' => 'false'}
           end  
         end    
         
@@ -128,11 +141,11 @@ describe Aqua::Pack do
           it 'should save as a hash with the class and to_s as the value' do
             time_hash = @pack[:data][:@dob] 
             time_hash['class'].should == 'Date'
-            time_hash['data'].class.should == String
+            time_hash['initialization'].class.should == String
           end
         
           it 'the value should be reconstitutable with Date.parse' do 
-            @date.should == Date.parse( @pack[:data][:@dob]['data'] )
+            @date.should == Date.parse( @pack[:data][:@dob]['initialization'] )
           end 
         end      
         
@@ -145,25 +158,25 @@ describe Aqua::Pack do
           it 'should pack Fixnums with correct class and value' do 
             pack = pack_grab_bag( 42 )
             pack[:class].should == 'Fixnum'
-            pack[:data].should == '42'
+            pack[:initialization].should == '42'
           end
           
           it 'should pack Bignums with correct class and value' do 
             pack = pack_grab_bag( 123456789123456789 )
             pack[:class].should == 'Bignum'
-            pack[:data].should == '123456789123456789'
+            pack[:initialization].should == '123456789123456789'
           end 
           
           it 'should pack Floats with correct class and value' do 
             pack = pack_grab_bag( 3.2 )
             pack[:class].should == 'Float'
-            pack[:data].should == '3.2'
+            pack[:initialization].should == '3.2'
           end 
           
           it 'should pack Rationals with the correct class and values' do
             pack = pack_grab_bag( Rational( 1, 17 ) )
             pack[:class].should == 'Rational'
-            pack[:data].should == ['1', '17']
+            pack[:initialization].should == ['1', '17']
           end    
           
         end  
@@ -245,19 +258,14 @@ describe Aqua::Pack do
               @grab_bag['data'].keys.should == ['@table'] 
             end
             
-            it 'the @table variable should describe the data input' do  
-              meta_keys = @grab_bag['data']['@table'].keys
-              # metadata
-              meta_keys.should include('class')
-              meta_keys.should include('initialization')
-              # actual hash representation of the data 
-              initialization_keys = @grab_bag['data']['@table']['initialization'].keys
-              initialization_keys.should include('cat')
-              initialization_keys.should include('disaster')
-              initialization_keys.should include('gerbil')
-              @grab_bag['data']['@table']['initialization']['gerbil'].should == {'class' => 'TrueClass'}
-              @grab_bag['data']['@table']['initialization']['cat'].should == 'yup, that too!'
-              @grab_bag['data']['@table']['initialization']['disaster'].should == {'class' => 'Array', 'initialization' => ['pow', 'blame', 'chase', 'spew']}
+            it 'should initialize with the @table instance variable' do  
+              init_keys = @grab_bag['initialization'].keys
+              init_keys.should include('cat')
+              init_keys.should include('disaster')
+              init_keys.should include('gerbil')
+              @grab_bag['initialization']['gerbil'].should == {'class' => 'TrueClass', 'initialization' => 'true'}
+              @grab_bag['initialization']['cat'].should == 'yup, that too!'
+              @grab_bag['initialization']['disaster'].should == {'class' => 'Array', 'initialization' => ['pow', 'blame', 'chase', 'spew']}
             end
           end
           
@@ -409,7 +417,13 @@ describe Aqua::Pack do
     it 'commit should return false on failure' do
       CouchDB.should_receive(:put).at_least(:once).and_return( CouchDB::Conflict )
       @user.commit.should == false
-    end      
+    end
+    
+    it 'should be able to update and commit again' do 
+      @user.commit!
+      @user.grab_bag = {'1' => '2'}
+      lambda{ @user.commit! }.should_not raise_error
+    end        
   end  
    
 end  

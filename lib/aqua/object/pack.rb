@@ -65,7 +65,8 @@ module Aqua::Pack
     def _pack
       class_name = self.class.to_s
       self.__pack = Aqua::Storage.new
-      self.__pack.id = @id if @id 
+      self.__pack.id = @id if @id
+      self.__pack[:_rev] = _rev if _rev 
       self.__pack[:class] = class_name
       _pack_properties
       _pack_singletons
@@ -137,7 +138,7 @@ module Aqua::Pack
       def _pack_properties
         self.__pack[:data] = _pack_ivars( self )
         initializations = _pack_initializations( self )
-        self.__pack[:initialization] = initializations unless initializations.empty?
+        self.__pack[:initialization] = initializations unless initializations.empty? 
       end
       
       def _pack_initializations( obj )
@@ -145,8 +146,10 @@ module Aqua::Pack
         initializations = {}
         if ancestors.include?( Array )
           initializations = _pack_array( obj )
-        elsif ancestors.include?( Hash ) 
+        elsif ancestors.include?( Hash )  
           initializations = _pack_hash( obj )
+        elsif ancestors.include?( OpenStruct )
+          initializations = _pack_struct( obj )  
         end
         initializations 
       end  
@@ -175,16 +178,16 @@ module Aqua::Pack
         if klass == String
           obj
         elsif [TrueClass, FalseClass].include?( klass )
-          { 'class' => klass.to_s }  
+          { 'class' => klass.to_s, 'initialization' => obj.to_s }  
         elsif [Time, Date, Fixnum, Bignum, Float ].include?( klass )
           {
             'class' => klass.to_s,
-            'data' => obj.to_s
+            'initialization' => obj.to_s
           }
         elsif klass == Rational
           {
             'class' => klass.to_s,
-            'data' => obj.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2)
+            'initialization' => obj.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2)
           } 
         else # a more complex object, including an array or a hash like thing 
           return_hash = {}
@@ -218,6 +221,10 @@ module Aqua::Pack
           return_hash[key.to_s] = _pack_object( value )
         end
         return_hash  
+      end
+      
+      def _pack_struct( struct )
+        _pack_hash( struct.instance_variable_get("@table") ) 
       end
       
       # The portion of the recursive mechanism that packs up arrays

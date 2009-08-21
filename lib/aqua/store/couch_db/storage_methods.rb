@@ -41,7 +41,8 @@ module Aqua
           def create!( hash )
             doc = new( hash )
             doc.save!
-          end      
+          end
+          
         end     
         
         module InstanceMethods
@@ -148,7 +149,7 @@ module Aqua
           # @return [Hash] representing the CouchDB data
           # @api public
           def retrieve
-            CouchDB.get( uri )
+            self.class.new( CouchDB.get( uri ) )
           end  
         
           # Deletes an document from CouchDB. Delete can be deferred for bulk saving/deletion.
