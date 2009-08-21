@@ -212,36 +212,45 @@ describe Aqua::Unpack do
       
       it 'should unpack a Struct' do 
         @struct = OpenStruct.new(
-                :gerbil => true, 
-                :cat => 'yup, that too!', 
-                :disaster => ['pow', 'blame', 'chase', 'spew'],
-                :nipples => 'yes'
-              )
+          :gerbil => true, 
+          :cat => 'yup, that too!', 
+          :disaster => ['pow', 'blame', 'chase', 'spew'],
+          :nipples => 'yes'
+        ) 
         
         @user.grab_bag = @struct
         @user.commit!
         user = User.load(@user.id)
         
         user.grab_bag.should == @user.grab_bag
-        
-        user.grab_bag.cat.should == @user.grab_bag.cat
-        user.grab_bag.disaster.should == @user.grab_bag.disaster
-        user.grab_bag.nipples.should == @user.grab_bag.nipples
-        user.grab_bag.gerbil.should == @user.grab_bag.gerbil
-        
       end 
       
       it 'should unpack a Hash derivative' do
-        pending
+        @struct = OpenStruct.new(
+          :gerbil => true, 
+          :cat => 'yup, that too!', 
+          :disaster => ['pow', 'blame', 'chase', 'spew'],
+          :nipples => 'yes'
+        )
+        
         @hash_derivative = CannedHash.new( 
           :ingredients => ['Corned Beef', 'Potatoes', 'Tin Can'],
           :healthometer => false,
           :random_struct => @struct 
-        ) 
+        )
+        
+        @user.grab_bag = @hash_derivative
+        @user.commit! 
+        
+        user = User.load(@user.id)
+        user.grab_bag.should == @user.grab_bag 
       end
          
       
-      it 'should unpack an aquatic object'
+      it 'should unpack an aquatic object' do 
+        @user.commit!
+        @user.log.should == @log
+      end  
       
     end  
   end
