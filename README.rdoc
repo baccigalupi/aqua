@@ -55,12 +55,19 @@ Currently, Aqua uses CouchDB for its storage. Make sure you have CouchDB install
     :password => 'ubber_secret!'
   ) 
 
-  user.commit! # ! makes it raise an exception on failure
+  user.commit! # ! makes it raise an exception on failure 
+  puts user.inspect
+  # #<User:0x103e818 @dob=#<Date: 4881157/2,0,2299161>, @name={:first=>"Kane", :last=>"Baccigalupi"}, @__pack=nil, @created_at=Fri Aug 21 12:03:45 -0700 2009, @_store=nil, @password="ubber_secret!", @username="kane", @_rev="1-1789597473", @id="8e770a31107741f4bdcd325de30e1d67">
+  
   user.name = ['Kane', 'Baccigalupi'] 
-  user.commit # will return false on failure, otherwise returns its saved self
+  user.commit # will return false on failure, otherwise returns its saved self 
+  puts user.inspect
+  # #<User:0x103e818 @dob=#<Date: 4881157/2,0,2299161>, @name=["Kane", "Baccigalupi"], @__pack=nil, @created_at=Fri Aug 21 12:03:45 -0700 2009, @_store=nil, @password="ubber_secret!", @username="kane", @_rev="2-2449437616", @id="8e770a31107741f4bdcd325de30e1d67">
 
   user.reload # retrieves the latest saved version of the object
-  User.load( user.id ) # returns your persisted user object, like you just added water!        
+  u = User.load( user.id ) # returns your persisted user object, like you just added water! 
+  puts u.inspect
+  # #<User:0x1a16480 @name=["Kane", "Baccigalupi"], @created_at=Fri Aug 21 12:07:39 -0700 2009, @_store=nil, @username="kane", @dob=#<Date: 4881157/2,0,2299161>, @id="c664770982b92e9fa802e0ed664a9846">        
 
 == Installation 
 

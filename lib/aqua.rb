@@ -18,6 +18,7 @@ end
 # non-gem language libraries
 require 'cgi'
 require 'time'
+require 'ostruct'
 
 # require local libs
 $:.unshift File.join(File.dirname(__FILE__))

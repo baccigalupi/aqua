@@ -46,6 +46,7 @@ module Aqua::Unpack
       def _reload
         _get_store
         _unpack
+        _clear_store
         self
       end
       
@@ -61,7 +62,11 @@ module Aqua::Unpack
         if ivars = _store[:data]
           _unpack_ivars( self, ivars )
         end    
-      end
+      end 
+      
+      def _clear_store
+        @_store = nil
+      end  
       
       def _unpack_ivars( obj, data ) 
         data.each do |ivar_name, data_package|

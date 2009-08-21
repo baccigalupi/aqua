@@ -23,13 +23,6 @@ describe Aqua::Unpack do
   
   describe 'loading from storage' do
     
-    it 'should load from storage into @_store' do
-      @user.reload!
-      store = @user.instance_variable_get("@_store")
-      store.should_not be_nil
-      store.class.should == Aqua::Storage
-    end
-      
     it 'should raise in error if the id doesn\' exist in the data store' do 
       user = User.new(:id => 'gerbil_farts')
       user.id.should == 'gerbil_farts'
@@ -39,6 +32,7 @@ describe Aqua::Unpack do
     it 'should raise an error if the id is nil' do
       lambda{ User.new.reload! }.should raise_error
     end  
+  
   end
   
   describe 'unpacking to a new object' do 

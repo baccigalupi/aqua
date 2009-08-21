@@ -110,11 +110,18 @@ learn how to configure Aqua for your setup.
   <span class='rparen token'>)</span>
 
   <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='commit! fid id'>commit!</span> <span class='comment val'># ! makes it raise an exception on failure</span>
+  <span class='puts identifier id'>puts</span> <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='inspect identifier id'>inspect</span>
+  <span class='comment val'># #&lt;User:0x103e818 @dob=#&lt;Date: 4881157/2,0,2299161&gt;, @name={:first=&gt;&quot;Kane&quot;, :last=&gt;&quot;Baccigalupi&quot;}, @__pack=nil, @created_at=Fri Aug 21 12:03:45 -0700 2009, @_store=nil, @password=&quot;ubber_secret!&quot;, @username=&quot;kane&quot;, @_rev=&quot;1-1789597473&quot;, @id=&quot;8e770a31107741f4bdcd325de30e1d67&quot;&gt;</span>
+
   <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='name identifier id'>name</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='string val'>'Kane'</span><span class='comma token'>,</span> <span class='string val'>'Baccigalupi'</span><span class='rbrack token'>]</span>
   <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='commit identifier id'>commit</span> <span class='comment val'># will return false on failure, otherwise returns its saved self</span>
+  <span class='puts identifier id'>puts</span> <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='inspect identifier id'>inspect</span>
+  <span class='comment val'># #&lt;User:0x103e818 @dob=#&lt;Date: 4881157/2,0,2299161&gt;, @name=[&quot;Kane&quot;, &quot;Baccigalupi&quot;], @__pack=nil, @created_at=Fri Aug 21 12:03:45 -0700 2009, @_store=nil, @password=&quot;ubber_secret!&quot;, @username=&quot;kane&quot;, @_rev=&quot;2-2449437616&quot;, @id=&quot;8e770a31107741f4bdcd325de30e1d67&quot;&gt;</span>
 
   <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='reload identifier id'>reload</span> <span class='comment val'># retrieves the latest saved version of the object</span>
-  <span class='User constant id'>User</span><span class='dot token'>.</span><span class='load identifier id'>load</span><span class='lparen token'>(</span> <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='id identifier id'>id</span> <span class='rparen token'>)</span> <span class='comment val'># returns your persisted user object, like you just added water!</span>
+  <span class='u identifier id'>u</span> <span class='assign token'>=</span> <span class='User constant id'>User</span><span class='dot token'>.</span><span class='load identifier id'>load</span><span class='lparen token'>(</span> <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='id identifier id'>id</span> <span class='rparen token'>)</span> <span class='comment val'># returns your persisted user object, like you just added water!</span>
+  <span class='puts identifier id'>puts</span> <span class='u identifier id'>u</span><span class='dot token'>.</span><span class='inspect identifier id'>inspect</span>
+  <span class='comment val'># #&lt;User:0x1a16480 @name=[&quot;Kane&quot;, &quot;Baccigalupi&quot;], @created_at=Fri Aug 21 12:07:39 -0700 2009, @_store=nil, @username=&quot;kane&quot;, @dob=#&lt;Date: 4881157/2,0,2299161&gt;, @id=&quot;c664770982b92e9fa802e0ed664a9846&quot;&gt;</span>
 </pre>
 <h2>Installation</h2>
 <p>
@@ -160,7 +167,7 @@ also included and will apply.
       </div>
     </div>
     <div id="yard_info">
-  Generated on Friday, August 21 2009 at 11:46:33 AM by 
+  Generated on Friday, August 21 2009 at 12:09:49 PM by 
   <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
   0.2.3.5 (ruby-1.8.6).
 </div>
