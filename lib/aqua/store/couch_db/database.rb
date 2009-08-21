@@ -55,7 +55,7 @@ module Aqua
         # Namespaces the database path for the given server. If no name is provided, then the database name is
         # just the Server's namespace.
         # 
-        # @params [String] Name that the database is initialized with, if any.
+        # @param [String] Name that the database is initialized with, if any.
         # @return [String] Namespaced database for use as a http path
         # 
         # @api private

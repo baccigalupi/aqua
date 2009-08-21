@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../../style.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../custom.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../syntax_highlight.css" type="text/css" charset="utf-8" />
+
+    <script src="../../jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../app.js" type="text/javascript" charset="utf-8"></script>
+    <title>Module: Aqua::Unpack::InstanceMethods</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="section module Aqua_Unpack_InstanceMethods">
+  <h1 class="title">Module: Aqua::Unpack::InstanceMethods</h1>
+  <div class="section constants">
+  
+</div>  <div class="section visibilitygroup public">
+    <h1>Public Visibility</h1>
+      <div class="section methodsummary instance public">
+    <h1>Public Instance Method Summary</h1>
+<table class="summary">
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#reload-instance_method" title="#reload">#reload</a></span><span class='args'>(mask_exceptions = true)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#reload%21-instance_method" title="#reload!">#reload!</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        
+        
+      </td>
+    </tr>
+  
+</table>
+
+  </div>
+<div class="section methoddetails instance public">
+  <h1>Public Instance Method Details</h1>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>reload</h3>
+</div><div id="reload-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>reload</span><span class='args'>(mask_exceptions = true)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 21</span>
+
+<span class='def def kw'>def</span> <span class='reload identifier id'>reload</span><span class='lparen token'>(</span> <span class='mask_exceptions identifier id'>mask_exceptions</span> <span class='assign token'>=</span> <span class='true true kw'>true</span> <span class='rparen token'>)</span> 
+  <span class='if if kw'>if</span> <span class='id identifier id'>id</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
+    <span class='if if kw'>if</span> <span class='mask_exceptions identifier id'>mask_exceptions</span>
+      <span class='false false kw'>false</span>
+    <span class='else else kw'>else</span>
+      <span class='raise identifier id'>raise</span> <span class='ObjectNotFound constant id'>ObjectNotFound</span><span class='comma token'>,</span> <span class='dstring node'>&quot;#{self.class} instance must have an id to be reloaded&quot;</span>
+    <span class='end end kw'>end</span>    
+  <span class='else else kw'>else</span>
+    <span class='begin begin kw'>begin</span>
+      <span class='_reload identifier id'>_reload</span>
+    <span class='rescue rescue kw'>rescue</span> <span class='Exception constant id'>Exception</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='e identifier id'>e</span> 
+      <span class='if if kw'>if</span> <span class='mask_exceptions identifier id'>mask_exceptions</span>
+        <span class='false false kw'>false</span>
+      <span class='else else kw'>else</span> 
+        <span class='raise identifier id'>raise</span> <span class='e identifier id'>e</span>
+      <span class='end end kw'>end</span>    
+    <span class='end end kw'>end</span>      
+  <span class='end end kw'>end</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>reload!</h3>
+</div><div id="reload!-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>reload!</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+41
+42
+43</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 41</span>
+
+<span class='def def kw'>def</span> <span class='reload! fid id'>reload!</span>
+  <span class='reload identifier id'>reload</span><span class='lparen token'>(</span> <span class='false false kw'>false</span> <span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+</div>
+  </div>
+
+</div>
+    </div>
+    <div id="yard_info">
+  Generated on Friday, August 21 2009 at 11:46:34 AM by 
+  <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
+  0.2.3.5 (ruby-1.8.6).
+</div>
+
+  </body>
+</html>

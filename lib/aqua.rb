@@ -91,3 +91,6 @@ module Aqua
   end       
 
 end # Aqua  
+
+# This is temporary until more engines are available!
+Aqua.set_storage_engine('CouchDB') # to initialize CouchDB

@@ -1,14 +1,73 @@
 = Aqua
 
-Aqua is a Ruby object persistence library, backed by CouchDB. 
+Aqua: A Ruby Object Database ... just add water (and CouchDB).
 
-== Usage
+Even with ORMs like ActiveRecord, DataMapper which ease the pain of relational data storage, considerable developer effort goes into wrangling Ruby objects into their databases. Document-oriented databases have made it possible to store nested data structures that easily map to Ruby objects. Aqua (http://github.com/baccigalupi/aqua) is a new Ruby library that aims to painlessly persists objects, allowing developers to focus more on object oriented code and less on storage. 
 
-...
+Currently Aqua is in pre-alpha testing, with the following big things left to implement: 
+* A data query DSL and implementation (yeah, ouch!) 
+* Support of all objects in the Standard Library 
+* Class and code storage to allow the sharing and persistence of classes with their data
+* Other storage systems, most notably a filestore, so that users can try Aqua out without having to install CouchDb
+* Object keys, including symbols for hash-like objects
+* Data storage amenity add-ons including: validation, callbacks, AR-styled syntax, and properties that automate some of the object typing, validation, and searchability option.   
+
+Aqua aims to be lean and modular, in addition to transparent. Currently it weighs in at 1000 lines of code with half of that for the CouchDB storage engine. 
+
+== Usage 
+
+Aqua persists a Ruby instance's state through its instance variables, and in the case of primitives like arrays and hashes, through their core data. The first step towards working in Aqua is shedding the limitations of ORMs and other storage classes, and get back to pure Ruby. Once you have an Ruby class, the simple declaration +aquatic+ in the class will allow you to #commit and #reload the object. 
+
+Currently, Aqua uses CouchDB for its storage. Make sure you have CouchDB installed and running before you start storing objects. If your CouchDB installation is running at a non-standard url, visit the documentation to learn how to configure Aqua for your setup.
+
+  require 'rubygems'
+  require 'aqua'
+
+  class User
+    aquatic # adds persistence methods to your object
+  
+    attr_accessor :name, # An array of strings or a hash of strings 
+      :created_at, # Time
+      :dob,        # Date
+      :username,   # simple string
+      :name,       # Array, Hash, Name Object?
+      :password,   # hidden value
+      :credentials # hash with salt and encrypted password, or ...
+    
+    hide_attributes :password # Aqua can hide certain instance variables that you would prefer not save
+  
+    # possible way to initialize your data ... 
+    def initialize( hash={} )
+      hash.each do |key, value|
+        send( "#{key}=", value )
+      end
+      self.created_at = Time.now  
+    end
+  
+    # lots more user code here as you see fit ...
+    
+  end
+
+  user = User.new( 
+    :username => 'kane', 
+    :name =>{:first => 'Kane', :last => 'Baccigalupi'},
+    :dob => Date.parse( '12/23/1969' ), 
+    :password => 'ubber_secret!'
+  ) 
+
+  user.commit! # ! makes it raise an exception on failure
+  user.name = ['Kane', 'Baccigalupi'] 
+  user.commit # will return false on failure, otherwise returns its saved self
+
+  user.reload # retrieves the latest saved version of the object
+  User.load( user.id ) # returns your persisted user object, like you just added water!        
 
 == Installation 
 
-...
+Aqua is so young that it hasn't made it over to the established land of rubyforge. So for now you can install the gem by including github as a source, and then do a sudo gem install
+
+  gem sources -a http://gems.github.com
+  sudo gem install baccigalupi-aqua
 
 == Contributing
 
@@ -22,4 +81,4 @@ Bug fixes and features are welcome.
 
 == Copyright
 
-Copyright (c) 2009 Kane Baccigalupi. See LICENSE for details.
+Copyright (c) 2009 Kane Baccigalupi. See LICENSE for details. Some parts of the CouchDB storage engine were derived from CouchRest. Their LICENSE is also included and will apply.

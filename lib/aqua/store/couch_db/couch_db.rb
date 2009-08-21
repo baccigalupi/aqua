@@ -88,8 +88,8 @@ module Aqua
       # It is included in this library as LICENCE_COUCHREST.
       # The method breaks the parameters into a url query string.
       # 
-      # @params [String] The base url upon which to attach query params
-      # @params [optional Hash] A series of key value pairs that define the url query params 
+      # @param [String] The base url upon which to attach query params
+      # @param [optional Hash] A series of key value pairs that define the url query params 
       # @api semi-public
       def self.paramify_url( url, params = {} )
         if params && !params.empty?

@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../../style.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../custom.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../syntax_highlight.css" type="text/css" charset="utf-8" />
+
+    <script src="../../jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../app.js" type="text/javascript" charset="utf-8"></script>
+    <title>Module: Aqua::Pack::ClassMethods</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="section module Aqua_Pack_ClassMethods">
+  <h1 class="title">Module: Aqua::Pack::ClassMethods</h1>
+  <div class="section docstring">
+  <p>
+ClassMethods
+</p>
+
+</div><div class="section constants">
+  
+</div>  <div class="section visibilitygroup public">
+    <h1>Public Visibility</h1>
+      <div class="section methodsummary instance public">
+    <h1>Public Instance Method Summary</h1>
+<table class="summary">
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_hidden_attributes-instance_method" title="#_hidden_attributes">#_hidden_attributes</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Reader method for accessing hidden attributes.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Array</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#hide_attributes-instance_method" title="#hide_attributes">#hide_attributes</a></span><span class='args'>(*ivars)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Used in class declaration to assign certain instance variables as not for
+persistance.
+</p>
+
+        
+      </td>
+    </tr>
+  
+</table>
+
+  </div>
+<div class="section methoddetails instance public">
+  <h1>Public Instance Method Details</h1>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_hidden_attributes</h3>
+</div><div id="_hidden_attributes-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Array</tt></span>
+      <span class='name'>_hidden_attributes</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Reader method for accessing hidden attributes.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Array</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+containing strings representing instance variables
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+42
+43
+44</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 42</span>
+
+<span class='def def kw'>def</span> <span class='_hidden_attributes identifier id'>_hidden_attributes</span> 
+  <span class='@_hidden_attributes ivar id'>@_hidden_attributes</span> <span class='opasgn op'>||=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>hide_attributes</h3>
+</div><div id="hide_attributes-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>hide_attributes</span><span class='args'>(*ivars)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Used in class declaration to assign certain instance variables as not for
+persistance
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="examples">
+  
+    <h3>Example: <small></small></h3>
+    <div class="docstring">
+      <pre class="code"><span class='class class kw'>class</span> <span class='User constant id'>User</span> 
+  <span class='include identifier id'>include</span> <span class='Aqua constant id'>Aqua</span><span class='colon2 op'>::</span><span class='Object constant id'>Object</span>
+  <span class='attr_accessor identifier id'>attr_accessor</span> <span class='symbol val'>:username</span><span class='comma token'>,</span> <span class='symbol val'>:email</span><span class='comma token'>,</span> <span class='symbol val'>:password</span><span class='comma token'>,</span> <span class='symbol val'>:password_confirmation</span><span class='comma token'>,</span> <span class='symbol val'>:cryped_password</span><span class='comma token'>,</span> <span class='symbol val'>:salt</span>
+  <span class='hide_instance_variables identifier id'>hide_instance_variables</span> <span class='symbol val'>:password</span><span class='comma token'>,</span> <span class='symbol val'>:password_confirmation</span> 
+  <span class='comment val'># ... lots more user code here ...</span>
+<span class='end end kw'>end</span>
+<span class='In constant id'>In</span> <span class='this identifier id'>this</span> <span class='case case kw'>case</span> <span class='it identifier id'>it</span> <span class='is identifier id'>is</span> <span class='useful identifier id'>useful</span> <span class='for for kw'>for</span> <span class='omitting identifier id'>omitting</span> <span class='sensitive identifier id'>sensitive</span> <span class='information identifier id'>information</span> <span class='while while_mod kw'>while</span> <span class='persisting identifier id'>persisting</span> <span class='the identifier id'>the</span> <span class='object identifier id'>object</span><span class='comma token'>,</span> <span class='but identifier id'>but</span> 
+<span class='maintaining identifier id'>maintaining</span> <span class='the identifier id'>the</span> <span class='password identifier id'>password</span> <span class='and and kw'>and</span> <span class='confirmation identifier id'>confirmation</span> <span class='temporarily identifier id'>temporarily</span> <span class='requires identifier id'>requires</span> <span class='the identifier id'>the</span> <span class='use identifier id'>use</span> <span class='of identifier id'>of</span> <span class='instance identifier id'>instance</span> <span class='variables identifier id'>variables</span><span class='dot token'>.</span>
+</pre>
+    </div>
+  
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+32
+33
+34
+35
+36
+37</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 32</span>
+
+<span class='def def kw'>def</span> <span class='hide_attributes identifier id'>hide_attributes</span><span class='lparen token'>(</span> <span class='mult op'>*</span><span class='ivars identifier id'>ivars</span> <span class='rparen token'>)</span>
+  <span class='ivars identifier id'>ivars</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='ivar identifier id'>ivar</span><span class='bitor op'>|</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='string val'>''</span> <span class='unless unless_mod kw'>unless</span> <span class='ivar identifier id'>ivar</span><span class='dot token'>.</span><span class='class identifier id'>class</span> <span class='eq op'>==</span> <span class='Symbol constant id'>Symbol</span>
+    <span class='_hidden_attributes identifier id'>_hidden_attributes</span> <span class='lshft op'>&lt;&lt;</span> <span class='dstring node'>&quot;@#{ivar}&quot;</span>
+  <span class='end end kw'>end</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+</div>
+  </div>
+
+</div>
+    </div>
+    <div id="yard_info">
+  Generated on Friday, August 21 2009 at 11:46:36 AM by 
+  <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
+  0.2.3.5 (ruby-1.8.6).
+</div>
+
+  </body>
+</html>

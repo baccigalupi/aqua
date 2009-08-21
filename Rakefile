@@ -1,16 +1,16 @@
 require 'rubygems'
 require 'rake'
+require 'yard'
 
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "persist"
-    gem.summary = %Q{Ruby object persistance with a CouchDB storage backend}
-    gem.description = %Q{Ruby object persistance with a CouchDB storage backend}
+    gem.name = "Aqua"
+    gem.summary = %Q{Aqua: A Ruby Object Database ... just add water (and CouchDB)}
+    gem.description = %Q{Even with ORMs like ActiveRecord, DataMapper which ease the pain of relational data storage, considerable developer effort goes into wrangling Ruby objects into their databases. Document-oriented databases have made it possible to store nested data structures that easily map to Ruby objects. Aqua (http://github.com/baccigalupi/aqua) is a new Ruby library that aims to painlessly persists objects, allowing developers to focus more on object oriented code and less on storage. Currently Aqua is in pre-alpha testing, with the following big things left to implement: A data query DSL and implementation; Support of all objects in the Standard Library; Class and code storage to allow the sharing and persistence of classes with their data. }
     gem.email = "baccigalupi@gmail.com"
-    gem.homepage = "http://github.com/baccigalupi/persist"
+    gem.homepage = "http://github.com/baccigalupi/aqua"
     gem.authors = ["Kane Baccigalupi"]
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
 rescue LoadError
@@ -46,9 +46,6 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-# Need to create or include rake task for YARD
-# YARD::Tags::Library.define_tag("API", :api) 
-# YARD::Tags::Library.defind_tag("Inteface Specifications", :interface_level)   
  
 # Statistics ====================================
 AQUA_DIRECTORIES = [
@@ -60,14 +57,21 @@ AQUA_DIRECTORIES = [
 ].collect { |name, dir| [ name, "#{File.dirname(__FILE__)}/#{dir}" ] }.select { |name, dir| File.directory?(dir) }
 
 COUCHREST_DIRECTORIES = [
-  %w(CouchRest          lib/couchrest/lib),
-  %w(Specs              lib/couchrest/spec/couchrest)
+  %w(CouchRest          utils/couchrest/lib),
+  %w(Specs              utils/couchrest/spec/couchrest)
 ].collect { |name, dir| [ name, "#{File.dirname(__FILE__)}/#{dir}" ] }.select { |name, dir| File.directory?(dir) }
 
 desc "Report code statistics (KLOCs, etc) on the gem"
 task :stats do
   require File.dirname(__FILE__) + '/utils/code_statistics'
   CodeStatistics.new(*AQUA_DIRECTORIES).to_s
-  CodeStatistics.new(*COUCHREST_DIRECTORIES).to_s 
+  CodeStatistics.new(*COUCHREST_DIRECTORIES).to_s if File.exists?( File.dirname(__FILE__) + '/utils/couchrest/lib')
+end
+
+# YARDing up some documentation
+# YARD::Tags::Library.define_tag("API", :api) 
+# YARD::Tags::Library.defind_tag("Inteface Specifications", :interface_level)
+YARD::Rake::YardocTask.new do |t|
+  t.files   = ['lib/aqua/**/*.rb']
 end
 

@@ -1,0 +1,1002 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../../../style.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../../custom.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../../syntax_highlight.css" type="text/css" charset="utf-8" />
+
+    <script src="../../../jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../app.js" type="text/javascript" charset="utf-8"></script>
+    <title>Class: Aqua::Store::CouchDB::Server</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="section class Aqua_Store_CouchDB_Server">
+  <h1 class="title">Class: Aqua::Store::CouchDB::Server</h1>
+  <div class="section docstring">
+  <p>
+Server
+</p>
+
+</div><div class="section attributes">
+  <h1>Attributes</h1>
+
+  
+    <div class="instance">
+      <h2>Instance Attributes</h2>
+      <table>
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>namespace</span>
+          </td>
+          <td class="readwrite">
+            [<span id='namespace-instance_method'>R</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+Returns the value of attribute <tt>namespace</tt>.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>uri</span>
+          </td>
+          <td class="readwrite">
+            [<span id='uri-instance_method'>R</span><span id='uri=-instance_method'>W</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+Sets the attribute <tt>uri</tt>.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>uuid_batch_count</span>
+          </td>
+          <td class="readwrite">
+            [<span id='uuid_batch_count-instance_method'>R</span><span id='uuid_batch_count=-instance_method'>W</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+Sets the attribute <tt>uuid_batch_count</tt>.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>uuids</span>
+          </td>
+          <td class="readwrite">
+            [<span id='uuids-instance_method'>R</span><span id='uuids=-instance_method'>W</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+Sets the attribute <tt>uuids</tt>.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+      </table>
+    </div>
+  
+</div>
+<div class="section constants">
+  
+</div><div class="section constructor">
+<h1>Constructor Summary</h1>
+  <div id="initialize-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>initialize</span><span class='args'>(opts = {})</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+11
+12
+13
+14
+15
+16</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='Mash constant id'>Mash</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='uri identifier id'>uri</span> <span class='assign token'>=</span>              <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:server</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='string val'>'http://127.0.0.1:5984'</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='uuid_batch_count identifier id'>uuid_batch_count</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:uuid_batch_count</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='integer val'>1000</span> 
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='namespace identifier id'>namespace</span> <span class='assign token'>=</span>        <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:namespace</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span> 
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+</div>  <div class="section visibilitygroup public">
+    <h1>Public Visibility</h1>
+      <div class="section methodsummary instance public">
+    <h1>Public Instance Method Summary</h1>
+<table class="summary">
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#database-instance_method" title="#database">#database</a></span><span class='args'>(name)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Returns a CouchRest::Database for the given name.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#database%21-instance_method" title="#database!">#database!</a></span><span class='args'>(name)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Creates the database if it doesn&#8217;t exist.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#database_names-instance_method" title="#database_names">#database_names</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+DATABASE MANAGMENT ----------&#8212; Lists all
+database names on the server.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#databases-instance_method" title="#databases">#databases</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#delete_all-instance_method" title="#delete_all">#delete_all</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Deletes all database with the less exection raising method: database.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#delete_all%21-instance_method" title="#delete_all!">#delete_all!</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Deletes all databases named for this namespace (i.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#info-instance_method" title="#info">#info</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+GET the welcome message.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#load_uuids-instance_method" title="#load_uuids">#load_uuids</a></span><span class='args'>(count = @uuid_batch_count)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#namespace%3D-instance_method" title="#namespace=">#namespace=</a></span><span class='args'>(name)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#next_uuid-instance_method" title="#next_uuid">#next_uuid</a></span><span class='args'>(count = @uuid_batch_count)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Retrive an unused UUID from CouchDB.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#restart%21-instance_method" title="#restart!">#restart!</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Restart the CouchDB instance.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#uuid_count-instance_method" title="#uuid_count">#uuid_count</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+counts the number of uuids available, used by Database to limit bulk save.
+</p>
+
+        
+      </td>
+    </tr>
+  
+</table>
+
+  </div>
+<div class="section methoddetails instance public">
+  <h1>Public Instance Method Details</h1>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>database</h3>
+</div><div id="database-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>database</span><span class='args'>(name)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Returns a CouchRest::Database for the given name
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+56
+57
+58
+59</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 56</span>
+
+<span class='def def kw'>def</span> <span class='database identifier id'>database</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='db identifier id'>db</span> <span class='assign token'>=</span> <span class='Database constant id'>Database</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='symbol val'>:server</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='self self kw'>self</span> <span class='rparen token'>)</span>
+  <span class='db identifier id'>db</span><span class='dot token'>.</span><span class='exists? fid id'>exists?</span> <span class='integer val'>? </span><span class='db identifier id'>db</span> <span class='colon op'>:</span> <span class='nil nil kw'>nil</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>database!</h3>
+</div><div id="database!-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>database!</span><span class='args'>(name)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Creates the database if it doesn&#8217;t exist
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+62
+63
+64</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 62</span>
+
+<span class='def def kw'>def</span> <span class='database! fid id'>database!</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='Database constant id'>Database</span><span class='dot token'>.</span><span class='create identifier id'>create</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='symbol val'>:server</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='self self kw'>self</span> <span class='rparen token'>)</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>database_names</h3>
+</div><div id="database_names-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>database_names</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+DATABASE MANAGMENT ----------&#8212; Lists all
+database names on the server
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+29
+30
+31
+32</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 29</span>
+
+<span class='def def kw'>def</span> <span class='database_names identifier id'>database_names</span>
+  <span class='dbs identifier id'>dbs</span> <span class='assign token'>=</span> <span class='CouchDB constant id'>CouchDB</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span> <span class='dstring node'>&quot;#{@uri}/_all_dbs&quot;</span> <span class='rparen token'>)</span>
+  <span class='dbs identifier id'>dbs</span><span class='dot token'>.</span><span class='select identifier id'>select</span><span class='lbrace token'>{</span><span class='bitor op'>|</span><span class='name identifier id'>name</span><span class='bitor op'>|</span> <span class='name identifier id'>name</span><span class='dot token'>.</span><span class='match identifier id'>match</span><span class='lparen token'>(</span><span class='dregexp node'>/\A#{namespace}_?/</span><span class='rparen token'>)</span><span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>databases</h3>
+</div><div id="databases-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>databases</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+34
+35
+36
+37
+38
+39
+40</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 34</span>
+
+<span class='def def kw'>def</span> <span class='databases identifier id'>databases</span>
+  <span class='dbs identifier id'>dbs</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span> 
+  <span class='database_names identifier id'>database_names</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='db_name identifier id'>db_name</span><span class='bitor op'>|</span>
+    <span class='dbs identifier id'>dbs</span> <span class='lshft op'>&lt;&lt;</span> <span class='Database constant id'>Database</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span> <span class='db_name identifier id'>db_name</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='dregexp node'>/\A#{namespace}_|\A#{namespace}\z/</span><span class='comma token'>,</span> <span class='string val'>''</span><span class='rparen token'>)</span> <span class='comma token'>,</span> <span class='symbol val'>:server</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='self self kw'>self</span> <span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>
+  <span class='dbs identifier id'>dbs</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>delete_all</h3>
+</div><div id="delete_all-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>delete_all</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Deletes all database with the less exection raising method:
+database.delete. This will only raise errors related to request problems,
+and not errors related to the database not being found for deletion.
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+51
+52
+53</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 51</span>
+
+<span class='def def kw'>def</span> <span class='delete_all identifier id'>delete_all</span> 
+  <span class='databases identifier id'>databases</span><span class='dot token'>.</span><span class='each identifier id'>each</span><span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='db identifier id'>db</span><span class='bitor op'>|</span> <span class='db identifier id'>db</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>delete_all!</h3>
+</div><div id="delete_all!-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>delete_all!</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Deletes all databases named for this namespace (i.e. this server) Use with
+caution &#8230; it is a permanent and undoable change
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+44
+45
+46</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 44</span>
+
+<span class='def def kw'>def</span> <span class='delete_all! fid id'>delete_all!</span> 
+  <span class='databases identifier id'>databases</span><span class='dot token'>.</span><span class='each identifier id'>each</span><span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='db identifier id'>db</span><span class='bitor op'>|</span> <span class='db identifier id'>db</span><span class='dot token'>.</span><span class='delete! fid id'>delete!</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>info</h3>
+</div><div id="info-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>info</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+GET the welcome message
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+67
+68
+69</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 67</span>
+
+<span class='def def kw'>def</span> <span class='info identifier id'>info</span>
+  <span class='CouchDB constant id'>CouchDB</span><span class='dot token'>.</span><span class='get identifier id'>get</span> <span class='dstring node'>&quot;#{uri}/&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>load_uuids</h3>
+</div><div id="load_uuids-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>load_uuids</span><span class='args'>(count = @uuid_batch_count)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+95
+96
+97</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 95</span>
+
+<span class='def def kw'>def</span> <span class='load_uuids identifier id'>load_uuids</span><span class='lparen token'>(</span> <span class='count identifier id'>count</span><span class='assign token'>=</span><span class='@uuid_batch_count ivar id'>@uuid_batch_count</span> <span class='rparen token'>)</span> 
+  <span class='@uuids ivar id'>@uuids</span> <span class='assign token'>=</span> <span class='CouchDB constant id'>CouchDB</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='dstring node'>&quot;#{@uri}/_uuids?count=#{count}&quot;</span><span class='rparen token'>)</span><span class='lbrack token'>[</span><span class='string val'>&quot;uuids&quot;</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>namespace=</h3>
+</div><div id="namespace=-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>namespace=</span><span class='args'>(name)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+18
+19
+20
+21
+22
+23
+24</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 18</span>
+
+<span class='def def kw'>def</span> <span class='namespace= identifier id'>namespace=</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span> <span class='rparen token'>)</span>
+  <span class='default identifier id'>default</span> <span class='assign token'>=</span> <span class='string val'>'aqua'</span>
+  <span class='name identifier id'>name</span> <span class='opasgn op'>||=</span> <span class='default identifier id'>default</span>
+  <span class='name identifier id'>name</span> <span class='assign token'>=</span> <span class='CouchDB constant id'>CouchDB</span><span class='dot token'>.</span><span class='escape identifier id'>escape</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span> <span class='rparen token'>)</span>
+  <span class='name identifier id'>name</span> <span class='assign token'>=</span> <span class='default identifier id'>default</span> <span class='if if_mod kw'>if</span> <span class='name identifier id'>name</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span> 
+  <span class='@namespace ivar id'>@namespace</span> <span class='assign token'>=</span> <span class='name identifier id'>name</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>next_uuid</h3>
+</div><div id="next_uuid-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>next_uuid</span><span class='args'>(count = @uuid_batch_count)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Retrive an unused UUID from CouchDB. Server instances manage caching a list
+of unused UUIDs.
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+87
+88
+89
+90
+91
+92
+93</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 87</span>
+
+<span class='def def kw'>def</span> <span class='next_uuid identifier id'>next_uuid</span><span class='lparen token'>(</span><span class='count identifier id'>count</span> <span class='assign token'>=</span> <span class='@uuid_batch_count ivar id'>@uuid_batch_count</span><span class='rparen token'>)</span>
+  <span class='@uuids ivar id'>@uuids</span> <span class='opasgn op'>||=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
+  <span class='if if kw'>if</span> <span class='uuids identifier id'>uuids</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+    <span class='load_uuids identifier id'>load_uuids</span><span class='lparen token'>(</span><span class='count identifier id'>count</span><span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>
+  <span class='uuids identifier id'>uuids</span><span class='dot token'>.</span><span class='pop identifier id'>pop</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>restart!</h3>
+</div><div id="restart!-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>restart!</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Restart the CouchDB instance
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+72
+73
+74</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 72</span>
+
+<span class='def def kw'>def</span> <span class='restart! fid id'>restart!</span>
+  <span class='CouchDB constant id'>CouchDB</span><span class='dot token'>.</span><span class='post identifier id'>post</span> <span class='dstring node'>&quot;#{uri}/_restart&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>uuid_count</h3>
+</div><div id="uuid_count-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>uuid_count</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+counts the number of uuids available, used by Database to limit bulk save
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+77
+78
+79
+80
+81
+82
+83
+84</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/server.rb', line 77</span>
+
+<span class='def def kw'>def</span> <span class='uuid_count identifier id'>uuid_count</span>
+  <span class='if if kw'>if</span> <span class='uuids identifier id'>uuids</span> 
+    <span class='uuids identifier id'>uuids</span><span class='dot token'>.</span><span class='size identifier id'>size</span> 
+  <span class='else else kw'>else</span>
+    <span class='load_uuids identifier id'>load_uuids</span>  
+    <span class='uuid_batch_count identifier id'>uuid_batch_count</span>
+  <span class='end end kw'>end</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+</div>
+  </div>
+
+</div>
+    </div>
+    <div id="yard_info">
+  Generated on Friday, August 21 2009 at 11:46:34 AM by 
+  <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
+  0.2.3.5 (ruby-1.8.6).
+</div>
+
+  </body>
+</html>

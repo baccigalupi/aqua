@@ -1,0 +1,573 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../../style.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../custom.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../syntax_highlight.css" type="text/css" charset="utf-8" />
+
+    <script src="../../jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../app.js" type="text/javascript" charset="utf-8"></script>
+    <title>Module: Aqua::Pack::InstanceMethods</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="section module Aqua_Pack_InstanceMethods">
+  <h1 class="title">Module: Aqua::Pack::InstanceMethods</h1>
+  <div class="section docstring">
+  <p>
+InstanceMethods
+</p>
+
+</div><div class="section attributes">
+  <h1>Attributes</h1>
+
+  
+    <div class="instance">
+      <h2>Instance Attributes</h2>
+      <table>
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>__pack</span>
+          </td>
+          <td class="readwrite">
+            [<span id='__pack-instance_method'>R</span><span id='__pack=-instance_method'>W</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+__pack is an Aqua::Storage object into which the object respresentation is
+packed _store is the current state of the storage of the object on CouchDB.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>_rev</span>
+          </td>
+          <td class="readwrite">
+            [<span id='_rev-instance_method'>R</span><span id='_rev=-instance_method'>W</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+__pack is an Aqua::Storage object into which the object respresentation is
+packed _store is the current state of the storage of the object on CouchDB.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>_store</span>
+          </td>
+          <td class="readwrite">
+            [<span id='_store-instance_method'>R</span><span id='_store=-instance_method'>W</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+__pack is an Aqua::Storage object into which the object respresentation is
+packed _store is the current state of the storage of the object on CouchDB.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+      </table>
+    </div>
+  
+</div>
+<div class="section constants">
+  
+</div>  <div class="section visibilitygroup public">
+    <h1>Public Visibility</h1>
+      <div class="section methodsummary instance public">
+    <h1>Public Instance Method Summary</h1>
+<table class="summary">
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_embed_me-instance_method" title="#_embed_me">#_embed_me</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Details from configuration options for the objects class about
+embedability.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>true</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_pack-instance_method" title="#_pack">#_pack</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+packs an object from it&#8217;s Ruby state into a Hash-like object for
+storage.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt><a href="../Storage.html" title="Aqua::Storage">Aqua::Storage</a></tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_storable_attributes-instance_method" title="#_storable_attributes">#_storable_attributes</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+An array of instance variables that are not hidden.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Array</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#commit-instance_method" title="#commit">#commit</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+TODO: option for transaction on children documents, all or nothing Saves
+object; returns false on failure; returns self on success.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#commit%21-instance_method" title="#commit!">#commit!</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Saves object and raises an error on failure.
+</p>
+
+        
+      </td>
+    </tr>
+  
+</table>
+
+  </div>
+<div class="section methoddetails instance public">
+  <h1>Public Instance Method Details</h1>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_embed_me</h3>
+</div><div id="_embed_me-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>true</tt></span>
+      <span class='name'>_embed_me</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Details from configuration options for the objects class about
+embedability.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>true</tt>, <tt>false</tt>, <tt>Hash</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+If true then it should be embedded in the object at hand. If false, then it
+should be saved externally. If a hash, with the key :stub and a related
+value that is an array of methods, then the object should be saved
+externally, with a few cached methods as defined in the array.
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+83
+84
+85</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 83</span>
+
+<span class='def def kw'>def</span> <span class='_embed_me identifier id'>_embed_me</span> 
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='_aqua_opts identifier id'>_aqua_opts</span><span class='lbrack token'>[</span><span class='symbol val'>:embed</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_pack</h3>
+</div><div id="_pack-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt><a href="../Storage.html" title="Aqua::Storage">Aqua::Storage</a></tt></span>
+      <span class='name'>_pack</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+packs an object from it&#8217;s Ruby state into a Hash-like object for
+storage.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt><a href="../Storage.html" title="Aqua::Storage">Aqua::Storage</a></tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'></span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 65</span>
+
+<span class='def def kw'>def</span> <span class='_pack identifier id'>_pack</span>
+  <span class='class_name identifier id'>class_name</span> <span class='assign token'>=</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span> <span class='assign token'>=</span> <span class='Aqua constant id'>Aqua</span><span class='colon2 op'>::</span><span class='Storage constant id'>Storage</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='dot token'>.</span><span class='id identifier id'>id</span> <span class='assign token'>=</span> <span class='@id ivar id'>@id</span> <span class='if if_mod kw'>if</span> <span class='@id ivar id'>@id</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='lbrack token'>[</span><span class='symbol val'>:_rev</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='_rev identifier id'>_rev</span> <span class='if if_mod kw'>if</span> <span class='_rev identifier id'>_rev</span> 
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='lbrack token'>[</span><span class='symbol val'>:class</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='class_name identifier id'>class_name</span>
+  <span class='_pack_properties identifier id'>_pack_properties</span>
+  <span class='_pack_singletons identifier id'>_pack_singletons</span>
+  <span class='__pack identifier id'>__pack</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_storable_attributes</h3>
+</div><div id="_storable_attributes-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Array</tt></span>
+      <span class='name'>_storable_attributes</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+An array of instance variables that are not hidden.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Array</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+of names for instance variables
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+91
+92
+93</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 91</span>
+
+<span class='def def kw'>def</span> <span class='_storable_attributes identifier id'>_storable_attributes</span>
+  <span class='lparen token'>(</span><span class='instance_variables identifier id'>instance_variables</span><span class='orop op'>||</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='rparen token'>)</span> <span class='minus op'>-</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='_hidden_attributes identifier id'>_hidden_attributes</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>commit</h3>
+</div><div id="commit-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>commit</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+TODO: option for transaction on children documents, all or nothing Saves
+object; returns false on failure; returns self on success.
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+52
+53
+54</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 52</span>
+
+<span class='def def kw'>def</span> <span class='commit identifier id'>commit</span> 
+  <span class='_commit identifier id'>_commit</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>commit!</h3>
+</div><div id="commit!-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>commit!</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Saves object and raises an error on failure
+</p>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+57
+58
+59</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 57</span>
+
+<span class='def def kw'>def</span> <span class='commit! fid id'>commit!</span>
+  <span class='_commit identifier id'>_commit</span><span class='lparen token'>(</span> <span class='false false kw'>false</span> <span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+</div>
+  </div>
+
+</div>
+    </div>
+    <div id="yard_info">
+  Generated on Friday, August 21 2009 at 11:46:34 AM by 
+  <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
+  0.2.3.5 (ruby-1.8.6).
+</div>
+
+  </body>
+</html>

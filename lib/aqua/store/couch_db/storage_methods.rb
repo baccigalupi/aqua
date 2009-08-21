@@ -231,12 +231,12 @@ module Aqua
         
           # sets the database
           # @param   [Aqua::Store::CouchDB::Database]
-          # @returns [Aqua::Store::CouchDB::Database]
+          # @return [Aqua::Store::CouchDB::Database]
           # @api private
           attr_writer :database 
         
           # retrieves the previously set database or sets the new one with a default value
-          # @returns [Aqua::Store::CouchDB::Database]
+          # @return [Aqua::Store::CouchDB::Database]
           # @api private
           def database
             @database ||= determine_database
@@ -257,7 +257,7 @@ module Aqua
           # CouchDB needs a relatively clean string as the key, where as the user can assign a messy string to
           # the id. The user can continue to use the messy string since the engine also has access to the _id.
           # 
-          # @returns [String]
+          # @return [String]
           #
           # @api public 
           def id

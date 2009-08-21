@@ -18,7 +18,7 @@ module Aqua::Pack
   
   module ClassMethods 
     # Used in class declaration to assign certain instance variables as not for persistance
-    # @params [Symbol] or [Array of Symbols] ivars 
+    # @param [Symbol] or [Array of Symbols] ivars 
     # 
     # @example
     # class User 
@@ -169,7 +169,7 @@ module Aqua::Pack
       # Packs an object into data and meta data. Works recursively sending out to array, hash, etc.  
       # object packers, which send their values back to _pack_object
       #
-      # @params Object to pack
+      # @param Object to pack
       # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
       #
       # @api private

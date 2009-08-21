@@ -16,14 +16,14 @@
 # 
 #     @interface_level mandatory
 #     id
-#       @params none
+#       @param none
 #       @return id object, whether String, Fixnum or other object as the store chooses
 # 
 #     @interface_level mandatory
 #     id=( custom_id )
 #       The library expects to save an object with a custom id. Id= method can set limits on the 
 #       types of objects that can be used as an id. Minimally it should support Strings. 
-#       @params String, Fixnum, or any other reasonable class
+#       @param String, Fixnum, or any other reasonable class
 #
 #     @interface_level mandatory
 #     new?
@@ -35,7 +35,7 @@
 #     @interface_level mandatory
 #     load( id, class ) 
 #       The'load'  
-#       @params [String, Fixnum] The id used by the system to 
+#       @param [String, Fixnum] The id used by the system to 
 #       @return [Aqua::Storage]
 #       @raise [Aqua::ResourceNotFound] if another error occurs in the engine, that should be raised instead 
 #         any of the Aqua Exceptions 

@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="style.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="custom.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="syntax_highlight.css" type="text/css" charset="utf-8" />
+
+    <title>README.rdoc</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="section docstring readme">
+        <h1>Aqua</h1>
+<p>
+Aqua: A Ruby Object Database &#8230; just add water (and CouchDB).
+</p>
+<p>
+Even with ORMs like ActiveRecord, DataMapper which ease the pain of
+relational data storage, considerable developer effort goes into wrangling
+Ruby objects into their databases. Document-oriented databases have made it
+possible to store nested data structures that easily map to Ruby objects.
+Aqua (http://github.com/baccigalupi/aqua) is a new Ruby library that aims
+to painlessly persists objects, allowing developers to focus more on object
+oriented code and less on storage.
+</p>
+<p>
+Currently Aqua is in pre-alpha testing, with the following big things left
+to implement:
+</p>
+<ul>
+<li>A data query DSL and implementation (yeah, ouch!)
+
+</li>
+<li>Support of all objects in the Standard Library
+
+</li>
+<li>Class and code storage to allow the sharing and persistence of classes with
+their data
+
+</li>
+<li>Other storage systems, most notably a filestore, so that users can try Aqua
+out without having to install CouchDb
+
+</li>
+<li>Object keys, including symbols for hash-like objects
+
+</li>
+<li>Data storage amenity add-ons including: validation, callbacks, AR-styled
+syntax, and properties that automate some of the object typing, validation,
+and searchability option.
+
+</li>
+</ul>
+<p>
+Aqua aims to be lean and modular, in addition to transparent. Currently it
+weighs in at 1000 lines of code with half of that for the CouchDB storage
+engine.
+</p>
+<h2>Usage</h2>
+<p>
+Aqua persists a Ruby instance&#8217;s state through its instance variables,
+and in the case of primitives like arrays and hashes, through their core
+data. The first step towards working in Aqua is shedding the limitations of
+ORMs and other storage classes, and get back to pure Ruby. Once you have an
+Ruby class, the simple declaration <tt>aquatic</tt> in the class will allow
+you to #commit and #reload the object.
+</p>
+<p>
+Currently, Aqua uses CouchDB for its storage. Make sure you have CouchDB
+installed and running before you start storing objects. If your CouchDB
+installation is running at a non-standard url, visit the documentation to
+learn how to configure Aqua for your setup.
+</p>
+<pre class="code">
+  <span class='require identifier id'>require</span> <span class='string val'>'rubygems'</span>
+  <span class='require identifier id'>require</span> <span class='string val'>'aqua'</span>
+
+  <span class='class class kw'>class</span> <span class='User constant id'>User</span>
+    <span class='aquatic identifier id'>aquatic</span> <span class='comment val'># adds persistence methods to your object</span>
+
+    <span class='attr_accessor identifier id'>attr_accessor</span> <span class='symbol val'>:name</span><span class='comma token'>,</span> <span class='comment val'># An array of strings or a hash of strings</span>
+      <span class='symbol val'>:created_at</span><span class='comma token'>,</span> <span class='comment val'># Time</span>
+      <span class='symbol val'>:dob</span><span class='comma token'>,</span>        <span class='comment val'># Date</span>
+      <span class='symbol val'>:username</span><span class='comma token'>,</span>   <span class='comment val'># simple string</span>
+      <span class='symbol val'>:name</span><span class='comma token'>,</span>       <span class='comment val'># Array, Hash, Name Object?</span>
+      <span class='symbol val'>:password</span><span class='comma token'>,</span>   <span class='comment val'># hidden value</span>
+      <span class='symbol val'>:credentials</span> <span class='comment val'># hash with salt and encrypted password, or ...</span>
+
+    <span class='hide_attributes identifier id'>hide_attributes</span> <span class='symbol val'>:password</span> <span class='comment val'># Aqua can hide certain instance variables that you would prefer not save</span>
+
+    <span class='comment val'># possible way to initialize your data ...</span>
+    <span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span> <span class='hash identifier id'>hash</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span> <span class='rparen token'>)</span>
+      <span class='hash identifier id'>hash</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='key identifier id'>key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='bitor op'>|</span>
+        <span class='send identifier id'>send</span><span class='lparen token'>(</span> <span class='dstring node'>&quot;#{key}=&quot;</span><span class='comma token'>,</span> <span class='value identifier id'>value</span> <span class='rparen token'>)</span>
+      <span class='end end kw'>end</span>
+      <span class='self self kw'>self</span><span class='dot token'>.</span><span class='created_at identifier id'>created_at</span> <span class='assign token'>=</span> <span class='Time constant id'>Time</span><span class='dot token'>.</span><span class='now identifier id'>now</span>
+    <span class='end end kw'>end</span>
+
+    <span class='comment val'># lots more user code here as you see fit ...</span>
+
+  <span class='end end kw'>end</span>
+
+  <span class='user identifier id'>user</span> <span class='assign token'>=</span> <span class='User constant id'>User</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span>
+    <span class='symbol val'>:username</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'kane'</span><span class='comma token'>,</span>
+    <span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span><span class='lbrace token'>{</span><span class='symbol val'>:first</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Kane'</span><span class='comma token'>,</span> <span class='symbol val'>:last</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'Baccigalupi'</span><span class='rbrace token'>}</span><span class='comma token'>,</span>
+    <span class='symbol val'>:dob</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Date constant id'>Date</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span><span class='lparen token'>(</span> <span class='string val'>'12/23/1969'</span> <span class='rparen token'>)</span><span class='comma token'>,</span>
+    <span class='symbol val'>:password</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ubber_secret!'</span>
+  <span class='rparen token'>)</span>
+
+  <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='commit! fid id'>commit!</span> <span class='comment val'># ! makes it raise an exception on failure</span>
+  <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='name identifier id'>name</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='string val'>'Kane'</span><span class='comma token'>,</span> <span class='string val'>'Baccigalupi'</span><span class='rbrack token'>]</span>
+  <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='commit identifier id'>commit</span> <span class='comment val'># will return false on failure, otherwise returns its saved self</span>
+
+  <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='reload identifier id'>reload</span> <span class='comment val'># retrieves the latest saved version of the object</span>
+  <span class='User constant id'>User</span><span class='dot token'>.</span><span class='load identifier id'>load</span><span class='lparen token'>(</span> <span class='user identifier id'>user</span><span class='dot token'>.</span><span class='id identifier id'>id</span> <span class='rparen token'>)</span> <span class='comment val'># returns your persisted user object, like you just added water!</span>
+</pre>
+<h2>Installation</h2>
+<p>
+Aqua is so young that it hasn&#8217;t made it over to the established land
+of rubyforge. So for now you can install the gem by including github as a
+source, and then do a sudo gem install
+</p>
+<pre class="code">
+  <span class='gem identifier id'>gem</span> <span class='sources identifier id'>sources</span> <span class='minus op'>-</span><span class='a identifier id'>a</span> <span class='http identifier id'>http</span><span class='symbol val'>:/</span><span class='regexp val'>/gems.github.com
+  sudo gem install baccigalupi-aqua
+</span></pre>
+<h2>Contributing</h2>
+<p>
+Bug fixes and features are welcome.
+</p>
+<ul>
+<li>Fork the project.
+
+</li>
+<li>Make your feature addition or bug fix.
+
+</li>
+<li>Add tests for it. This is important so I don&#8217;t break it in a future
+version unintentionally.
+
+</li>
+<li>Commit, do not mess with rakefile, version, or history.(if you want to have
+your own version, that is fine but bump version in a commit by itself I can
+ignore when I pull)
+
+</li>
+<li>Send me a pull request. Bonus points for topic branches.
+
+</li>
+</ul>
+<h2>Copyright</h2>
+<p>
+Copyright &#169; 2009 Kane Baccigalupi. See LICENSE for details. Some parts
+of the CouchDB storage engine were derived from CouchRest. Their LICENSE is
+also included and will apply.
+</p>
+
+      </div>
+    </div>
+    <div id="yard_info">
+  Generated on Friday, August 21 2009 at 11:46:33 AM by 
+  <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
+  0.2.3.5 (ruby-1.8.6).
+</div>
+
+  </body>
+</html>
