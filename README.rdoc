@@ -14,10 +14,6 @@ Currently Aqua is in pre-alpha testing, with the following big things left to im
 
 Aqua aims to be lean and modular, in addition to transparent. Currently it weighs in at 1000 lines of code with half of that for the CouchDB storage engine.
 
-== More Info
-Twitter: rubyaqua
-Rdocs: http://ruby-aqua.org 
-
 == Usage 
 
 Aqua persists a Ruby instance's state through its instance variables, and in the case of primitives like arrays and hashes, through their core data. The first step towards working in Aqua is shedding the limitations of ORMs and other storage classes, and get back to pure Ruby. Once you have an Ruby class, the simple declaration +aquatic+ in the class will allow you to #commit and #reload the object. 
@@ -81,6 +77,12 @@ Aqua is so young that it hasn't made it over to the established land of rubyforg
 
   gem sources -a http://gems.github.com
   sudo gem install baccigalupi-aqua
+
+== More Info
+
+Twitter: rubyaqua
+
+Rdocs: http://ruby-aqua.org 
 
 == Contributing
 
