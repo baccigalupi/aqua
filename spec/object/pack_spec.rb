@@ -87,10 +87,17 @@ describe Aqua::Pack do
     end    
     
     describe 'instance variables, ' do
-      it 'should be in a hash-like object with the key :data' do 
-        @pack[:data].should_not be_nil
-        @pack[:data].should respond_to(:keys)
-      end 
+      describe 'hashes'
+        it 'should be in a hash-like object with the key :data' do 
+          @pack[:data].should_not be_nil
+          @pack[:data].should respond_to(:keys)
+        end
+        
+        it 'should save symbol keys differently that string keys' do
+          @user.name = {:first => 'Kane', 'last' => 'Baccigalupi'}
+          pack = @user._pack
+          pack[:data][:@name][:initialization].keys.sort.should == [':first', 'last']
+        end   
       
       describe 'basic data types' do
         it 'should pack strings as strings' do 
@@ -102,7 +109,7 @@ describe Aqua::Pack do
         end  
     
         it 'should pack an hash containing only strings/symbols for keys and values, with an initialization value that is that hash and a class key' do
-          @user.name = {:first => 'Kane', :last => 'Baccigalupi'}
+          @user.name = {'first' => 'Kane', 'last' => 'Baccigalupi'}
           pack = @user._pack
           pack[:data][:@name].should == {'class' => 'Hash', 'initialization' => {'first' => 'Kane', 'last' => 'Baccigalupi'} }
         end   
@@ -260,12 +267,12 @@ describe Aqua::Pack do
             
             it 'should initialize with the @table instance variable' do  
               init_keys = @grab_bag['initialization'].keys
-              init_keys.should include('cat')
-              init_keys.should include('disaster')
-              init_keys.should include('gerbil')
-              @grab_bag['initialization']['gerbil'].should == {'class' => 'TrueClass', 'initialization' => 'true'}
-              @grab_bag['initialization']['cat'].should == 'yup, that too!'
-              @grab_bag['initialization']['disaster'].should == {'class' => 'Array', 'initialization' => ['pow', 'blame', 'chase', 'spew']}
+              init_keys.should include(':cat')
+              init_keys.should include(':disaster')
+              init_keys.should include(':gerbil')
+              @grab_bag['initialization'][':gerbil'].should == {'class' => 'TrueClass', 'initialization' => 'true'}
+              @grab_bag['initialization'][':cat'].should == 'yup, that too!'
+              @grab_bag['initialization'][':disaster'].should == {'class' => 'Array', 'initialization' => ['pow', 'blame', 'chase', 'spew']}
             end
           end
           

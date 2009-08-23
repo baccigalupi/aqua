@@ -1,1 +1,16 @@
-/* Override this stylesheet in your templates directory with any extra declarations */
+/* Override this stylesheet in your templates directory with any extra declarations */ 
+body {
+  font-family: Trebuchet, 'Trebuchet MS', Verdana, Arial, sans-serif;
+  font-size: 11pt; line-height: 1.5;
+} 
+a { color: #069;}
+a:visited { color: #444;}
+
+.section.module h1.title, .section.class h1.title, .section.readme h1 {
+  background-color: #09C; color: white; border-width: 0px;
+}
+.section.readme h1 { margin:0 0 7px -7px;  }
+
+h2 { background-color: #a2e3f9; color:#000000; padding-left: 7px; }
+.readme h2 { margin:0 0 7px -7px; }
+

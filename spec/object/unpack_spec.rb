@@ -188,7 +188,14 @@ describe Aqua::Unpack do
         @user.commit!
         user = User.load(@user.id)
         user.grab_bag.should == @user.grab_bag
-      end  
+      end
+      
+      it 'should unpack symbol keys differently than unpacking string keys' do  
+        @user.grab_bag = {'first' => '1', :second => '2'}
+        @user.commit!
+        user = User.load(@user.id)
+        user.grab_bag.keys.should include('first', :second)
+      end    
       
       it 'should unpack a Hash with non-string values' do 
         @user.grab_bag = {'1' => 2}

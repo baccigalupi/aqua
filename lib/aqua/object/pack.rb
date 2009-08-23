@@ -216,9 +216,16 @@ module Aqua::Pack
       # @api private
       def _pack_hash( hash )
         return_hash = {}
-        hash.each do |key, value|
-          raise ArgumentError, 'Currently Hash keys must be either strings or symbols' unless [Symbol, String].include?( key.class )
-          return_hash[key.to_s] = _pack_object( value )
+        hash.each do |raw_key, value|
+          key_class = raw_key.class
+          if key_class == Symbol
+            key = ":#{raw_key.to_s}"
+          elsif key_class == String
+            key = raw_key
+          else 
+            raise ArgumentError, 'Currently Hash keys must be either strings or symbols' unless [Symbol, String].include?( key.class )
+          end     
+          return_hash[key] = _pack_object( value )
         end
         return_hash  
       end
