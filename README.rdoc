@@ -12,7 +12,11 @@ Currently Aqua is in pre-alpha testing, with the following big things left to im
 * Object keys, including symbols for hash-like objects
 * Data storage amenity add-ons including: validation, callbacks, AR-styled syntax, and properties that automate some of the object typing, validation, and searchability option.   
 
-Aqua aims to be lean and modular, in addition to transparent. Currently it weighs in at 1000 lines of code with half of that for the CouchDB storage engine. 
+Aqua aims to be lean and modular, in addition to transparent. Currently it weighs in at 1000 lines of code with half of that for the CouchDB storage engine.
+
+== More Info
+Twitter: rubyaqua
+Rdocs: http://ruby-aqua.org 
 
 == Usage 
 
@@ -67,7 +71,9 @@ Currently, Aqua uses CouchDB for its storage. Make sure you have CouchDB install
   user.reload # retrieves the latest saved version of the object
   u = User.load( user.id ) # returns your persisted user object, like you just added water! 
   puts u.inspect
-  # #<User:0x1a16480 @name=["Kane", "Baccigalupi"], @created_at=Fri Aug 21 12:07:39 -0700 2009, @_store=nil, @username="kane", @dob=#<Date: 4881157/2,0,2299161>, @id="c664770982b92e9fa802e0ed664a9846">        
+  # #<User:0x1a16480 @name=["Kane", "Baccigalupi"], @created_at=Fri Aug 21 12:07:39 -0700 2009, @_store=nil, @username="kane", @dob=#<Date: 4881157/2,0,2299161>, @id="c664770982b92e9fa802e0ed664a9846">
+  
+  # woot!        
 
 == Installation 
 
