@@ -1,6 +1,6 @@
 # This module is responsible for packing objects into Storage Objects
 # The Storage Object is expected to be a Mash-Like thing (Hash with indifferent access).
-# It is the job of the storage engine to convert the Mash into the actual storage data.
+# It is the job of the storage engine to convert the Mash into the actual storage ivars.
 module Aqua::Pack
   
   def self.included( klass ) 
@@ -136,9 +136,9 @@ module Aqua::Pack
       # Examines each ivar and converts it to a hash, array, string combo
       # @api private
       def _pack_properties
-        self.__pack[:data] = _pack_ivars( self )
+        self.__pack[:ivars] = _pack_ivars( self )
         initializations = _pack_initializations( self )
-        self.__pack[:initialization] = initializations unless initializations.empty? 
+        self.__pack[:init] = initializations unless initializations.empty? 
       end
       
       def _pack_initializations( obj )
@@ -178,16 +178,16 @@ module Aqua::Pack
         if klass == String
           obj
         elsif [TrueClass, FalseClass].include?( klass )
-          { 'class' => klass.to_s, 'initialization' => obj.to_s }  
+          { 'class' => klass.to_s, 'init' => obj.to_s }  
         elsif [Time, Date, Fixnum, Bignum, Float ].include?( klass )
           {
             'class' => klass.to_s,
-            'initialization' => obj.to_s
+            'init' => obj.to_s
           }
         elsif klass == Rational
           {
             'class' => klass.to_s,
-            'initialization' => obj.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2)
+            'init' => obj.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2)
           } 
         else # a more complex object, including an array or a hash like thing 
           return_hash = {}
@@ -195,9 +195,9 @@ module Aqua::Pack
             return_hash = obj._pack    
           elsif !obj.aquatic?
             initialization = _pack_initializations( obj )
-            return_hash['initialization'] = initialization unless initialization.empty?
+            return_hash['init'] = initialization unless initialization.empty?
             data = _pack_ivars( obj )
-            return_hash['data'] = data unless data.empty?
+            return_hash['ivars'] = data unless data.empty?
             return_hash['class'] = klass.to_s  
           # TODO: distinguish between internal storage, stubbing and external (obj.aquatic? && obj._embed_me == true) 
           # elsif obj._embed_me.class == Hash

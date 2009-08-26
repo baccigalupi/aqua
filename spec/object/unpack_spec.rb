@@ -36,7 +36,7 @@ describe Aqua::Unpack do
   end
   
   describe 'unpacking to a new object' do 
-    describe 'initialization' do
+    describe 'init' do
       it 'should initialize an Aquatic object' do
         user = User.load( @user.id )
         user.class.should == User
@@ -59,7 +59,7 @@ describe Aqua::Unpack do
           arrayish_2.class.should == Arrayed 
         end
       
-        it 'should load initialization values into an aquatic Array derivative' do
+        it 'should load init values into an aquatic Array derivative' do
           arrayish_2 = Arrayed.load( @id )
           arrayish_2.first.should == 'a'
         end 
@@ -82,7 +82,7 @@ describe Aqua::Unpack do
           Hashed.load( @id ).class.should == Hashed
         end
            
-        it 'should load initialization values into an aquatic Hash derivative' do
+        it 'should load init values into an aquatic Hash derivative' do
           hashish = Hashed.load( @id )
           hashish['1'].should == '2'  
         end  

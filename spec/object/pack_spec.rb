@@ -57,7 +57,7 @@ describe Aqua::Pack do
     
     it 'should not pack hidden variables' do
       @pack = @user._pack
-      @pack[:data].keys.should_not include("@password")
+      @pack[:ivars].keys.should_not include("@password")
     end  
   end    
   
@@ -88,30 +88,30 @@ describe Aqua::Pack do
     
     describe 'instance variables, ' do
       describe 'hashes'
-        it 'should be in a hash-like object with the key :data' do 
-          @pack[:data].should_not be_nil
-          @pack[:data].should respond_to(:keys)
+        it 'should be in a hash-like object with the key :ivars' do 
+          @pack[:ivars].should_not be_nil
+          @pack[:ivars].should respond_to(:keys)
         end
         
         it 'should save symbol keys differently that string keys' do
           @user.name = {:first => 'Kane', 'last' => 'Baccigalupi'}
           pack = @user._pack
-          pack[:data][:@name][:initialization].keys.sort.should == [':first', 'last']
+          pack[:ivars][:@name][:init].keys.sort.should == [':first', 'last']
         end   
       
-      describe 'basic data types' do
+      describe 'basic ivars types' do
         it 'should pack strings as strings' do 
-          @pack[:data][:@username].should == 'kane'
+          @pack[:ivars][:@username].should == 'kane'
         end  
     
-        it 'should pack an array of strings as a hash with the :class "Array" and :initialization as the original array' do
-          @pack[:data][:@name].should == {'class' => 'Array', 'initialization' => ['Kane', 'Baccigalupi']}
+        it 'should pack an array of strings as a hash with the :class "Array" and :init as the original array' do
+          @pack[:ivars][:@name].should == {'class' => 'Array', 'init' => ['Kane', 'Baccigalupi']}
         end  
     
-        it 'should pack an hash containing only strings/symbols for keys and values, with an initialization value that is that hash and a class key' do
+        it 'should pack an hash containing only strings/symbols for keys and values, with an init value that is that hash and a class key' do
           @user.name = {'first' => 'Kane', 'last' => 'Baccigalupi'}
           pack = @user._pack
-          pack[:data][:@name].should == {'class' => 'Hash', 'initialization' => {'first' => 'Kane', 'last' => 'Baccigalupi'} }
+          pack[:ivars][:@name].should == {'class' => 'Hash', 'init' => {'first' => 'Kane', 'last' => 'Baccigalupi'} }
         end   
       end
       
@@ -121,14 +121,14 @@ describe Aqua::Pack do
         
         describe 'Time' do
           it 'should save as a hash with the class and to_s as the value' do
-            time_hash = @pack[:data][:@created_at] 
+            time_hash = @pack[:ivars][:@created_at] 
             time_hash['class'].should == 'Time'
-            time_hash['initialization'].class.should == String
+            time_hash['init'].class.should == String
           end
         
           it 'the value should be reconstitutable with Time.parse' do 
             # comparing times directly never works for me. It is probably a micro second issue or something
-            @time.to_s.should == Time.parse( @pack[:data][:@created_at]['initialization'] ).to_s
+            @time.to_s.should == Time.parse( @pack[:ivars][:@created_at]['init'] ).to_s
           end 
         end
         
@@ -136,54 +136,54 @@ describe Aqua::Pack do
           it 'should save as a hash with only the class' do 
             @user.grab_bag = true
             pack = @user._pack
-            pack[:data][:@grab_bag].should == {'class' => 'TrueClass', 'initialization' => 'true'}
+            pack[:ivars][:@grab_bag].should == {'class' => 'TrueClass', 'init' => 'true'}
             
             @user.grab_bag = false
             pack = @user._pack
-            pack[:data][:@grab_bag].should == {'class' => 'FalseClass', 'initialization' => 'false'}
+            pack[:ivars][:@grab_bag].should == {'class' => 'FalseClass', 'init' => 'false'}
           end  
         end    
         
         describe 'Date' do
           it 'should save as a hash with the class and to_s as the value' do
-            time_hash = @pack[:data][:@dob] 
+            time_hash = @pack[:ivars][:@dob] 
             time_hash['class'].should == 'Date'
-            time_hash['initialization'].class.should == String
+            time_hash['init'].class.should == String
           end
         
           it 'the value should be reconstitutable with Date.parse' do 
-            @date.should == Date.parse( @pack[:data][:@dob]['initialization'] )
+            @date.should == Date.parse( @pack[:ivars][:@dob]['init'] )
           end 
         end      
         
         describe 'Numbers' do
           def pack_grab_bag( value )
             @user.grab_bag = value
-            @user._pack[:data][:@grab_bag]
+            @user._pack[:ivars][:@grab_bag]
           end 
           
           it 'should pack Fixnums with correct class and value' do 
             pack = pack_grab_bag( 42 )
             pack[:class].should == 'Fixnum'
-            pack[:initialization].should == '42'
+            pack[:init].should == '42'
           end
           
           it 'should pack Bignums with correct class and value' do 
             pack = pack_grab_bag( 123456789123456789 )
             pack[:class].should == 'Bignum'
-            pack[:initialization].should == '123456789123456789'
+            pack[:init].should == '123456789123456789'
           end 
           
           it 'should pack Floats with correct class and value' do 
             pack = pack_grab_bag( 3.2 )
             pack[:class].should == 'Float'
-            pack[:initialization].should == '3.2'
+            pack[:init].should == '3.2'
           end 
           
           it 'should pack Rationals with the correct class and values' do
             pack = pack_grab_bag( Rational( 1, 17 ) )
             pack[:class].should == 'Rational'
-            pack[:initialization].should == ['1', '17']
+            pack[:init].should == ['1', '17']
           end    
           
         end  
@@ -198,10 +198,10 @@ describe Aqua::Pack do
             User.configure_aqua( :embed => false )
           end   
   
-          it 'should save their data correctly' do
-            @pack[:data][:@log].keys.should == ['class', 'data']
-            @pack[:data][:@log]['data'].keys.should == ['@created_at', '@message'] 
-            @pack[:data][:@log]['data']['@message'].should == "Hello World! This is a log entry"
+          it 'should save their ivars correctly' do
+            @pack[:ivars][:@log].keys.should == ['class', 'ivars']
+            @pack[:ivars][:@log]['ivars'].keys.should == ['@created_at', '@message'] 
+            @pack[:ivars][:@log]['ivars']['@message'].should == "Hello World! This is a log entry"
           end 
         
           it 'should correctly pack Array derivatives' do 
@@ -212,10 +212,10 @@ describe Aqua::Pack do
             arrayish = Arrayed['a', 'b', 'c', 'd']
             arrayish.my_accessor = 'Newt'
             pack = arrayish._pack
-            pack.keys.sort.should == ['class', 'data', 'initialization']
-            pack['initialization'].class.should == Array
-            pack['initialization'].should == ['a', 'b', 'c', 'd']
-            pack['data']['@my_accessor'].should == 'Newt'   
+            pack.keys.sort.should == ['class', 'init', 'ivars']
+            pack['init'].class.should == Array
+            pack['init'].should == ['a', 'b', 'c', 'd']
+            pack['ivars']['@my_accessor'].should == 'Newt'   
           end
           
           it 'should correctly pack Hash derivative' do
@@ -227,10 +227,10 @@ describe Aqua::Pack do
             hashish['1'] = '2'
             hashish.my_accessor = 'Newt'
             pack = hashish._pack
-            pack.keys.sort.should == ['class', 'data', 'initialization']
-            pack['initialization'].class.should == HashWithIndifferentAccess
-            pack['initialization'].should == {'1' => '2'}
-            pack['data']['@my_accessor'].should == 'Newt'
+            pack.keys.sort.should == ['class', 'init', 'ivars']
+            pack['init'].class.should == HashWithIndifferentAccess
+            pack['init'].should == {'1' => '2'}
+            pack['ivars']['@my_accessor'].should == 'Newt'
           end    
         
         end
@@ -254,25 +254,25 @@ describe Aqua::Pack do
             before(:each) do
               @user.grab_bag = @struct
               pack = @user._pack
-              @grab_bag = pack[:data][:@grab_bag]
+              @grab_bag = pack[:ivars][:@grab_bag]
             end
               
             it 'the key "class" should map to "OpenStruct"' do
               @grab_bag['class'].should == 'OpenStruct'
             end
             
-            it 'the key "data" should have the keys "@table"' do
-              @grab_bag['data'].keys.should == ['@table'] 
+            it 'the key "ivars" should have the keys "@table"' do
+              @grab_bag['ivars'].keys.should == ['@table'] 
             end
             
             it 'should initialize with the @table instance variable' do  
-              init_keys = @grab_bag['initialization'].keys
+              init_keys = @grab_bag['init'].keys
               init_keys.should include(':cat')
               init_keys.should include(':disaster')
               init_keys.should include(':gerbil')
-              @grab_bag['initialization'][':gerbil'].should == {'class' => 'TrueClass', 'initialization' => 'true'}
-              @grab_bag['initialization'][':cat'].should == 'yup, that too!'
-              @grab_bag['initialization'][':disaster'].should == {'class' => 'Array', 'initialization' => ['pow', 'blame', 'chase', 'spew']}
+              @grab_bag['init'][':gerbil'].should == {'class' => 'TrueClass', 'init' => 'true'}
+              @grab_bag['init'][':cat'].should == 'yup, that too!'
+              @grab_bag['init'][':disaster'].should == {'class' => 'Array', 'init' => ['pow', 'blame', 'chase', 'spew']}
             end
           end
           
@@ -280,15 +280,15 @@ describe Aqua::Pack do
             before(:each) do
               @user.grab_bag = @grounded
               pack = @user._pack
-              @grab_bag = pack[:data][:@grab_bag]
+              @grab_bag = pack[:ivars][:@grab_bag]
             end
             
             it 'the key "class" should map correctly to the class name' do
               @grab_bag['class'].should == 'Grounded'
             end
             
-            it 'should have data keys for all the ivars' do
-              keys = @grab_bag[:data].keys
+            it 'should have ivars keys for all the ivars' do
+              keys = @grab_bag[:ivars].keys
               keys.should include('@openly_structured')
               keys.should include('@hash_up')
               keys.should include('@arraynged')
@@ -296,7 +296,7 @@ describe Aqua::Pack do
             
             it 'should correctly display the nested OpenStruct' do 
               user_2 = User.new(:grab_bag => @struct) # this has already been tested in the set above
-              user_2._pack[:data][:@grab_bag].should == @grab_bag[:data][:@openly_structured]
+              user_2._pack[:ivars][:@grab_bag].should == @grab_bag[:ivars][:@openly_structured]
             end  
           end  
           
@@ -312,7 +312,7 @@ describe Aqua::Pack do
               @strange_array.udder # sets an instance variable
               @user.grab_bag = @strange_array
               pack = @user._pack
-              @grab_bag = pack[:data][:@grab_bag]
+              @grab_bag = pack[:ivars][:@grab_bag]
             end
             
             it 'should correctly map the class name' do
@@ -320,19 +320,19 @@ describe Aqua::Pack do
             end
             
             it 'should store the instance variables' do 
-              @grab_bag[:data].keys.should == ['@udder'] 
+              @grab_bag[:ivars].keys.should == ['@udder'] 
             end
             
             it 'should store the simple array values' do
-              @grab_bag[:initialization].should_not be_nil
-              @grab_bag[:initialization].class.should == Array
-              @grab_bag[:initialization].should include('cat')
-              @grab_bag[:initialization].should include('octopus')
+              @grab_bag[:init].should_not be_nil
+              @grab_bag[:init].class.should == Array
+              @grab_bag[:init].should include('cat')
+              @grab_bag[:init].should include('octopus')
             end 
             
             it 'should store the more complex array values correctly' do
               user_2 = User.new(:grab_bag => @struct) # this has already been tested in the set above
-              user_2._pack[:data][:@grab_bag].should == @grab_bag[:initialization].last
+              user_2._pack[:ivars][:@grab_bag].should == @grab_bag[:init].last
             end   
           end
           
@@ -352,7 +352,7 @@ describe Aqua::Pack do
               @hash_derivative.yum # sets an instance variable
               @user.grab_bag = @hash_derivative
               pack = @user._pack
-              @grab_bag = pack[:data][:@grab_bag]
+              @grab_bag = pack[:ivars][:@grab_bag]
             end
             
             it 'should correctly map the class name' do
@@ -360,21 +360,21 @@ describe Aqua::Pack do
             end
             
             it 'should store the instance variables' do 
-              @grab_bag[:data].keys.should == ['@yum'] 
+              @grab_bag[:ivars].keys.should == ['@yum'] 
             end
             
             it 'should store the simple hash values' do
-              @grab_bag[:initialization].should_not be_nil
-              @grab_bag[:initialization].class.should == HashWithIndifferentAccess
+              @grab_bag[:init].should_not be_nil
+              @grab_bag[:init].class.should == HashWithIndifferentAccess
               
-              @grab_bag[:initialization].keys.should include('ingredients')
-              @grab_bag[:initialization].keys.should include('healthometer')
-              @grab_bag[:initialization].keys.should include('random_struct')
+              @grab_bag[:init].keys.should include('ingredients')
+              @grab_bag[:init].keys.should include('healthometer')
+              @grab_bag[:init].keys.should include('random_struct')
             end 
             
             it 'should store the more complex hash values correctly' do
               user_2 = User.new(:grab_bag => @struct) # this has already been tested in the set above
-              user_2._pack[:data][:@grab_bag].should == @grab_bag[:initialization][:random_struct]
+              user_2._pack[:ivars][:@grab_bag].should == @grab_bag[:init][:random_struct]
             end
           end    
         end

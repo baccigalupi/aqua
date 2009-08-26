@@ -59,7 +59,7 @@ module Aqua::Unpack
         if init = _unpack_initialization( _store )
           replace( init ) 
         end
-        if ivars = _store[:data]
+        if ivars = _store[:ivars]
           _unpack_ivars( self, ivars )
         end    
       end 
@@ -80,7 +80,7 @@ module Aqua::Unpack
       end    
       
       def _unpack_initialization( obj )
-        if init = obj[:initialization] 
+        if init = obj[:init] 
           init_class = init.class
           if init_class == String
             init
@@ -184,7 +184,7 @@ module Aqua::Unpack
             end
             
             # add the ivars
-            if ivars = store_pack['data'] 
+            if ivars = store_pack['ivars'] 
               ivars.delete('@table') if obj_class.ancestors.include?( OpenStruct )
               _unpack_ivars( return_object, ivars )
             end
