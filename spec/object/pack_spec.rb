@@ -33,30 +33,56 @@ describe Aqua::Pack do
     it 'should be saved into the design document' 
   end 
   
-  describe 'external saves' do
-    before(:each) do 
-      @user.other_user = User.new(:username => 'graeme')
+  describe 'external saves and stubs' do
+    before(:each) do
+      @graeme = User.new(:username => 'graeme', :name => ['Graeme', 'Nelson'])
+      @user.other_user = @graeme
       @pack = @user._pack
     end
       
     describe 'packing' do
       it 'should pack a stubbed object representation under __pack[:stubs]' do 
-        pending
         @pack[:stubs].size.should == 1
+        other_user_pack = @pack[:stubs].first 
+        other_user_pack[:class].should == "User"
+        other_user_pack[:id].should == @graeme
       end  
       
-      it 'should pack the values of any stubbed methods'
+      it 'should pack the values of a stubbed methods' do
+        other_user_pack = @pack[:stubs].first  
+        other_user_pack[:methods].size.should == 1
+        other_user_pack[:methods][:username].should == 'graeme'
+      end 
       
-      # {
-      #   :class => 'Aqua::Stub',
-      #   :init => '/STUB_0'
-      # }
+      it 'should pack an array of stubbed methods' do 
+        User.configure_aqua( :embed => {:stub =>  [:username, :name] } )
+        @user = User.new(
+          :username => 'kane',
+          :name => ['Kane', 'Baccigalupi'],
+          :dob => @date,
+          :created_at => @time,
+          :log => @log,
+          :password => 'my secret!',
+          :other_user => @graeme 
+        ) 
+        
+        @pack = @user._pack
+        other_user_pack = @pack[:stubs].first  
+        other_user_pack[:methods].size.should == 2
+        other_user_pack[:methods][:username].should == 'graeme'
+        other_user_pack[:methods][:name].should == ['Graeme', 'Nelson']
+        
+        # reseting the User model, and @user instance
+        User.configure_aqua( :embed => {:stub =>  :username } )
+      end   
       
       it 'should pack the object itself with the class "Aqua::Stub"' do 
-        
+        @pack[:ivars][:@other_user][:class].should == "Aqua::Stub"
       end  
         
-      it 'should pack the object itself with a reference to the __pack[:stubs] object'
+      it 'should pack the object itself with a reference to the __pack[:stubs] object' do 
+        @pack[:ivars][:@other_user][:init].should == "/STUB_0"
+      end  
     end
     
     describe 'transaction' do

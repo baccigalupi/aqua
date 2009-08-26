@@ -194,8 +194,27 @@ module Aqua::Pack
         else # a more complex object, including an array or a hash like thing 
           return_hash = {}
           if obj.aquatic? 
-            # TODO distinguish between internal storage, stubbing and external (obj.aquatic? && obj._embed_me == true)
-            return_hash = obj._pack    
+            if obj._embed_me == true
+              return_hash = obj._pack
+            else
+              return_hash['class'] = 'Aqua::Stub'
+              index = self.__pack[:keys].length 
+              stub = { :class => klass.to_s, :id => obj } 
+              if obj._embed_me.keys && stub_methods = obj._embed_me[:stub]
+                stub[:methods] = {}
+                if stub_methods.class == Symbol || stub_methods.class == String
+                  stub_method = stub_methods.to_sym 
+                  stub[:methods][stub_method] = obj.send( stub_method )
+                else # is an array of values
+                  stub_methods.each do |meth|
+                    stub_method = meth.to_sym
+                    stub[:methods][stub_method] = obj.send( stub_method )
+                  end  
+                end    
+              end  
+              self.__pack[:stubs] << stub
+              return_hash['init'] = "/STUB_#{index}"
+            end        
           elsif !obj.aquatic?
             initialization = _pack_initializations( obj )
             return_hash['init'] = initialization unless initialization.empty?
