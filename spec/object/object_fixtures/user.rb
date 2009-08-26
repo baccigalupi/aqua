@@ -8,6 +8,7 @@ class User
     :log,       # an Aquatic Object 
     :password,  # hidden value
     :grab_bag   # non Aquatic Object
+    :other_user # a non-embeddable Aquatic Object
   hide_attributes :password
   
   def initialize( hash={} )

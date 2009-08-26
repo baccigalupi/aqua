@@ -33,12 +33,30 @@ describe Aqua::Pack do
     it 'should be saved into the design document' 
   end 
   
-  describe 'stubing objects' do 
-    it 'should save as a stub any aquatic object declared as unembeddable'
-    it 'should have class "stub"'
-    it 'should have an object id'
-    it 'should cache any methods declared in the class opts for that class'
-  end  
+  describe 'external saves' do
+    describe 'packing' do
+      it 'should pack a stubbed object representation under __pack[:stubs]'
+      it 'should pack the values of any stubbed methods'
+      
+      # {
+      #   :class => 'Aqua::Stub',
+      #   :init => '/STUB_0'
+      # }
+      
+      it 'should pack the object itself with the class "Aqua::Stub"'
+        
+      it 'should pack the object itself with a reference to the __pack[:stubs] object'
+    end
+    
+    describe 'transaction' do
+    end
+        
+    describe 'stubing objects' do 
+      it 'should have class "stub"'
+      it 'should have an object id'
+      it 'should cache any methods declared in the class opts for that class'
+    end
+  end     
   
   describe 'hiding attributes' do
     it 'should add a class method for designating hidden instance variables' do
@@ -220,7 +238,7 @@ describe Aqua::Pack do
           end   
   
           it 'should save their ivars correctly' do
-            @pack[:ivars][:@log].keys.sort.should == ['class', 'ivars', 'keys']
+            @pack[:ivars][:@log].keys.should include('ivars')
             @pack[:ivars][:@log]['ivars'].keys.should == ['@created_at', '@message'] 
             @pack[:ivars][:@log]['ivars']['@message'].should == "Hello World! This is a log entry"
           end 
@@ -233,7 +251,7 @@ describe Aqua::Pack do
             arrayish = Arrayed['a', 'b', 'c', 'd']
             arrayish.my_accessor = 'Newt'
             pack = arrayish._pack
-            pack.keys.sort.should == ['class', 'init', 'ivars', 'keys']
+            pack.keys.should include('class', 'init', 'ivars')
             pack['init'].class.should == Array
             pack['init'].should == ['a', 'b', 'c', 'd']
             pack['ivars']['@my_accessor'].should == 'Newt'   
@@ -248,7 +266,7 @@ describe Aqua::Pack do
             hashish['1'] = '2'
             hashish.my_accessor = 'Newt'
             pack = hashish._pack
-            pack.keys.sort.should == ['class', 'init', 'ivars', 'keys']
+            pack.keys.should include('class', 'init', 'ivars')
             pack['init'].class.should == HashWithIndifferentAccess
             pack['init'].should == {'1' => '2'}
             pack['ivars']['@my_accessor'].should == 'Newt'

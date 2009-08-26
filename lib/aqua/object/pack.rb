@@ -69,6 +69,7 @@ module Aqua::Pack
       self.__pack[:_rev] = _rev if _rev 
       self.__pack[:class] = class_name
       self.__pack[:keys] = []
+      self.__pack[:stubs] = []
       _pack_properties
       _pack_singletons
       __pack
