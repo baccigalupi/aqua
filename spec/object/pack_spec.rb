@@ -35,6 +35,7 @@ describe Aqua::Pack do
   
   describe 'external saves and stubs' do
     before(:each) do
+      CouchDB.server.delete_all
       @graeme = User.new(:username => 'graeme', :name => ['Graeme', 'Nelson'])
       @user.other_user = @graeme
       @pack = @user._pack
@@ -85,14 +86,39 @@ describe Aqua::Pack do
       end  
     end
     
-    describe 'transaction' do
-    end
+    describe 'commiting' do
+      it 'should commit external objects' do 
+        @user.commit!
+        db_docs = CouchDB::Database.new.documents
+        db_docs['total_rows'].should == 2
+      end
         
-    describe 'stubing objects' do 
-      it 'should have class "stub"'
-      it 'should have an object id'
-      it 'should cache any methods declared in the class opts for that class'
+      it 'should save the id to the stub after commiting' do
+        @user.commit!
+        doc = CouchDB.get( "http://127.0.0.1:5984/aqua/#{@user.id}" )
+        doc["stubs"].first["id"].class.should == String 
+      end
+        
+      it 'should log a warning if an external object doesn\'t commit' do
+        @graeme.should_receive(:commit).and_return(false)
+        @user.commit!
+        @user._warnings.size.should == 1
+        @user._warnings.first.should match(/unable to save/i)
+      end
+      
+      it 'should log a warning and save the id if an object has an id' do
+        @graeme.commit!
+        @graeme.should_receive(:commit).and_return(false)
+        @user.commit!
+        @user._warnings.size.should == 1
+        @user._warnings.first.should match(/unable to save latest/i) 
+        doc = CouchDB.get( "http://127.0.0.1:5984/aqua/#{@user.id}" )
+        doc["stubs"].first["id"].class.should == String
+      end  
+        
+      it 'should rollback external commits if the parent object doesn\'t save'
     end
+    
   end     
   
   describe 'hiding attributes' do

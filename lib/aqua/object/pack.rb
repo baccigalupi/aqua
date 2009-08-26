@@ -92,7 +92,9 @@ module Aqua::Pack
     # @api private
     def _storable_attributes
       (instance_variables||[]) - self.class._hidden_attributes
-    end  
+    end
+    
+    attr_accessor :_warnings  
        
     # Private/protected methods are all prefaced by an underscore to prevent
     # clogging the object instance space. Some of the public ones above are too!
@@ -221,11 +223,6 @@ module Aqua::Pack
             data = _pack_ivars( obj )
             return_hash['ivars'] = data unless data.empty?
             return_hash['class'] = klass.to_s  
-          # TODO: distinguish between internal storage, stubbing and external (obj.aquatic? && obj._embed_me == true) 
-          # elsif obj._embed_me.class == Hash
-          #   return_hash = _stub( obj )
-          # else
-          #   return_hash = _pack_to_external(obj)
           end
           return_hash        
         end           
@@ -277,9 +274,27 @@ module Aqua::Pack
         # Also learn the library usage, without any docs :(
       end    
       
-      def _save_to_store 
+      def _save_to_store
+        self._warnings = []
+        _commit_externals 
         __pack.commit
       end
+      
+      def _commit_externals 
+        __pack[:stubs].each_with_index do |obj_hash, index|
+          obj = obj_hash[:id]
+          if obj.commit
+            obj_hash[:id] = obj.id
+          else
+            if obj.id
+              self._warnings << "Unable to save latest version of #{obj.inspect}, stubbed at index #{index}"
+              obj_hash[:id] = obj.id if obj.id 
+            else  
+              self._warnings << "Unable to save #{obj.inspect}, stubbed at index #{index}" 
+            end  
+          end    
+        end  
+      end 
       
       def _clear_accessors
         self.__pack = nil
