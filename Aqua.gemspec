@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{aqua}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kane Baccigalupi"]
-  s.date = %q{2009-08-21}
+  s.date = %q{2009-08-25}
   s.description = %q{Even with ORMs like ActiveRecord, DataMapper which ease the pain of relational data storage, considerable developer effort goes into wrangling Ruby objects into their databases. Document-oriented databases have made it possible to store nested data structures that easily map to Ruby objects. Aqua (http://github.com/baccigalupi/aqua) is a new Ruby library that aims to painlessly persists objects, allowing developers to focus more on object oriented code and less on storage. Currently Aqua is in pre-alpha testing, with the following big things left to implement: A data query DSL and implementation; Support of all objects in the Standard Library; Class and code storage to allow the sharing and persistence of classes with their data.}
   s.email = %q{baccigalupi@gmail.com}
   s.extra_rdoc_files = [
