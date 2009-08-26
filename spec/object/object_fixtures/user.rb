@@ -1,5 +1,5 @@
 class User
-  include Aqua::Tank
+  aquatic :embed => { :stub => :username }
   
   attr_accessor :name, # An array of strings or a hash of strings 
     :created_at,# Time
@@ -7,7 +7,7 @@ class User
     :username,  # simple string 
     :log,       # an Aquatic Object 
     :password,  # hidden value
-    :grab_bag   # non Aquatic Object
+    :grab_bag,   # non Aquatic Object
     :other_user # a non-embeddable Aquatic Object
   hide_attributes :password
   

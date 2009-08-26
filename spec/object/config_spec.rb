@@ -7,7 +7,7 @@ describe Aqua::Config do
   end
   
   it 'should set default configuration options on module load' do 
-    opts = User.aquatic_options
+    opts = Persistent.aquatic_options
     opts.should_not be_nil
     opts[:database].should be_nil
     opts[:embed].should be_false

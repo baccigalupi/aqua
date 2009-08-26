@@ -27,7 +27,10 @@ describe Aqua::Tank do
       Log.new.should respond_to(:commit)
     end
       
-    it 'should add unpack methods to the class and its instances'
+    it 'should add unpack methods to the class and its instances' do 
+      Log.should respond_to( :load )
+      Log.new.should respond_to( :reload )
+    end  
     
     it 'should add configuration methods to the class' do
       Log.should respond_to(:configure_aqua)
@@ -38,14 +41,17 @@ describe Aqua::Tank do
   
   describe 'including Aqua::Pack on the class' do 
     it 'should add pack methods to the class and its instances' do 
-      User.should respond_to(:hide_attributes)
-      User.new.should respond_to(:commit)
+      Persistent.should respond_to(:hide_attributes)
+      Persistent.new.should respond_to(:commit)
     end
       
-    it 'should add unpack methods to the class and its instances'
+    it 'should add unpack methods to the class and its instances' do 
+      Persistent.should respond_to( :load )
+      Persistent.new.should respond_to( :reload )
+    end  
     
     it 'should add configuration methods to the class' do
-      User.should respond_to(:configure_aqua)
+      Persistent.should respond_to( :configure_aqua )
     end  
     
     it 'should add query methods to the class and its instances' 

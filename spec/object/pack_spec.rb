@@ -34,8 +34,17 @@ describe Aqua::Pack do
   end 
   
   describe 'external saves' do
+    before(:each) do 
+      @user.other_user = User.new(:username => 'graeme')
+      @pack = @user._pack
+    end
+      
     describe 'packing' do
-      it 'should pack a stubbed object representation under __pack[:stubs]'
+      it 'should pack a stubbed object representation under __pack[:stubs]' do 
+        pending
+        @pack[:stubs].size.should == 1
+      end  
+      
       it 'should pack the values of any stubbed methods'
       
       # {
@@ -43,7 +52,9 @@ describe Aqua::Pack do
       #   :init => '/STUB_0'
       # }
       
-      it 'should pack the object itself with the class "Aqua::Stub"'
+      it 'should pack the object itself with the class "Aqua::Stub"' do 
+        
+      end  
         
       it 'should pack the object itself with a reference to the __pack[:stubs] object'
     end
@@ -229,12 +240,12 @@ describe Aqua::Pack do
          
         describe 'embeddable aquatic' do
           it 'aquatic objects should have packing instructions in the form of #_embed_me' do
-            @user._embed_me.should == false
+            @user._embed_me.should == {'stub' => :username }
             Log.new._embed_me.should == true
             User.configure_aqua( :embed => {:stub =>  [:username, :name] } ) 
             @user._embed_me.should == { 'stub' => [:username, :name] }
             # reset for future tests
-            User.configure_aqua( :embed => false )
+            User.configure_aqua( :embed => {:stub => :username } )
           end   
   
           it 'should save their ivars correctly' do
