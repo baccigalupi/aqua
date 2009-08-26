@@ -107,9 +107,9 @@ module Aqua::Unpack
           value = _unpack_object( value ) unless value.class == String
           if raw_key.match(/\A(:)/)
             key = raw_key.gsub($1, '').to_sym
-          elsif raw_key.match(/\A\/OBJECT_/) # object keys will start with '/OBJECT_' hopefully an unlikely actual string name   
-            raise 'object keys not yet implemented'
-          else
+          elsif raw_key.match(/\A\/OBJECT_(\d*)\z/) 
+            key = _unpack_object( self._store[:keys][$1.to_i] )
+          else 
             key = raw_key
           end  
           hash[key] = value

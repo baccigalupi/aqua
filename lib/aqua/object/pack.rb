@@ -68,6 +68,7 @@ module Aqua::Pack
       self.__pack.id = @id if @id
       self.__pack[:_rev] = _rev if _rev 
       self.__pack[:class] = class_name
+      self.__pack[:keys] = []
       _pack_properties
       _pack_singletons
       __pack
@@ -191,7 +192,8 @@ module Aqua::Pack
           } 
         else # a more complex object, including an array or a hash like thing 
           return_hash = {}
-          if obj.aquatic? # TODO distinguish between internal storage, stubbing and external (obj.aquatic? && obj._embed_me == true)
+          if obj.aquatic? 
+            # TODO distinguish between internal storage, stubbing and external (obj.aquatic? && obj._embed_me == true)
             return_hash = obj._pack    
           elsif !obj.aquatic?
             initialization = _pack_initializations( obj )
@@ -223,7 +225,9 @@ module Aqua::Pack
           elsif key_class == String
             key = raw_key
           else 
-            raise ArgumentError, 'Currently Hash keys must be either strings or symbols' unless [Symbol, String].include?( key.class )
+            index = self.__pack[:keys].length 
+            self.__pack[:keys] << _pack_object( raw_key )
+            key = "/OBJECT_#{index}"
           end     
           return_hash[key] = _pack_object( value )
         end

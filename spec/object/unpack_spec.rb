@@ -195,7 +195,22 @@ describe Aqua::Unpack do
         @user.commit!
         user = User.load(@user.id)
         user.grab_bag.keys.should include('first', :second)
-      end    
+      end
+      
+      it 'should unpack a numeric object key' do
+        @user.grab_bag = {1 => 'first', 2 => 'second'}
+        @user.commit!
+        user = User.load(@user.id)
+        user.grab_bag.keys.should include( 1, 2 )
+      end
+      
+      it 'should unpack a more complex object as a key' do
+        struct = OpenStruct.new( :gerbil => true ) 
+        @user.grab_bag = { struct => 'first' }
+        @user.commit!
+        user = User.load(@user.id) 
+        user.grab_bag.keys.should include( struct )
+      end      
       
       it 'should unpack a Hash with non-string values' do 
         @user.grab_bag = {'1' => 2}

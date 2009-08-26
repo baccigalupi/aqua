@@ -17,6 +17,11 @@ describe Aqua::Pack do
       :log => @log,
       :password => 'my secret!' 
     )
+    
+    def pack_grab_bag( value )
+      @user.grab_bag = value
+      @user._pack[:ivars][:@grab_bag]
+    end 
   end
   
   describe 'packing classes' do 
@@ -107,12 +112,6 @@ describe Aqua::Pack do
         it 'should pack an array of strings as a hash with the :class "Array" and :init as the original array' do
           @pack[:ivars][:@name].should == {'class' => 'Array', 'init' => ['Kane', 'Baccigalupi']}
         end  
-    
-        it 'should pack an hash containing only strings/symbols for keys and values, with an init value that is that hash and a class key' do
-          @user.name = {'first' => 'Kane', 'last' => 'Baccigalupi'}
-          pack = @user._pack
-          pack[:ivars][:@name].should == {'class' => 'Hash', 'init' => {'first' => 'Kane', 'last' => 'Baccigalupi'} }
-        end   
       end
       
       describe 'objects: ' do
@@ -157,11 +156,6 @@ describe Aqua::Pack do
         end      
         
         describe 'Numbers' do
-          def pack_grab_bag( value )
-            @user.grab_bag = value
-            @user._pack[:ivars][:@grab_bag]
-          end 
-          
           it 'should pack Fixnums with correct class and value' do 
             pack = pack_grab_bag( 42 )
             pack[:class].should == 'Fixnum'
@@ -186,7 +180,34 @@ describe Aqua::Pack do
             pack[:init].should == ['1', '17']
           end    
           
-        end  
+        end
+        
+        describe 'hashes with object as keys' do 
+          it 'should pack an hash containing only strings/symbols for keys and values, with an init value that is that hash and a class key' do
+            @user.name = {'first' => 'Kane', 'last' => 'Baccigalupi'}
+            pack = @user._pack
+            pack[:ivars][:@name].should == {'class' => 'Hash', 'init' => {'first' => 'Kane', 'last' => 'Baccigalupi'} }
+          end
+           
+          it 'should pack a numeric object key' do
+            pack = pack_grab_bag( {1 => 'first', 2 => 'second'} )
+            keys = pack[:init].keys
+            keys.should include( '/OBJECT_0', '/OBJECT_1' )
+            user_pack = @user.instance_variable_get("@__pack")
+            user_pack[:keys].size.should == 2
+            user_pack[:keys].first['class'].should == 'Fixnum'  
+          end
+          
+          it 'should pack a more complex object as a key' do
+            struct = OpenStruct.new( :gerbil => true ) 
+            pack = pack_grab_bag( { struct => 'first'} )
+            keys = pack[:init].keys
+            keys.should include( '/OBJECT_0' )
+            user_pack = @user.instance_variable_get("@__pack")
+            user_pack[:keys].size.should == 1
+            user_pack[:keys].first['class'].should == 'OpenStruct'
+          end    
+        end    
          
         describe 'embeddable aquatic' do
           it 'aquatic objects should have packing instructions in the form of #_embed_me' do
@@ -199,7 +220,7 @@ describe Aqua::Pack do
           end   
   
           it 'should save their ivars correctly' do
-            @pack[:ivars][:@log].keys.should == ['class', 'ivars']
+            @pack[:ivars][:@log].keys.sort.should == ['class', 'ivars', 'keys']
             @pack[:ivars][:@log]['ivars'].keys.should == ['@created_at', '@message'] 
             @pack[:ivars][:@log]['ivars']['@message'].should == "Hello World! This is a log entry"
           end 
@@ -212,7 +233,7 @@ describe Aqua::Pack do
             arrayish = Arrayed['a', 'b', 'c', 'd']
             arrayish.my_accessor = 'Newt'
             pack = arrayish._pack
-            pack.keys.sort.should == ['class', 'init', 'ivars']
+            pack.keys.sort.should == ['class', 'init', 'ivars', 'keys']
             pack['init'].class.should == Array
             pack['init'].should == ['a', 'b', 'c', 'd']
             pack['ivars']['@my_accessor'].should == 'Newt'   
@@ -227,7 +248,7 @@ describe Aqua::Pack do
             hashish['1'] = '2'
             hashish.my_accessor = 'Newt'
             pack = hashish._pack
-            pack.keys.sort.should == ['class', 'init', 'ivars']
+            pack.keys.sort.should == ['class', 'init', 'ivars', 'keys']
             pack['init'].class.should == HashWithIndifferentAccess
             pack['init'].should == {'1' => '2'}
             pack['ivars']['@my_accessor'].should == 'Newt'
