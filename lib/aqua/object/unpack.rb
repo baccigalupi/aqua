@@ -82,15 +82,24 @@ module Aqua::Unpack
       def _unpack_initialization( obj )
         if init = obj[:init] 
           init_class = init.class
-          if init_class == String
-            init
+          if init_class == String 
+            if init.match(/\A\/STUB_(\d*)\z/)
+              _unpack_stub( $1 )
+            else  
+              init
+            end  
           elsif init.class == Array 
             _unpack_array( init )
           else
             _unpack_hash( init )
           end    
         end 
-      end  
+      end
+      
+      def _unpack_stub( index )
+        hash = _store[:stubs][index]
+        Stub.new( hash )
+      end    
       
       def _unpack_array( obj ) 
         arr = [] 

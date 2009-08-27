@@ -3,6 +3,7 @@ require dir + '/pack'
 require dir + '/query'
 require dir + '/unpack'
 require dir + '/config'
+require dir + '/stub'
 
 module Aqua::Tank
   def self.included( klass )
