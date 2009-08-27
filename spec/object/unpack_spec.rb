@@ -266,13 +266,51 @@ describe Aqua::Unpack do
       it 'should unpack an aquatic object' do 
         @user.commit!
         @user.log.should == @log
-      end  
+      end
+      
+      describe 'externally saved aquatic objects' do
+        before(:all) do
+          User.configure_aqua( :embed => {:stub =>  [:username, :name] } )
+        end
+        
+        after(:all) do
+          User.configure_aqua( :embed => {:stub =>  :username } )
+        end  
+          
+        before(:each) do
+          @time2 = Time.now - 3600 
+          @graeme = User.new(:username => 'graeme', :name => ['Graeme', 'Nelson'], :created_at => @time2 )
+          @user = User.new(
+            :username => 'kane',
+            :name => ['Kane', 'Baccigalupi'],
+            :dob => @date,
+            :created_at => @time,
+            :log => @log,
+            :password => 'my secret!',
+            :other_user => @graeme 
+          )
+          @user.commit!  
+        end
+           
+        it 'should load a Stub' do 
+          user = User.load(@user.id)
+          user.other_user.class.should == Aqua::Stub
+        end
+          
+        it 'should retrieve cached methods' do
+          user = User.load(@user.id)
+          User.should_not_receive(:load)
+          user.other_user.username.should == 'graeme'
+          user.other_user.name.should == ['Graeme', 'Nelson']
+        end
+          
+        it 'should retrieve the stubbed object when an additional method is required' do
+          user = User.load(@user.id)
+          user.other_user.created_at.to_s.should == @time2.to_s
+        end  
+      end    
       
     end  
   end
-  
-  # object.reload is used by Object.load(id), so there isn't any need right now to test both since
-  # Object.load tests both at once.
-      
 end  
    

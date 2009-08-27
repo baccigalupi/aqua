@@ -74,7 +74,7 @@ module Aqua::Unpack
             data_package
           else
             _unpack_object( data_package )
-          end    
+          end
           obj.instance_variable_set( ivar_name, unpacked )
         end  
       end    
@@ -84,7 +84,7 @@ module Aqua::Unpack
           init_class = init.class
           if init_class == String 
             if init.match(/\A\/STUB_(\d*)\z/)
-              _unpack_stub( $1 )
+              _unpack_stub( $1.to_i )
             else  
               init
             end  
@@ -96,9 +96,9 @@ module Aqua::Unpack
         end 
       end
       
-      def _unpack_stub( index )
-        hash = _store[:stubs][index]
-        Stub.new( hash )
+      def _unpack_stub( index ) 
+        hash = _store[:stubs][index] 
+        Aqua::Stub.new( hash ) 
       end    
       
       def _unpack_array( obj ) 
@@ -153,7 +153,6 @@ module Aqua::Unpack
                 elsif obj_class && obj_class != Array
                   obj_class.new.replace( init )
                 else
-                  # should log an error internally
                   init
                 end
               elsif init_class.ancestors.include?( Hash )
@@ -165,7 +164,7 @@ module Aqua::Unpack
                   # should log an error internally
                   init
                 end
-              else # is a string 
+              else # is a string
                 if obj_class == Date || obj_class == Time 
                   obj_class.parse( init )
                 elsif [Fixnum, Bignum].include?( obj_class )
@@ -176,7 +175,9 @@ module Aqua::Unpack
                   true
                 elsif obj_class == FalseClass 
                   false
-                else
+                elsif obj_class == Aqua::Stub
+                  init
+                else  
                   nil
                 end            
               end       
