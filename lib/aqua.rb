@@ -25,6 +25,7 @@ $:.unshift File.join(File.dirname(__FILE__))
   # support aka. monkey pathches
 require 'aqua/support/mash'
 require 'aqua/support/string_extensions'
+require 'aqua/support/initializers'
   # storage 
 require 'aqua/store/storage' 
   # object methods

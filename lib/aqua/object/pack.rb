@@ -41,7 +41,7 @@ module Aqua::Pack
     # @api private
     def _hidden_attributes 
       @_hidden_attributes ||= []
-    end 
+    end
           
   end # ClassMethods
   
@@ -67,10 +67,11 @@ module Aqua::Pack
       self.__pack = Aqua::Storage.new
       self.__pack.id = @id if @id
       self.__pack[:_rev] = _rev if _rev 
-      self.__pack[:class] = class_name
+      #self.__pack[:class] = class_name
       self.__pack[:keys] = []
       self.__pack[:stubs] = []
-      _pack_properties
+      #_pack_properties
+      self.__pack.merge!( _pack_object( self ) )
       _pack_singletons
       __pack
     end
@@ -92,23 +93,77 @@ module Aqua::Pack
     # @api private
     def _storable_attributes
       (instance_variables||[]) - self.class._hidden_attributes
+    end 
+    
+    # Packs an object into data and meta data. Works recursively sending out to array, hash, etc.  
+    # object packers, which send their values back to _pack_object
+    #
+    # @param Object to pack
+    # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+    #
+    # @api private
+    def _pack_object( obj ) 
+      klass = obj.class
+      if klass == String
+        obj
+      elsif obj.respond_to?(:to_aqua) # Types requiring initialization
+        obj.to_aqua( self )
+      elsif obj.aquatic? && obj != self
+        if obj._embed_me == true
+          obj._pack
+        else
+          _build_stub( obj ) 
+        end   
+      else # other object without initializations
+        _pack_vanilla( obj )
+      end     
+      # elsif obj.aquatic? # aquatic objects
+      #   if obj == self
+      #     if obj.respond_to?(:to_aqua)
+      #       obj.to_aqua( self )
+      #     else
+      #       _pack_vanilla( obj )
+      #     end    
+      #   elsif obj._embed_me == true
+      #     obj._pack
+      #   else
+      #     
+      #   end 
+      # end           
     end
     
-    attr_accessor :_warnings  
+    def _pack_ivars( obj )
+      return_hash = {}
+      vars = obj.aquatic? ? obj._storable_attributes : obj.instance_variables
+      vars.each do |ivar_name|
+        ivar = obj.instance_variable_get( ivar_name )
+        return_hash[ivar_name] = _pack_object( ivar ) unless ivar.nil?       
+      end
+      return_hash
+    end
+    
+    def _build_object_key( obj )
+      index = self.__pack[:keys].length
+      self.__pack[:keys] << _pack_object( obj )
+      index # return key
+    end    
+           
+    
+    attr_accessor :_warnings 
        
     # Private/protected methods are all prefaced by an underscore to prevent
     # clogging the object instance space. Some of the public ones above are too!
     protected
       
       # __pack is an Aqua::Storage object into which the object respresentation is packed
-      
+      #
       # _store is the current state of the storage of the object on CouchDB. It is used lazily
       # and will be empty unless it is needed for unpacking or checking for changed data.
-      
+      #
       # _rev is needed for CouchDB store, since updates require the rev information. We could
       # do without this accessor, but it would mean that an extra get request would have to be
       # made with each PUT request so that the latest _rev could be obtained. 
-      
+      #
       attr_accessor :_store, :__pack, :_rev
       
     private
@@ -137,137 +192,34 @@ module Aqua::Pack
        
       # Object packing methods ------------
       
-      # Examines each ivar and converts it to a hash, array, string combo
-      # @api private
-      def _pack_properties
-        self.__pack[:ivars] = _pack_ivars( self )
-        initializations = _pack_initializations( self )
-        self.__pack[:init] = initializations unless initializations.empty? 
+      def _pack_vanilla( obj ) 
+        {
+          'class' => obj.class.to_s,
+          'ivars' => _pack_ivars( obj )
+        }
       end
       
-      def _pack_initializations( obj )
-        ancestors = obj.class.ancestors
-        initializations = {}
-        if ancestors.include?( Array )
-          initializations = _pack_array( obj )
-        elsif ancestors.include?( Hash )  
-          initializations = _pack_hash( obj )
-        elsif ancestors.include?( OpenStruct )
-          initializations = _pack_struct( obj )  
+      def _build_stub( obj )
+        index = self.__pack[:stubs].length 
+        stub = { :class => obj.class.to_s, :id => obj } 
+        # deal with cached methods
+        if obj._embed_me.keys && stub_methods = obj._embed_me[:stub]
+          stub[:methods] = {}
+          if stub_methods.class == Symbol || stub_methods.class == String
+            stub_method = stub_methods.to_sym 
+            stub[:methods][stub_method] = obj.send( stub_method )
+          else # is an array of values
+            stub_methods.each do |meth|
+              stub_method = meth.to_sym
+              stub[:methods][stub_method] = obj.send( stub_method )
+            end  
+          end    
         end
-        initializations 
-      end  
-      
-      # Examines an object for its ivars, packs each into a hash 
-      # @api private
-      def _pack_ivars( obj )
-        return_hash = {}
-        vars = obj.aquatic? ? obj._storable_attributes : obj.instance_variables
-        vars.each do |ivar_name|
-          ivar = obj.instance_variable_get( ivar_name )
-          return_hash[ivar_name] = _pack_object( ivar ) unless ivar.nil?       
-        end
-        return_hash
-      end  
-      
-      # Packs an object into data and meta data. Works recursively sending out to array, hash, etc.  
-      # object packers, which send their values back to _pack_object
-      #
-      # @param Object to pack
-      # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
-      #
-      # @api private
-      def _pack_object( obj ) 
-        klass = obj.class
-        if klass == String
-          obj
-        elsif [TrueClass, FalseClass].include?( klass )
-          { 'class' => klass.to_s, 'init' => obj.to_s }  
-        elsif [Time, Date, Fixnum, Bignum, Float ].include?( klass )
-          {
-            'class' => klass.to_s,
-            'init' => obj.to_s
-          }
-        elsif klass == Rational
-          {
-            'class' => klass.to_s,
-            'init' => obj.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2)
-          } 
-        else # a more complex object, including an array or a hash like thing 
-          return_hash = {}
-          if obj.aquatic? 
-            if obj._embed_me == true
-              return_hash = obj._pack
-            else
-              return_hash['class'] = 'Aqua::Stub'
-              index = self.__pack[:keys].length 
-              stub = { :class => klass.to_s, :id => obj } 
-              if obj._embed_me.keys && stub_methods = obj._embed_me[:stub]
-                stub[:methods] = {}
-                if stub_methods.class == Symbol || stub_methods.class == String
-                  stub_method = stub_methods.to_sym 
-                  stub[:methods][stub_method] = obj.send( stub_method )
-                else # is an array of values
-                  stub_methods.each do |meth|
-                    stub_method = meth.to_sym
-                    stub[:methods][stub_method] = obj.send( stub_method )
-                  end  
-                end    
-              end  
-              self.__pack[:stubs] << stub
-              return_hash['init'] = "/STUB_#{index}"
-            end        
-          elsif !obj.aquatic?
-            initialization = _pack_initializations( obj )
-            return_hash['init'] = initialization unless initialization.empty?
-            data = _pack_ivars( obj )
-            return_hash['ivars'] = data unless data.empty?
-            return_hash['class'] = klass.to_s  
-          end
-          return_hash        
-        end           
-      end   
-      
-      # The portion of the recursive mechanism that packs up hashes
-      # @param [Hash] or Hash derived object
-      # @return [Hash] The parsed Hash representation of the argument Hash
-      # 
-      # @api private
-      def _pack_hash( hash )
-        return_hash = {}
-        hash.each do |raw_key, value|
-          key_class = raw_key.class
-          if key_class == Symbol
-            key = ":#{raw_key.to_s}"
-          elsif key_class == String
-            key = raw_key
-          else 
-            index = self.__pack[:keys].length 
-            self.__pack[:keys] << _pack_object( raw_key )
-            key = "/OBJECT_#{index}"
-          end     
-          return_hash[key] = _pack_object( value )
-        end
-        return_hash  
-      end
-      
-      def _pack_struct( struct )
-        _pack_hash( struct.instance_variable_get("@table") ) 
-      end
-      
-      # The portion of the recursive mechanism that packs up arrays
-      # @param [Array] or Array derived object
-      # @return [Array] The parsed Array representation of the argument Array
-      # 
-      # @api private
-      def _pack_array( arr )
-        return_arr = []
-        arr.each do |obj|
-          return_arr << _pack_object( obj )
-        end
-        return_arr   
-      end    
-      
+        # add the stub  
+        self.__pack[:stubs] << stub
+        # return a hash  
+        {'class' => 'Aqua::Stub', 'init' => "/STUB_#{index}"}
+      end 
       
       def _pack_singletons
         # TODO: figure out 1.8 and 1.9 compatibility issues. 
