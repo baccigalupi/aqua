@@ -67,10 +67,8 @@ module Aqua::Pack
       self.__pack = Aqua::Storage.new
       self.__pack.id = @id if @id
       self.__pack[:_rev] = _rev if _rev 
-      #self.__pack[:class] = class_name
       self.__pack[:keys] = []
       self.__pack[:stubs] = []
-      #_pack_properties
       self.__pack.merge!( _pack_object( self ) )
       _pack_singletons
       __pack
@@ -117,21 +115,14 @@ module Aqua::Pack
       else # other object without initializations
         _pack_vanilla( obj )
       end     
-      # elsif obj.aquatic? # aquatic objects
-      #   if obj == self
-      #     if obj.respond_to?(:to_aqua)
-      #       obj.to_aqua( self )
-      #     else
-      #       _pack_vanilla( obj )
-      #     end    
-      #   elsif obj._embed_me == true
-      #     obj._pack
-      #   else
-      #     
-      #   end 
-      # end           
     end
-    
+     
+    # Packs the ivars for a given object.  
+    #
+    # @param Object to pack
+    # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+    #
+    # @api private
     def _pack_ivars( obj )
       return_hash = {}
       vars = obj.aquatic? ? obj._storable_attributes : obj.instance_variables
@@ -142,6 +133,12 @@ module Aqua::Pack
       return_hash
     end
     
+    # Handles the case of an hash-like object with keys that are objects  
+    #
+    # @param Object to pack
+    # @return [Integer] Index of the object in the keys array, used by the hash packer to name the key
+    #
+    # @api private
     def _build_object_key( obj )
       index = self.__pack[:keys].length
       self.__pack[:keys] << _pack_object( obj )
@@ -192,6 +189,12 @@ module Aqua::Pack
        
       # Object packing methods ------------
       
+      # Packs the an object requiring no initialization.  
+      #
+      # @param Object to pack
+      # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+      #
+      # @api private 
       def _pack_vanilla( obj ) 
         {
           'class' => obj.class.to_s,
@@ -199,6 +202,12 @@ module Aqua::Pack
         }
       end
       
+      # Packs the stub for an externally saved object.  
+      #
+      # @param Object to pack
+      # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+      #
+      # @api private    
       def _build_stub( obj )
         index = self.__pack[:stubs].length 
         stub = { :class => obj.class.to_s, :id => obj } 
@@ -226,12 +235,20 @@ module Aqua::Pack
         # Also learn the library usage, without any docs :(
       end    
       
+      # Saves all self and nested object requiring independent saves
+      # 
+      # @return [Object, false] Returns false on failure and self on success.
+      #
+      # @api private
       def _save_to_store
         self._warnings = []
         _commit_externals 
-        __pack.commit
+        __pack.commit # TODO: need to add some error catching and roll back the external saves where needed
       end
       
+      # Saves nested object requiring independent saves. Adds warning messages to _warnings, when a save fails.
+      #
+      # @api private
       def _commit_externals 
         __pack[:stubs].each_with_index do |obj_hash, index|
           obj = obj_hash[:id]
@@ -248,6 +265,9 @@ module Aqua::Pack
         end  
       end 
       
+      # clears the __pack and _store accessors to save on memory after each pack and unpack
+      # 
+      # @api private
       def _clear_accessors
         self.__pack = nil
         self._store = nil
