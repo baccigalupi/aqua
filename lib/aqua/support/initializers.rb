@@ -1,7 +1,10 @@
 # AQUA INITIALIZATION
 # Some object store state in a fundamental way, not in instance variables, that needs to be initialized.
 # Examples: Array, Numeric types, Hashes, Time ...
-# You can make any object requiring this initialization savable to aqua by adding the following methods:
+# You can make any object requiring this initialization savable to aqua by
+#  * including the Aqua::To module and extending the Aqua::From module
+#  * building your own methods for #to_aqua, #to_aqua_init, MyClass.aqua_init
+# See set.rb in this file for more an example
 module Aqua
   module To
     def to_aqua( base_object )

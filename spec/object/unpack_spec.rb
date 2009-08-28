@@ -2,7 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require_fixtures
  
 Aqua.set_storage_engine('CouchDB') # to initialize CouchDB
-CouchDB = Aqua::Store::CouchDB unless defined?( CouchDB )
+CouchDB = Aqua::Store::CouchDB unless defined?( CouchDB )  
+
+require File.dirname(__FILE__) + "/../../lib/aqua/support/set"
 
 describe Aqua::Unpack do
   before(:each) do
@@ -267,6 +269,14 @@ describe Aqua::Unpack do
         @user.commit!
         user = User.load(@user.id)
         user.grab_bag.should == (1..3)
+      end
+      
+      it 'should unpack a Set' do
+        set = Set.new([1,2,3])
+        @user.grab_bag = set
+        @user.commit!
+        user = User.load(@user.id)
+        user.grab_bag.should == set
       end  
          
       
