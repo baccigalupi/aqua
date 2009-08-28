@@ -27,6 +27,254 @@
       <th class="signature">
         
           <span class='overload'>
+            <span class='name'><a href="#_clear_store-instance_method" title="#_clear_store">#_clear_store</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Makes @_store nil to converve on memory.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_get_store-instance_method" title="#_get_store">#_get_store</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Retrieves objects storage from its engine.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt><a href="../Storage.html" title="Aqua::Storage">Aqua::Storage</a></tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_reload-instance_method" title="#_reload">#_reload</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Actual mechanism for reloading an object from stored data.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Object</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_unpack-instance_method" title="#_unpack">#_unpack</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Unpacks an object from hash representation of data and metadata.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt><a href="../Storage.html" title="Aqua::Storage">Aqua::Storage</a></tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_unpack_array-instance_method" title="#_unpack_array">#_unpack_array</a></span><span class='args'>(obj)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Unpacks an Array.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Object</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_unpack_hash-instance_method" title="#_unpack_hash">#_unpack_hash</a></span><span class='args'>(obj)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Unpacks a Hash.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Object</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_unpack_initialization-instance_method" title="#_unpack_initialization">#_unpack_initialization</a></span><span class='args'>(obj)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Unpacks an the initialization object from a hash into a real object.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Object</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_unpack_ivars-instance_method" title="#_unpack_ivars">#_unpack_ivars</a></span><span class='args'>(obj, data)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Unpacks an object&#8217;s instance variables.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_unpack_object-instance_method" title="#_unpack_object">#_unpack_object</a></span><span class='args'>(store_pack)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+The real workhorse behind object construction: it recursively rebuilds
+objects based on whether the passed in object is an Array, String or a
+Hash.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Object</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_unpack_stub-instance_method" title="#_unpack_stub">#_unpack_stub</a></span><span class='args'>(index)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Retrieves and unpacks a stubbed object from its separate storage area.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt><a href="../Stub.html" title="Aqua::Stub">Aqua::Stub</a></tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
             <span class='name'><a href="#reload-instance_method" title="#reload">#reload</a></span><span class='args'>(mask_exceptions = true)</span>
             <span class='block'></span>
           </span>
@@ -34,7 +282,17 @@
         
       </th>
       <td class="docstring">
+        <p>
+Reloads database information into the object.
+</p>
+
         
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Object</tt>
+              </span>
+          </p>
         
       </td>
     </tr>
@@ -50,7 +308,18 @@
         
       </th>
       <td class="docstring">
+        <p>
+Reloads database information into the object, and raises an error on
+failure.
+</p>
+
         
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Object</tt>
+              </span>
+          </p>
         
       </td>
     </tr>
@@ -63,17 +332,94 @@
   
     <div class="method">
       <div class="method_header">
-  <h3>reload</h3>
-</div><div id="reload-instance_method" class="section method">
+  <h3>_clear_store</h3>
+</div><div id="_clear_store-instance_method" class="section method">
   <div class="details_title">
     <div class='section methodsignature'>
     <tt class='def'>
       <span class='visibility'>public</span>
       <span class='return_types'></span>
-      <span class='name'>reload</span><span class='args'>(mask_exceptions = true)</span>
+      <span class='name'>_clear_store</span><span class='args'></span>
       <span class='block'></span>
     </tt>
   </div>
+
+</div><div class="section docstring">
+  <p>
+Makes @_store nil to converve on memory
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+97
+98
+99</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 97</span>
+
+<span class='def def kw'>def</span> <span class='_clear_store identifier id'>_clear_store</span>
+  <span class='@_store ivar id'>@_store</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_get_store</h3>
+</div><div id="_get_store-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt><a href="../Storage.html" title="Aqua::Storage">Aqua::Storage</a></tt></span>
+      <span class='name'>_get_store</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Retrieves objects storage from its engine.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt><a href="../Storage.html" title="Aqua::Storage">Aqua::Storage</a></tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'></span>
+    </dd>
+  
+  </dl>
+</div>
 
 </div><div class="section source">
   <span>[<a class="source_link" href="#">View source</a>]</span>
@@ -84,16 +430,836 @@
           <pre class="lines">
 
 
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
+75
+76
+77
+78</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 75</span>
+
+<span class='def def kw'>def</span> <span class='_get_store identifier id'>_get_store</span>
+  <span class='comment val'># this is kind of klunky, should refactor</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='_store identifier id'>_store</span> <span class='assign token'>=</span> <span class='Aqua constant id'>Aqua</span><span class='colon2 op'>::</span><span class='Storage constant id'>Storage</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='id identifier id'>id</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='retrieve identifier id'>retrieve</span> 
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_reload</h3>
+</div><div id="_reload-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Object</tt></span>
+      <span class='name'>_reload</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Actual mechanism for reloading an object from stored data.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Object</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Will return raise error on failure and return self on success.
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+64
+65
+66
+67
+68
+69</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 64</span>
+
+<span class='def def kw'>def</span> <span class='_reload identifier id'>_reload</span>
+  <span class='_get_store identifier id'>_get_store</span>
+  <span class='_unpack identifier id'>_unpack</span>
+  <span class='_clear_store identifier id'>_clear_store</span>
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_unpack</h3>
+</div><div id="_unpack-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt><a href="../Storage.html" title="Aqua::Storage">Aqua::Storage</a></tt></span>
+      <span class='name'>_unpack</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Unpacks an object from hash representation of data and metadata
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt><a href="../Storage.html" title="Aqua::Storage">Aqua::Storage</a></tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'></span>
+    </dd>
+  
+  </dl>
+</div>
+<div class="todo">
+  <h3>Todo Item:</h3>
+  <ul>
+  
+    <li><strong>Refactor to move more of this into individual classes</strong> </li>
+  
+  </ul>
+</div>
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+85
+86
+87
+88
+89
+90
+91
+92</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 85</span>
+
+<span class='def def kw'>def</span> <span class='_unpack identifier id'>_unpack</span>
+  <span class='if if kw'>if</span> <span class='init identifier id'>init</span> <span class='assign token'>=</span> <span class='_unpack_initialization identifier id'>_unpack_initialization</span><span class='lparen token'>(</span> <span class='_store identifier id'>_store</span> <span class='rparen token'>)</span>
+    <span class='replace identifier id'>replace</span><span class='lparen token'>(</span> <span class='init identifier id'>init</span> <span class='rparen token'>)</span> 
+  <span class='end end kw'>end</span>
+  <span class='if if kw'>if</span> <span class='ivars identifier id'>ivars</span> <span class='assign token'>=</span> <span class='_store identifier id'>_store</span><span class='lbrack token'>[</span><span class='symbol val'>:ivars</span><span class='rbrack token'>]</span>
+    <span class='_unpack_ivars identifier id'>_unpack_ivars</span><span class='lparen token'>(</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='ivars identifier id'>ivars</span> <span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>    
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_unpack_array</h3>
+</div><div id="_unpack_array-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Object</tt></span>
+      <span class='name'>_unpack_array</span><span class='args'>(obj)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Unpacks an Array.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Object</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Generally a hash, array or string
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+<div class="todo">
+  <h3>Todo Item:</h3>
+  <ul>
+  
+    <li><strong>Refactor ?? move more of this into support/initializers Array</strong> </li>
+  
+  </ul>
+</div>
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+152
+153
+154
+155
+156
+157
+158
+159</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 152</span>
+
+<span class='def def kw'>def</span> <span class='_unpack_array identifier id'>_unpack_array</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span> <span class='rparen token'>)</span> 
+  <span class='arr identifier id'>arr</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span> 
+  <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='value identifier id'>value</span><span class='bitor op'>|</span>
+    <span class='value identifier id'>value</span> <span class='assign token'>=</span> <span class='_unpack_object identifier id'>_unpack_object</span><span class='lparen token'>(</span> <span class='value identifier id'>value</span> <span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='value identifier id'>value</span><span class='dot token'>.</span><span class='class identifier id'>class</span> <span class='eq op'>==</span> <span class='String constant id'>String</span>
+    <span class='arr identifier id'>arr</span> <span class='lshft op'>&lt;&lt;</span> <span class='value identifier id'>value</span>
+  <span class='end end kw'>end</span>  
+  <span class='arr identifier id'>arr</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_unpack_hash</h3>
+</div><div id="_unpack_hash-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Object</tt></span>
+      <span class='name'>_unpack_hash</span><span class='args'>(obj)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Unpacks a Hash.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Object</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Generally a hash, array or string
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+<div class="todo">
+  <h3>Todo Item:</h3>
+  <ul>
+  
+    <li><strong>Refactor ?? move more of this into support/initializers Hash</strong> </li>
+  
+  </ul>
+</div>
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 166</span>
+
+<span class='def def kw'>def</span> <span class='_unpack_hash identifier id'>_unpack_hash</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span> <span class='rparen token'>)</span>
+  <span class='hash identifier id'>hash</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
+  <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_key identifier id'>raw_key</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='bitor op'>|</span>
+    <span class='value identifier id'>value</span> <span class='assign token'>=</span> <span class='_unpack_object identifier id'>_unpack_object</span><span class='lparen token'>(</span> <span class='value identifier id'>value</span> <span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='value identifier id'>value</span><span class='dot token'>.</span><span class='class identifier id'>class</span> <span class='eq op'>==</span> <span class='String constant id'>String</span>
+    <span class='if if kw'>if</span> <span class='raw_key identifier id'>raw_key</span><span class='dot token'>.</span><span class='match identifier id'>match</span><span class='lparen token'>(</span><span class='regexp val'>/\A(:)/</span><span class='rparen token'>)</span>
+      <span class='key identifier id'>key</span> <span class='assign token'>=</span> <span class='raw_key identifier id'>raw_key</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='$1 nth_ref id'>$1</span><span class='comma token'>,</span> <span class='string val'>''</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span>
+    <span class='elsif elsif kw'>elsif</span> <span class='raw_key identifier id'>raw_key</span><span class='dot token'>.</span><span class='match identifier id'>match</span><span class='lparen token'>(</span><span class='regexp val'>/\A\/OBJECT_(\d*)\z/</span><span class='rparen token'>)</span> 
+      <span class='key identifier id'>key</span> <span class='assign token'>=</span> <span class='_unpack_object identifier id'>_unpack_object</span><span class='lparen token'>(</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='_store identifier id'>_store</span><span class='lbrack token'>[</span><span class='symbol val'>:keys</span><span class='rbrack token'>]</span><span class='lbrack token'>[</span><span class='$1 nth_ref id'>$1</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span><span class='rbrack token'>]</span> <span class='rparen token'>)</span>
+    <span class='else else kw'>else</span> 
+      <span class='key identifier id'>key</span> <span class='assign token'>=</span> <span class='raw_key identifier id'>raw_key</span>
+    <span class='end end kw'>end</span>  
+    <span class='hash identifier id'>hash</span><span class='lbrack token'>[</span><span class='key identifier id'>key</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='value identifier id'>value</span>
+  <span class='end end kw'>end</span>
+  <span class='hash identifier id'>hash</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_unpack_initialization</h3>
+</div><div id="_unpack_initialization-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Object</tt></span>
+      <span class='name'>_unpack_initialization</span><span class='args'>(obj)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Unpacks an the initialization object from a hash into a real object.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Object</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Generally a hash, array or string
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+<div class="todo">
+  <h3>Todo Item:</h3>
+  <ul>
+  
+    <li><strong>Refactor to move more of this into individual classes</strong> </li>
+  
+  </ul>
+</div>
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 121</span>
+
+<span class='def def kw'>def</span> <span class='_unpack_initialization identifier id'>_unpack_initialization</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span> <span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='init identifier id'>init</span> <span class='assign token'>=</span> <span class='obj identifier id'>obj</span><span class='lbrack token'>[</span><span class='symbol val'>:init</span><span class='rbrack token'>]</span> 
+    <span class='init_class identifier id'>init_class</span> <span class='assign token'>=</span> <span class='init identifier id'>init</span><span class='dot token'>.</span><span class='class identifier id'>class</span>
+    <span class='if if kw'>if</span> <span class='init_class identifier id'>init_class</span> <span class='eq op'>==</span> <span class='String constant id'>String</span> 
+      <span class='if if kw'>if</span> <span class='init identifier id'>init</span><span class='dot token'>.</span><span class='match identifier id'>match</span><span class='lparen token'>(</span><span class='regexp val'>/\A\/STUB_(\d*)\z/</span><span class='rparen token'>)</span>
+        <span class='_unpack_stub identifier id'>_unpack_stub</span><span class='lparen token'>(</span> <span class='$1 nth_ref id'>$1</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span> <span class='rparen token'>)</span>
+      <span class='else else kw'>else</span>  
+        <span class='init identifier id'>init</span>
+      <span class='end end kw'>end</span>  
+    <span class='elsif elsif kw'>elsif</span> <span class='init identifier id'>init</span><span class='dot token'>.</span><span class='class identifier id'>class</span> <span class='eq op'>==</span> <span class='Array constant id'>Array</span> 
+      <span class='_unpack_array identifier id'>_unpack_array</span><span class='lparen token'>(</span> <span class='init identifier id'>init</span> <span class='rparen token'>)</span>
+    <span class='else else kw'>else</span>
+      <span class='_unpack_hash identifier id'>_unpack_hash</span><span class='lparen token'>(</span> <span class='init identifier id'>init</span> <span class='rparen token'>)</span>
+    <span class='end end kw'>end</span>    
+  <span class='end end kw'>end</span> 
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_unpack_ivars</h3>
+</div><div id="_unpack_ivars-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>_unpack_ivars</span><span class='args'>(obj, data)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Unpacks an object&#8217;s instance variables
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="todo">
+  <h3>Todo Item:</h3>
+  <ul>
+  
+    <li><strong>Refactor to move more of this into individual classes</strong> </li>
+  
+  </ul>
+</div>
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 105</span>
+
+<span class='def def kw'>def</span> <span class='_unpack_ivars identifier id'>_unpack_ivars</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span><span class='comma token'>,</span> <span class='data identifier id'>data</span> <span class='rparen token'>)</span> 
+  <span class='data identifier id'>data</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='ivar_name identifier id'>ivar_name</span><span class='comma token'>,</span> <span class='data_package identifier id'>data_package</span><span class='bitor op'>|</span>
+    <span class='unpacked identifier id'>unpacked</span> <span class='assign token'>=</span> <span class='if if kw'>if</span> <span class='data_package identifier id'>data_package</span><span class='dot token'>.</span><span class='class identifier id'>class</span> <span class='eq op'>==</span> <span class='String constant id'>String</span>
+      <span class='data_package identifier id'>data_package</span>
+    <span class='else else kw'>else</span>
+      <span class='_unpack_object identifier id'>_unpack_object</span><span class='lparen token'>(</span> <span class='data_package identifier id'>data_package</span> <span class='rparen token'>)</span>
+    <span class='end end kw'>end</span>
+    <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='instance_variable_set identifier id'>instance_variable_set</span><span class='lparen token'>(</span> <span class='ivar_name identifier id'>ivar_name</span><span class='comma token'>,</span> <span class='unpacked identifier id'>unpacked</span> <span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_unpack_object</h3>
+</div><div id="_unpack_object-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Object</tt></span>
+      <span class='name'>_unpack_object</span><span class='args'>(store_pack)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+The real workhorse behind object construction: it recursively rebuilds
+objects based on whether the passed in object is an Array, String or a
+Hash. A hash that has the class key is an object representation. If it does
+not have a hash key then it is an ordinary hash. An array will either have
+strings or object representations values.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Object</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+The object represented by the data
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 191</span>
+
+<span class='def def kw'>def</span> <span class='_unpack_object identifier id'>_unpack_object</span><span class='lparen token'>(</span> <span class='store_pack identifier id'>store_pack</span> <span class='rparen token'>)</span>
+  <span class='package_class identifier id'>package_class</span> <span class='assign token'>=</span> <span class='store_pack identifier id'>store_pack</span><span class='dot token'>.</span><span class='class identifier id'>class</span> 
+  <span class='if if kw'>if</span> <span class='package_class identifier id'>package_class</span> <span class='eq op'>==</span> <span class='String constant id'>String</span>
+    <span class='store_pack identifier id'>store_pack</span>
+  <span class='elsif elsif kw'>elsif</span> <span class='package_class identifier id'>package_class</span> <span class='eq op'>==</span> <span class='Array constant id'>Array</span> 
+    <span class='_unpack_array identifier id'>_unpack_array</span><span class='lparen token'>(</span> <span class='store_pack identifier id'>store_pack</span> <span class='rparen token'>)</span>  
+  <span class='else else kw'>else</span> <span class='comment val'># package_class == Hash -or- Mash</span>
+    <span class='if if kw'>if</span> <span class='store_pack identifier id'>store_pack</span><span class='lbrack token'>[</span><span class='string val'>'class'</span><span class='rbrack token'>]</span>
+      <span class='comment val'># Constantize the objects class</span>
+      <span class='obj_class identifier id'>obj_class</span> <span class='assign token'>=</span> <span class='store_pack identifier id'>store_pack</span><span class='lbrack token'>[</span><span class='string val'>'class'</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='constantize identifier id'>constantize</span> <span class='rescue rescue kw'>rescue</span> <span class='nil nil kw'>nil</span>
+      
+      <span class='comment val'># build from initialization </span>
+      <span class='init identifier id'>init</span> <span class='assign token'>=</span> <span class='_unpack_initialization identifier id'>_unpack_initialization</span><span class='lparen token'>(</span> <span class='store_pack identifier id'>store_pack</span> <span class='rparen token'>)</span>
+      <span class='return_object identifier id'>return_object</span> <span class='assign token'>=</span> <span class='if if kw'>if</span> <span class='init identifier id'>init</span>
+        <span class='obj_class identifier id'>obj_class</span> <span class='eq op'>==</span> <span class='Aqua constant id'>Aqua</span><span class='colon2 op'>::</span><span class='Stub constant id'>Stub</span> <span class='integer val'>? </span><span class='init identifier id'>init</span> <span class='colon op'>:</span> <span class='obj_class identifier id'>obj_class</span><span class='dot token'>.</span><span class='aqua_init identifier id'>aqua_init</span><span class='lparen token'>(</span> <span class='init identifier id'>init</span> <span class='rparen token'>)</span>
+      <span class='end end kw'>end</span>
+      
+      <span class='comment val'># Build uninitialized object</span>
+      <span class='if if kw'>if</span> <span class='return_object identifier id'>return_object</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
+        <span class='if if kw'>if</span> <span class='obj_class identifier id'>obj_class</span>
+          <span class='return_object identifier id'>return_object</span> <span class='assign token'>=</span> <span class='obj_class identifier id'>obj_class</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
+        <span class='else else kw'>else</span> 
+          <span class='comment val'># should log an error internally</span>
+          <span class='return_object identifier id'>return_object</span> <span class='assign token'>=</span> <span class='OpenStruct constant id'>OpenStruct</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
+        <span class='end end kw'>end</span>
+      <span class='end end kw'>end</span>
+      
+      <span class='comment val'># add the ivars</span>
+      <span class='if if kw'>if</span> <span class='ivars identifier id'>ivars</span> <span class='assign token'>=</span> <span class='store_pack identifier id'>store_pack</span><span class='lbrack token'>[</span><span class='string val'>'ivars'</span><span class='rbrack token'>]</span> 
+        <span class='ivars identifier id'>ivars</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='string val'>'@table'</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='obj_class identifier id'>obj_class</span><span class='dot token'>.</span><span class='ancestors identifier id'>ancestors</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span> <span class='OpenStruct constant id'>OpenStruct</span> <span class='rparen token'>)</span>
+        <span class='_unpack_ivars identifier id'>_unpack_ivars</span><span class='lparen token'>(</span> <span class='return_object identifier id'>return_object</span><span class='comma token'>,</span> <span class='ivars identifier id'>ivars</span> <span class='rparen token'>)</span>
+      <span class='end end kw'>end</span>
+             
+      <span class='return_object identifier id'>return_object</span> 
+    <span class='else else kw'>else</span> <span class='comment val'># not a packaged object, just a hash, so unpack</span>
+      <span class='_unpack_hash identifier id'>_unpack_hash</span><span class='lparen token'>(</span> <span class='hash identifier id'>hash</span> <span class='rparen token'>)</span>
+    <span class='end end kw'>end</span>    
+  <span class='end end kw'>end</span>    
+       
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_unpack_stub</h3>
+</div><div id="_unpack_stub-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt><a href="../Stub.html" title="Aqua::Stub">Aqua::Stub</a></tt></span>
+      <span class='name'>_unpack_stub</span><span class='args'>(index)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Retrieves and unpacks a stubbed object from its separate storage area
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt><a href="../Stub.html" title="Aqua::Stub">Aqua::Stub</a></tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Delegate object for externally saved class
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+142
+143
+144
+145</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 142</span>
+
+<span class='def def kw'>def</span> <span class='_unpack_stub identifier id'>_unpack_stub</span><span class='lparen token'>(</span> <span class='index identifier id'>index</span> <span class='rparen token'>)</span> 
+  <span class='hash identifier id'>hash</span> <span class='assign token'>=</span> <span class='_store identifier id'>_store</span><span class='lbrack token'>[</span><span class='symbol val'>:stubs</span><span class='rbrack token'>]</span><span class='lbrack token'>[</span><span class='index identifier id'>index</span><span class='rbrack token'>]</span> 
+  <span class='Aqua constant id'>Aqua</span><span class='colon2 op'>::</span><span class='Stub constant id'>Stub</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span> <span class='hash identifier id'>hash</span> <span class='rparen token'>)</span> 
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>reload</h3>
+</div><div id="reload-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Object</tt></span>
+      <span class='name'>reload</span><span class='args'>(mask_exceptions = true)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Reloads database information into the object.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Object</tt>, <tt>false</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Will return false or raise error on failure and self on success.
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
 31
 32
 33
@@ -102,10 +1268,20 @@
 36
 37
 38
-39</pre>
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49</pre>
         </td>
         <td>
-          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 21</span>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 31</span>
 
 <span class='def def kw'>def</span> <span class='reload identifier id'>reload</span><span class='lparen token'>(</span> <span class='mask_exceptions identifier id'>mask_exceptions</span> <span class='assign token'>=</span> <span class='true true kw'>true</span> <span class='rparen token'>)</span> 
   <span class='if if kw'>if</span> <span class='id identifier id'>id</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>
@@ -143,11 +1319,42 @@
     <div class='section methodsignature'>
     <tt class='def'>
       <span class='visibility'>public</span>
-      <span class='return_types'></span>
+      <span class='return_types'><tt>Object</tt></span>
       <span class='name'>reload!</span><span class='args'></span>
       <span class='block'></span>
     </tt>
   </div>
+
+</div><div class="section docstring">
+  <p>
+Reloads database information into the object, and raises an error on
+failure.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Object</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Will return raise error on failure and return self on success.
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
 
 </div><div class="section source">
   <span>[<a class="source_link" href="#">View source</a>]</span>
@@ -158,12 +1365,12 @@
           <pre class="lines">
 
 
-41
-42
-43</pre>
+55
+56
+57</pre>
         </td>
         <td>
-          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 41</span>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 55</span>
 
 <span class='def def kw'>def</span> <span class='reload! fid id'>reload!</span>
   <span class='reload identifier id'>reload</span><span class='lparen token'>(</span> <span class='false false kw'>false</span> <span class='rparen token'>)</span>
@@ -183,7 +1390,7 @@
 </div>
     </div>
     <div id="yard_info">
-  Generated on Friday, August 21 2009 at 12:48:47 PM by 
+  Generated on Thursday, August 27 2009 at 05:50:21 PM by 
   <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
   0.2.3.5 (ruby-1.8.6).
 </div>

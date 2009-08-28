@@ -42,7 +42,7 @@ InstanceMethods
           <td class="docstring">
             <p>
 __pack is an Aqua::Storage object into which the object respresentation is
-packed _store is the current state of the storage of the object on CouchDB.
+packed.
 </p>
 
             
@@ -64,7 +64,7 @@ packed _store is the current state of the storage of the object on CouchDB.
           <td class="docstring">
             <p>
 __pack is an Aqua::Storage object into which the object respresentation is
-packed _store is the current state of the storage of the object on CouchDB.
+packed.
 </p>
 
             
@@ -86,7 +86,28 @@ packed _store is the current state of the storage of the object on CouchDB.
           <td class="docstring">
             <p>
 __pack is an Aqua::Storage object into which the object respresentation is
-packed _store is the current state of the storage of the object on CouchDB.
+packed.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>_warnings</span>
+          </td>
+          <td class="readwrite">
+            [<span id='_warnings-instance_method'>R</span><span id='_warnings=-instance_method'>W</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+Sets the attribute <tt>_warnings</tt>.
 </p>
 
             
@@ -105,6 +126,32 @@ packed _store is the current state of the storage of the object on CouchDB.
       <div class="section methodsummary instance public">
     <h1>Public Instance Method Summary</h1>
 <table class="summary">
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_build_object_key-instance_method" title="#_build_object_key">#_build_object_key</a></span><span class='args'>(obj)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Handles the case of an hash-like object with keys that are objects.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Integer</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
   
     <tr>
       <th class="signature">
@@ -164,6 +211,58 @@ storage.
       <th class="signature">
         
           <span class='overload'>
+            <span class='name'><a href="#_pack_ivars-instance_method" title="#_pack_ivars">#_pack_ivars</a></span><span class='args'>(obj)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Packs the ivars for a given object.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Mash</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#_pack_object-instance_method" title="#_pack_object">#_pack_object</a></span><span class='args'>(obj)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Packs an object into data and meta data.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Mash</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
             <span class='name'><a href="#_storable_attributes-instance_method" title="#_storable_attributes">#_storable_attributes</a></span><span class='args'></span>
             <span class='block'></span>
           </span>
@@ -179,7 +278,7 @@ An array of instance variables that are not hidden.
           <p class='returns'>
             Returns: 
               <span class='return_types'>
-                 <tt>Array</tt>
+                 <tt><a href="../../Array.html" title="Array">Array</a></tt>
               </span>
           </p>
         
@@ -233,6 +332,83 @@ Saves object and raises an error on failure.
   
     <div class="method">
       <div class="method_header">
+  <h3>_build_object_key</h3>
+</div><div id="_build_object_key-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Integer</tt></span>
+      <span class='name'>_build_object_key</span><span class='args'>(obj)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Handles the case of an hash-like object with keys that are objects
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Integer</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Index of the object in the keys array, used by the hash packer to name the
+key
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+142
+143
+144
+145
+146</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 142</span>
+
+<span class='def def kw'>def</span> <span class='_build_object_key identifier id'>_build_object_key</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span> <span class='rparen token'>)</span>
+  <span class='index identifier id'>index</span> <span class='assign token'>=</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='lbrack token'>[</span><span class='symbol val'>:keys</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='length identifier id'>length</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='lbrack token'>[</span><span class='symbol val'>:keys</span><span class='rbrack token'>]</span> <span class='lshft op'>&lt;&lt;</span> <span class='_pack_object identifier id'>_pack_object</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span> <span class='rparen token'>)</span>
+  <span class='index identifier id'>index</span> <span class='comment val'># return key</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
   <h3>_embed_me</h3>
 </div><div id="_embed_me-instance_method" class="section method">
   <div class="details_title">
@@ -259,7 +435,7 @@ embedability.
   
     <dt>
       
-        <span class='type'>[<tt>true</tt>, <tt>false</tt>, <tt>Hash</tt>]</span>
+        <span class='type'>[<tt>true</tt>, <tt>false</tt>, <tt><a href="../../Hash.html" title="Hash">Hash</a></tt>]</span>
       
       
         <span class='name'></span>
@@ -288,12 +464,12 @@ externally, with a few cached methods as defined in the array.
           <pre class="lines">
 
 
-83
 84
-85</pre>
+85
+86</pre>
         </td>
         <td>
-          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 83</span>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 84</span>
 
 <span class='def def kw'>def</span> <span class='_embed_me identifier id'>_embed_me</span> 
   <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='_aqua_opts identifier id'>_aqua_opts</span><span class='lbrack token'>[</span><span class='symbol val'>:embed</span><span class='rbrack token'>]</span>
@@ -367,7 +543,8 @@ storage.
 71
 72
 73
-74</pre>
+74
+75</pre>
         </td>
         <td>
           <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 65</span>
@@ -377,10 +554,195 @@ storage.
   <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span> <span class='assign token'>=</span> <span class='Aqua constant id'>Aqua</span><span class='colon2 op'>::</span><span class='Storage constant id'>Storage</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
   <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='dot token'>.</span><span class='id identifier id'>id</span> <span class='assign token'>=</span> <span class='@id ivar id'>@id</span> <span class='if if_mod kw'>if</span> <span class='@id ivar id'>@id</span>
   <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='lbrack token'>[</span><span class='symbol val'>:_rev</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='_rev identifier id'>_rev</span> <span class='if if_mod kw'>if</span> <span class='_rev identifier id'>_rev</span> 
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='lbrack token'>[</span><span class='symbol val'>:class</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='class_name identifier id'>class_name</span>
-  <span class='_pack_properties identifier id'>_pack_properties</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='lbrack token'>[</span><span class='symbol val'>:keys</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='lbrack token'>[</span><span class='symbol val'>:stubs</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='__pack identifier id'>__pack</span><span class='dot token'>.</span><span class='merge! fid id'>merge!</span><span class='lparen token'>(</span> <span class='_pack_object identifier id'>_pack_object</span><span class='lparen token'>(</span> <span class='self self kw'>self</span> <span class='rparen token'>)</span> <span class='rparen token'>)</span>
   <span class='_pack_singletons identifier id'>_pack_singletons</span>
   <span class='__pack identifier id'>__pack</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_pack_ivars</h3>
+</div><div id="_pack_ivars-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Mash</tt></span>
+      <span class='name'>_pack_ivars</span><span class='args'>(obj)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Packs the ivars for a given object.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Mash</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Indifferent hash that is the data/metadata deconstruction of an object.
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+126
+127
+128
+129
+130
+131
+132
+133
+134</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 126</span>
+
+<span class='def def kw'>def</span> <span class='_pack_ivars identifier id'>_pack_ivars</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span> <span class='rparen token'>)</span>
+  <span class='return_hash identifier id'>return_hash</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span>
+  <span class='vars identifier id'>vars</span> <span class='assign token'>=</span> <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='aquatic? fid id'>aquatic?</span> <span class='integer val'>? </span><span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='_storable_attributes identifier id'>_storable_attributes</span> <span class='colon op'>:</span> <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='instance_variables identifier id'>instance_variables</span>
+  <span class='vars identifier id'>vars</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='ivar_name identifier id'>ivar_name</span><span class='bitor op'>|</span>
+    <span class='ivar identifier id'>ivar</span> <span class='assign token'>=</span> <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='instance_variable_get identifier id'>instance_variable_get</span><span class='lparen token'>(</span> <span class='ivar_name identifier id'>ivar_name</span> <span class='rparen token'>)</span>
+    <span class='return_hash identifier id'>return_hash</span><span class='lbrack token'>[</span><span class='ivar_name identifier id'>ivar_name</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='_pack_object identifier id'>_pack_object</span><span class='lparen token'>(</span> <span class='ivar identifier id'>ivar</span> <span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='ivar identifier id'>ivar</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span>       
+  <span class='end end kw'>end</span>
+  <span class='return_hash identifier id'>return_hash</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>_pack_object</h3>
+</div><div id="_pack_object-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>Mash</tt></span>
+      <span class='name'>_pack_object</span><span class='args'>(obj)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Packs an object into data and meta data. Works recursively sending out to
+array, hash, etc. object packers, which send their values back to
+_pack_object
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Mash</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Indifferent hash that is the data/metadata deconstruction of an object.
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 103</span>
+
+<span class='def def kw'>def</span> <span class='_pack_object identifier id'>_pack_object</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span> <span class='rparen token'>)</span> 
+  <span class='klass identifier id'>klass</span> <span class='assign token'>=</span> <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='class identifier id'>class</span>
+  <span class='if if kw'>if</span> <span class='klass identifier id'>klass</span> <span class='eq op'>==</span> <span class='String constant id'>String</span>
+    <span class='obj identifier id'>obj</span>
+  <span class='elsif elsif kw'>elsif</span> <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span><span class='symbol val'>:to_aqua</span><span class='rparen token'>)</span> <span class='comment val'># Types requiring initialization</span>
+    <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='to_aqua identifier id'>to_aqua</span><span class='lparen token'>(</span> <span class='self self kw'>self</span> <span class='rparen token'>)</span>
+  <span class='elsif elsif kw'>elsif</span> <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='aquatic? fid id'>aquatic?</span> <span class='andop op'>&amp;&amp;</span> <span class='obj identifier id'>obj</span> <span class='neq op'>!=</span> <span class='self self kw'>self</span>
+    <span class='if if kw'>if</span> <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='_embed_me identifier id'>_embed_me</span> <span class='eq op'>==</span> <span class='true true kw'>true</span>
+      <span class='obj identifier id'>obj</span><span class='dot token'>.</span><span class='_pack identifier id'>_pack</span>
+    <span class='else else kw'>else</span>
+      <span class='_build_stub identifier id'>_build_stub</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span> <span class='rparen token'>)</span> 
+    <span class='end end kw'>end</span>   
+  <span class='else else kw'>else</span> <span class='comment val'># other object without initializations</span>
+    <span class='_pack_vanilla identifier id'>_pack_vanilla</span><span class='lparen token'>(</span> <span class='obj identifier id'>obj</span> <span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>     
 <span class='end end kw'>end</span>
 </pre>
         </td>
@@ -399,7 +761,7 @@ storage.
     <div class='section methodsignature'>
     <tt class='def'>
       <span class='visibility'>public</span>
-      <span class='return_types'><tt>Array</tt></span>
+      <span class='return_types'><tt><a href="../../Array.html" title="Array">Array</a></tt></span>
       <span class='name'>_storable_attributes</span><span class='args'></span>
       <span class='block'></span>
     </tt>
@@ -418,7 +780,7 @@ An array of instance variables that are not hidden.
   
     <dt>
       
-        <span class='type'>[<tt>Array</tt>]</span>
+        <span class='type'>[<tt><a href="../../Array.html" title="Array">Array</a></tt>]</span>
       
       
         <span class='name'></span>
@@ -444,12 +806,12 @@ of names for instance variables
           <pre class="lines">
 
 
-91
 92
-93</pre>
+93
+94</pre>
         </td>
         <td>
-          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 91</span>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/pack.rb', line 92</span>
 
 <span class='def def kw'>def</span> <span class='_storable_attributes identifier id'>_storable_attributes</span>
   <span class='lparen token'>(</span><span class='instance_variables identifier id'>instance_variables</span><span class='orop op'>||</span><span class='lbrack token'>[</span><span class='rbrack token'>]</span><span class='rparen token'>)</span> <span class='minus op'>-</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='_hidden_attributes identifier id'>_hidden_attributes</span>
@@ -564,7 +926,7 @@ Saves object and raises an error on failure
 </div>
     </div>
     <div id="yard_info">
-  Generated on Friday, August 21 2009 at 12:48:47 PM by 
+  Generated on Thursday, August 27 2009 at 05:50:22 PM by 
   <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
   0.2.3.5 (ruby-1.8.6).
 </div>

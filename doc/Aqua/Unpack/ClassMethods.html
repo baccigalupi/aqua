@@ -35,9 +35,17 @@
       </th>
       <td class="docstring">
         <p>
-Searches the store for a document.
+Creates a new object with the class of the base class and loads it with
+data saved from the database.
 </p>
 
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>Object</tt>
+              </span>
+          </p>
         
       </td>
     </tr>
@@ -56,7 +64,7 @@ Searches the store for a document.
     <div class='section methodsignature'>
     <tt class='def'>
       <span class='visibility'>public</span>
-      <span class='return_types'></span>
+      <span class='return_types'><tt>Object</tt></span>
       <span class='name'>load</span><span class='args'>(id)</span>
       <span class='block'></span>
     </tt>
@@ -64,8 +72,31 @@ Searches the store for a document.
 
 </div><div class="section docstring">
   <p>
-Searches the store for a document. Initializes a New Object with it.
+Creates a new object with the class of the base class and loads it with
+data saved from the database.
 </p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Object</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'></span>
+    </dd>
+  
+  </dl>
+</div>
 
 </div><div class="section source">
   <span>[<a class="source_link" href="#">View source</a>]</span>
@@ -76,15 +107,15 @@ Searches the store for a document. Initializes a New Object with it.
           <pre class="lines">
 
 
-12
-13
-14
-15
 16
-17</pre>
+17
+18
+19
+20
+21</pre>
         </td>
         <td>
-          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 12</span>
+          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 16</span>
 
 <span class='def def kw'>def</span> <span class='load identifier id'>load</span><span class='lparen token'>(</span> <span class='id identifier id'>id</span> <span class='rparen token'>)</span> 
   <span class='instance identifier id'>instance</span> <span class='assign token'>=</span> <span class='new identifier id'>new</span>
@@ -107,7 +138,7 @@ Searches the store for a document. Initializes a New Object with it.
 </div>
     </div>
     <div id="yard_info">
-  Generated on Friday, August 21 2009 at 12:48:49 PM by 
+  Generated on Thursday, August 27 2009 at 05:50:21 PM by 
   <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
   0.2.3.5 (ruby-1.8.6).
 </div>

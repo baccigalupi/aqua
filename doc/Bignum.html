@@ -3,18 +3,18 @@
 <html>
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8" />
-<link rel="stylesheet" href="../custom.css" type="text/css" charset="utf-8" />
-<link rel="stylesheet" href="../syntax_highlight.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="style.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="custom.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="syntax_highlight.css" type="text/css" charset="utf-8" />
 
-    <script src="../jquery.js" type="text/javascript" charset="utf-8"></script>
-    <script src="../app.js" type="text/javascript" charset="utf-8"></script>
-    <title>Module: Aqua::Unpack</title>
+    <script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="app.js" type="text/javascript" charset="utf-8"></script>
+    <title>Class: Bignum</title>
   </head>
   <body>
     <div id="content">
-      <div class="section module Aqua_Unpack">
-  <h1 class="title">Module: Aqua::Unpack</h1>
+      <div class="section class Bignum">
+  <h1 class="title">Class: Bignum</h1>
   <div class="section constants">
   
 </div>  <div class="section visibilitygroup public">
@@ -27,7 +27,7 @@
       <th class="signature">
         
           <span class='overload'>
-            <span class='name'><a href="#included-class_method" title="included">included</a></span><span class='args'>(klass)</span>
+            <span class='name'><a href="#aqua_init-class_method" title="aqua_init">aqua_init</a></span><span class='args'>(init)</span>
             <span class='block'></span>
           </span>
         
@@ -47,14 +47,14 @@
   
     <div class="method">
       <div class="method_header">
-  <h3>included</h3>
-</div><div id="included-class_method" class="section method">
+  <h3>aqua_init</h3>
+</div><div id="aqua_init-class_method" class="section method">
   <div class="details_title">
     <div class='section methodsignature'>
     <tt class='def'>
       <span class='visibility'>public</span>
       <span class='return_types'></span>
-      <span class='name'>included</span><span class='args'>(klass)</span>
+      <span class='name'>aqua_init</span><span class='args'>(init)</span>
       <span class='block'></span>
     </tt>
   </div>
@@ -68,21 +68,15 @@
           <pre class="lines">
 
 
-3
-4
-5
-6
-7
-8</pre>
+68
+69
+70</pre>
         </td>
         <td>
-          <pre class="code"><span class="info file"># File 'lib/aqua/object/unpack.rb', line 3</span>
+          <pre class="code"><span class="info file"># File 'lib/aqua/support/initializers.rb', line 68</span>
 
-<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='included identifier id'>included</span><span class='lparen token'>(</span> <span class='klass identifier id'>klass</span> <span class='rparen token'>)</span> 
-  <span class='klass identifier id'>klass</span><span class='dot token'>.</span><span class='class_eval identifier id'>class_eval</span> <span class='do do kw'>do</span>
-    <span class='extend identifier id'>extend</span> <span class='ClassMethods constant id'>ClassMethods</span>
-    <span class='include identifier id'>include</span> <span class='InstanceMethods constant id'>InstanceMethods</span>
-  <span class='end end kw'>end</span>  
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='aqua_init identifier id'>aqua_init</span><span class='lparen token'>(</span> <span class='init identifier id'>init</span> <span class='rparen token'>)</span>
+  <span class='init identifier id'>init</span><span class='dot token'>.</span><span class='to_i identifier id'>to_i</span>
 <span class='end end kw'>end</span>
 </pre>
         </td>

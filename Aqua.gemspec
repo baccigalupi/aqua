@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{aqua}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kane Baccigalupi"]
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
      "doc/Aqua.html",
      "doc/Aqua/Config.html",
      "doc/Aqua/Config/ClassMethods.html",
+     "doc/Aqua/From.html",
      "doc/Aqua/ObjectNotFound.html",
      "doc/Aqua/Pack.html",
      "doc/Aqua/Pack/ClassMethods.html",
@@ -49,13 +50,27 @@ Gem::Specification.new do |s|
      "doc/Aqua/Store/CouchDB/StorageMethods.html",
      "doc/Aqua/Store/CouchDB/StorageMethods/ClassMethods.html",
      "doc/Aqua/Store/CouchDB/StorageMethods/InstanceMethods.html",
+     "doc/Aqua/Stub.html",
      "doc/Aqua/Tank.html",
+     "doc/Aqua/TempStub.html",
+     "doc/Aqua/To.html",
      "doc/Aqua/Unpack.html",
      "doc/Aqua/Unpack/ClassMethods.html",
      "doc/Aqua/Unpack/InstanceMethods.html",
+     "doc/Array.html",
+     "doc/Bignum.html",
+     "doc/Date.html",
+     "doc/FalseClass.html",
+     "doc/Fixnum.html",
+     "doc/Float.html",
+     "doc/Hash.html",
+     "doc/OpenStruct.html",
      "doc/README.rdoc.html",
+     "doc/Rational.html",
      "doc/RestAPI.html",
      "doc/RestClientAdapter.html",
+     "doc/Time.html",
+     "doc/TrueClass.html",
      "doc/all-files.html",
      "doc/all-methods.html",
      "doc/all-namespaces.html",
@@ -84,6 +99,7 @@ Gem::Specification.new do |s|
      "lib/aqua/store/couch_db/server.rb",
      "lib/aqua/store/couch_db/storage_methods.rb",
      "lib/aqua/store/storage.rb",
+     "lib/aqua/support/initializers.rb",
      "lib/aqua/support/mash.rb",
      "lib/aqua/support/string_extensions.rb",
      "spec/aqua_spec.rb",
