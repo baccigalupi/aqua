@@ -27,7 +27,7 @@ module Aqua
   end # From       
 end  
 
-[ TrueClass, FalseClass, Time, Date, Fixnum, Bignum, Float, Rational, Hash, Array, OpenStruct].each do |klass|
+[ TrueClass, FalseClass, Time, Date, Fixnum, Bignum, Float, Rational, Hash, Array, OpenStruct, Range].each do |klass|
   klass.class_eval do 
     include Aqua::To
     extend Aqua::From
@@ -74,7 +74,13 @@ class Float
   def self.aqua_init( init )
     init.to_f
   end
-end  
+end 
+
+class Range
+  def self.aqua_init( init ) 
+    eval( init )
+  end
+end     
 
 class Rational
   def to_aqua_init( base_object ) 

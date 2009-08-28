@@ -261,6 +261,13 @@ describe Aqua::Unpack do
         user = User.load(@user.id)
         user.grab_bag.should == @user.grab_bag 
       end
+      
+      it 'should unpack a Range' do
+        @user.grab_bag = 1..3
+        @user.commit!
+        user = User.load(@user.id)
+        user.grab_bag.should == (1..3)
+      end  
          
       
       it 'should unpack an aquatic object' do 
