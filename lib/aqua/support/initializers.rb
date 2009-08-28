@@ -18,19 +18,72 @@ module Aqua
     def to_aqua_init( base_object ) 
       self.to_s
     end
-  end      
-end 
+  end # To
+  
+  module From 
+    def aqua_init( init ) 
+      new( init )
+    end    
+  end # From       
+end  
 
-[TrueClass, FalseClass, Time, Date, Fixnum, Bignum, Float, Rational, Hash, Array, OpenStruct].each do |klass|
+[ TrueClass, FalseClass, Time, Date, Fixnum, Bignum, Float, Rational, Hash, Array, OpenStruct].each do |klass|
   klass.class_eval do 
     include Aqua::To
+    extend Aqua::From
   end
-end     
+end 
+
+class TrueClass
+  def self.aqua_init( init )
+    true
+  end
+end
+
+class FalseClass
+  def self.aqua_init( init )
+    false
+  end
+end   
+
+class Date
+  def self.aqua_init( init )
+    parse( init )
+  end
+end
+
+class Time 
+  def self.aqua_init( init )
+    parse( init )
+  end
+end
+
+class Fixnum
+  def self.aqua_init( init )
+    init.to_i
+  end
+end
+
+class Bignum
+  def self.aqua_init( init )
+    init.to_i
+  end
+end  
+   
+class Float
+  def self.aqua_init( init )
+    init.to_f
+  end
+end  
 
 class Rational
   def to_aqua_init( base_object ) 
     self.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2)
-  end
+  end 
+  
+  def self.aqua_init( init )
+    Rational( init[0].to_i, init[1].to_i )
+  end  
 end
 
 class Hash
@@ -50,6 +103,10 @@ class Hash
     end
     return_hash  
   end
+  
+  def self.aqua_init( init )
+    new.replace( init )
+  end 
 end
 
 class Array
@@ -59,6 +116,10 @@ class Array
       return_arr << base_object._pack_object( obj )
     end
     return_arr   
+  end
+  
+  def self.aqua_init( init )
+    new.replace( init )
   end 
 end
 

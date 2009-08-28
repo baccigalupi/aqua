@@ -8,7 +8,11 @@ module Aqua::Unpack
   end 
   
   module ClassMethods
-    # Searches the store for a document. Initializes a New Object with it. 
+    # Creates a new object with the class of the base class and loads it with data saved from the database.
+    # @param [String] Object id 
+    # @return [Object] 
+    # 
+    # @api public 
     def load( id ) 
       instance = new
       instance.id = id
@@ -17,7 +21,13 @@ module Aqua::Unpack
     end  
   end
   
-  module InstanceMethods 
+  module InstanceMethods
+    # Reloads database information into the object.
+    # @param [optional true, false] Default is true. If true the exceptions will be swallowed and 
+    #   false will be returned. If false, then any exceptions raised will stop the show.
+    # @return [Object, false] Will return false or raise error on failure and self on success.
+    #
+    # @api public
     def reload( mask_exceptions = true ) 
       if id.nil?
         if mask_exceptions
@@ -38,11 +48,19 @@ module Aqua::Unpack
       end  
     end
     
+    # Reloads database information into the object, and raises an error on failure.
+    # @return [Object] Will return raise error on failure and return self on success.
+    #
+    # @api public
     def reload!
       reload( false )
     end  
     
-    private
+    private 
+      # Actual mechanism for reloading an object from stored data.
+      # @return [Object] Will return raise error on failure and return self on success.
+      #
+      # @api private
       def _reload
         _get_store
         _unpack
@@ -50,11 +68,20 @@ module Aqua::Unpack
         self
       end
       
+      # Retrieves objects storage from its engine.
+      # @return [Aqua::Storage]
+      # 
+      # @api private
       def _get_store
         # this is kind of klunky, should refactor
         self._store = Aqua::Storage.new(:id => self.id).retrieve 
       end
       
+      # Unpacks an object from hash representation of data and metadata
+      # @return [Aqua::Storage]
+      # @todo Refactor to move more of this into individual classes
+      #
+      # @api private
       def _unpack
         if init = _unpack_initialization( _store )
           replace( init ) 
@@ -64,10 +91,17 @@ module Aqua::Unpack
         end    
       end 
       
+      # Makes @_store nil to converve on memory
+      #
+      # @api private
       def _clear_store
         @_store = nil
       end  
       
+      # Unpacks an object's instance variables
+      # @todo Refactor to move more of this into individual classes
+      #
+      # @api private
       def _unpack_ivars( obj, data ) 
         data.each do |ivar_name, data_package|
           unpacked = if data_package.class == String
@@ -79,6 +113,11 @@ module Aqua::Unpack
         end  
       end    
       
+      # Unpacks an the initialization object from a hash into a real object.
+      # @return [Object] Generally a hash, array or string
+      # @todo Refactor to move more of this into individual classes
+      #
+      # @api private
       def _unpack_initialization( obj )
         if init = obj[:init] 
           init_class = init.class
@@ -96,11 +135,20 @@ module Aqua::Unpack
         end 
       end
       
+      # Retrieves and unpacks a stubbed object from its separate storage area
+      # @return [Aqua::Stub] Delegate object for externally saved class
+      #
+      # @api private
       def _unpack_stub( index ) 
         hash = _store[:stubs][index] 
         Aqua::Stub.new( hash ) 
       end    
-      
+       
+      # Unpacks an Array. 
+      # @return [Object] Generally a hash, array or string
+      # @todo Refactor ?? move more of this into support/initializers Array
+      #
+      # @api private
       def _unpack_array( obj ) 
         arr = [] 
         obj.each do |value|
@@ -110,6 +158,11 @@ module Aqua::Unpack
         arr
       end
       
+      # Unpacks a Hash. 
+      # @return [Object] Generally a hash, array or string
+      # @todo Refactor ?? move more of this into support/initializers Hash
+      #
+      # @api private
       def _unpack_hash( obj )
         hash = {}
         obj.each do |raw_key, value|
@@ -126,61 +179,30 @@ module Aqua::Unpack
         hash  
       end    
       
+      # The real workhorse behind object construction: it recursively rebuilds objects based on 
+      # whether the passed in object is an Array, String or a Hash. A hash that has the class key 
+      # is an object representation. If it does not have a hash key then it is an ordinary hash.
+      # An array will either have strings or object representations values.
+      #
+      # @param [Hash, Mash] Representation of the data in the aqua meta format
+      # @return [Object] The object represented by the data
+      # 
+      # @api private
       def _unpack_object( store_pack )
-        # store_pack will be: an array, a string, a hash
-        # a hash that has the class key is an object representation
-        # an array will either have strings or object representations
-        # a hash that doesn't have a class key is a hash and may have object representations 
-        
         package_class = store_pack.class 
         if package_class == String
           store_pack
         elsif package_class == Array 
           _unpack_array( store_pack )  
-        else # package_class == Hash -or- Mash 
-          if obj_class_string = store_pack['class']
-            
+        else # package_class == Hash -or- Mash
+          if store_pack['class']
             # Constantize the objects class
-            obj_class = obj_class_string.constantize rescue nil
+            obj_class = store_pack['class'].constantize rescue nil
             
             # build from initialization 
             init = _unpack_initialization( store_pack )
-            return_object = if init 
-              init_class = init.class
-              if init_class == Array
-                if obj_class == Rational
-                  Rational( init[0].to_i, init[1].to_i )
-                elsif obj_class && obj_class != Array
-                  obj_class.new.replace( init )
-                else
-                  init
-                end
-              elsif init_class.ancestors.include?( Hash )
-                if obj_class == OpenStruct
-                  obj_class.new( init )
-                elsif obj_class  
-                  obj_class.new.replace( init )
-                else
-                  # should log an error internally
-                  init
-                end
-              else # is a string
-                if obj_class == Date || obj_class == Time 
-                  obj_class.parse( init )
-                elsif [Fixnum, Bignum].include?( obj_class )
-                  init.to_i
-                elsif obj_class == Float
-                  init.to_f  
-                elsif obj_class == TrueClass 
-                  true
-                elsif obj_class == FalseClass 
-                  false
-                elsif obj_class == Aqua::Stub
-                  init
-                else  
-                  nil
-                end            
-              end       
+            return_object = if init
+              obj_class == Aqua::Stub ? init : obj_class.aqua_init( init )
             end
             
             # Build uninitialized object
