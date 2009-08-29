@@ -212,7 +212,7 @@ module Aqua::Pack
         index = self.__pack[:stubs].length 
         stub = { :class => obj.class.to_s, :id => obj } 
         # deal with cached methods
-        if obj._embed_me.keys && stub_methods = obj._embed_me[:stub]
+        if obj._embed_me && obj._embed_me.keys && stub_methods = obj._embed_me[:stub]
           stub[:methods] = {}
           if stub_methods.class == Symbol || stub_methods.class == String
             stub_method = stub_methods.to_sym 

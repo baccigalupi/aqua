@@ -55,6 +55,12 @@ describe Aqua::Pack do
         other_user_pack[:methods][:username].should == 'graeme'
       end 
       
+      it "should pack a stub of an object with embed=>false" do
+        suger = Suger.new
+        suger.sweetness = Suger.new
+        lambda {suger._pack}.should_not raise_error
+      end
+      
       it 'should pack an array of stubbed methods' do 
         User.configure_aqua( :embed => {:stub =>  [:username, :name] } )
         @user = User.new(
