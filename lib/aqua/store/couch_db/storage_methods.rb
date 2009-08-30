@@ -342,7 +342,7 @@ module Aqua
           # Escapes a string for id usage
           # @api private
           def escape_for_id( str )
-            str.match(/^_design\/(.*)/) ? "_design/#{CGI.escape($1)}" : CGI.escape(str)
+            CGI.escape(str)
           end    
           
 

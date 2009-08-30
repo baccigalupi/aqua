@@ -25,8 +25,8 @@ module RestAPI
   end     
   
   def put(uri, doc = nil)
-    hash = doc.to_json if doc
-    response = RestAPI.adapter.put( uri, hash )
+    hash = doc.to_json if doc 
+    response = RestAPI.adapter.put( uri, hash ) 
     JSON.parse( response )
   end
 
