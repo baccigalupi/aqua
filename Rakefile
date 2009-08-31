@@ -61,11 +61,17 @@ COUCHREST_DIRECTORIES = [
   %w(Specs              utils/couchrest/spec/couchrest)
 ].collect { |name, dir| [ name, "#{File.dirname(__FILE__)}/#{dir}" ] }.select { |name, dir| File.directory?(dir) }
 
+AR_DIRECTORIES = [ 
+  %w(ActiveRecord       utils/rails/activerecord/lib),
+  %w(Specs              utils/rails/activerecord/test)
+].collect { |name, dir| [ name, "#{File.dirname(__FILE__)}/#{dir}" ] }.select { |name, dir| File.directory?(dir) } 
+
 desc "Report code statistics (KLOCs, etc) on the gem"
 task :stats do
   require File.dirname(__FILE__) + '/utils/code_statistics'
   CodeStatistics.new(*AQUA_DIRECTORIES).to_s
   CodeStatistics.new(*COUCHREST_DIRECTORIES).to_s if File.exists?( File.dirname(__FILE__) + '/utils/couchrest/lib')
+  CodeStatistics.new(*AR_DIRECTORIES).to_s if File.exists?( File.dirname(__FILE__) + '/utils/rails/activerecord')
 end
 
 # YARDing up some documentation
