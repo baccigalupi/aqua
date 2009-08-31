@@ -1,0 +1,974 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../../../style.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../../custom.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="../../../syntax_highlight.css" type="text/css" charset="utf-8" />
+
+    <script src="../../../jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../app.js" type="text/javascript" charset="utf-8"></script>
+    <title>Class: Aqua::Store::CouchDB::Attachments</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="section class Aqua_Store_CouchDB_Attachments">
+  <h1 class="title">Class: Aqua::Store::CouchDB::Attachments</h1>
+  <div class="section inheritance">
+  <ul>
+  <li>Mash</li><ul><li>Aqua::Store::CouchDB::Attachments</li>
+  </ul></ul>
+</div><div class="section docstring">
+  <p>
+Attachments is a Hash-like container with keys that are attacment names and
+values that are file-type objects. Initializing and adding to the
+collection assures the types of both keys and values. The collection
+implements a lazy-loading scheme, such that when an attachment is requested
+and not found, it will try to load it from CouchDB. Attachments
+</p>
+
+</div><div class="section attributes">
+  <h1>Attributes</h1>
+
+  
+    <div class="instance">
+      <h2>Instance Attributes</h2>
+      <table>
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>document</span>
+          </td>
+          <td class="readwrite">
+            [<span id='document-instance_method'>R</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+Returns the value of attribute <tt>document</tt>.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+        
+        <tr class="">
+          <th class='signature'>
+            <span class='name'>stub</span>
+          </td>
+          <td class="readwrite">
+            [<span id='stub-instance_method'>R</span>] 
+          </td>
+          <td class="visibility">
+            public
+          </td>
+          <td class="docstring">
+            <p>
+Returns the value of attribute <tt>stub</tt>.
+</p>
+
+            
+          </td>
+        </tr>
+        
+      
+      </table>
+    </div>
+  
+</div>
+<div class="section constants">
+  
+</div><div class="section constructor">
+<h1>Constructor Summary</h1>
+  <div id="initialize-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>initialize</span><span class='args'>(doc, hash = {})</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Creates a new attachment collection with keys that are attachment names and
+values that are file-type objects. The collection manages both the key and
+the value types.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="raise">
+  <h3>Raises:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>ArgumentError</tt>]</span>
+      
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'></span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+22
+23
+24
+25
+26
+27</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/attachments.rb', line 22</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span> <span class='doc identifier id'>doc</span><span class='comma token'>,</span> <span class='hash identifier id'>hash</span><span class='assign token'>=</span><span class='lbrace token'>{</span><span class='rbrace token'>}</span> <span class='rparen token'>)</span>
+  <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='string val'>&quot;must be initialized with a document&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='doc identifier id'>doc</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span> <span class='symbol val'>:retrieve</span> <span class='rparen token'>)</span> 
+  <span class='@document ivar id'>@document</span> <span class='assign token'>=</span> <span class='doc identifier id'>doc</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='validate_hash identifier id'>validate_hash</span><span class='lparen token'>(</span> <span class='hash identifier id'>hash</span> <span class='rparen token'>)</span> <span class='unless unless_mod kw'>unless</span> <span class='hash identifier id'>hash</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+  <span class='super super kw'>super</span><span class='lparen token'>(</span> <span class='hash identifier id'>hash</span> <span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+</div>  <div class="section visibilitygroup public">
+    <h1>Public Visibility</h1>
+      <div class="section methodsummary class public">
+    <h1>Public Class Method Summary</h1>
+<table class="summary">
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#validate_hash-class_method" title="validate_hash">validate_hash</a></span><span class='args'>(hash)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Validates and throws an error on a hash, insisting that the key is a string
+or symbol, and the value is a file.
+</p>
+
+        
+      </td>
+    </tr>
+  
+</table>
+
+  </div>
+  <div class="section methodsummary instance public">
+    <h1>Public Instance Method Summary</h1>
+<table class="summary">
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#add-instance_method" title="#add">#add</a></span><span class='args'>(name, file)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Adds an attachment to the collection, checking for type.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#add%21-instance_method" title="#add!">#add!</a></span><span class='args'>(name, file)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Adds an attachment to the collection and to the database.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#delete%21-instance_method" title="#delete!">#delete!</a></span><span class='args'>(name)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Deletes an attachment from the collection, and from the database.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>File</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#get-instance_method" title="#get">#get</a></span><span class='args'>(name, stream = false)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Gets an attachment from the collection first.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>File</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#get%21-instance_method" title="#get!">#get!</a></span><span class='args'>(name, stream = false)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Gets an attachment from the database.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt>File</tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#update_doc_rev-instance_method" title="#update_doc_rev">#update_doc_rev</a></span><span class='args'>(response)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Goes into the document and updates it&#8217;s rev to match the returned
+rev.
+</p>
+
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
+            <span class='name'><a href="#uri_for-instance_method" title="#uri_for">#uri_for</a></span><span class='args'>(name, include_rev = true)</span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Constructs the standalone attachment uri for PUT and DELETE actions.
+</p>
+
+        
+      </td>
+    </tr>
+  
+</table>
+
+  </div>
+<div class="section methoddetails class public">
+  <h1>Public Class Method Details</h1>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>validate_hash</h3>
+</div><div id="validate_hash-class_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>validate_hash</span><span class='args'>(hash)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Validates and throws an error on a hash, insisting that the key is a string
+or symbol, and the value is a file.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+132
+133
+134
+135
+136
+137</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/attachments.rb', line 132</span>
+
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='validate_hash identifier id'>validate_hash</span><span class='lparen token'>(</span> <span class='hash identifier id'>hash</span> <span class='rparen token'>)</span>
+  <span class='hash identifier id'>hash</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='file identifier id'>file</span><span class='bitor op'>|</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Attachment name, #{name.inspect}, must be a Symbol or a String&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='lbrack token'>[</span><span class='Symbol constant id'>Symbol</span><span class='comma token'>,</span> <span class='String constant id'>String</span> <span class='rbrack token'>]</span><span class='dot token'>.</span><span class='include? fid id'>include?</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='dot token'>.</span><span class='class identifier id'>class</span> <span class='rparen token'>)</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;Attachment file, #{file.inspect}, must be a File-like object&quot;</span>  <span class='unless unless_mod kw'>unless</span> <span class='file identifier id'>file</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span> <span class='symbol val'>:read</span> <span class='rparen token'>)</span> 
+  <span class='end end kw'>end</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+</div><div class="section methoddetails instance public">
+  <h1>Public Instance Method Details</h1>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>add</h3>
+</div><div id="add-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>add</span><span class='args'>(name, file)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Adds an attachment to the collection, checking for type. Does not add
+directly to the database.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+35
+36
+37
+38</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/attachments.rb', line 35</span>
+
+<span class='def def kw'>def</span> <span class='add identifier id'>add</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='file identifier id'>file</span> <span class='rparen token'>)</span>
+  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='validate_hash identifier id'>validate_hash</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='file identifier id'>file</span> <span class='rparen token'>)</span>
+  <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='file identifier id'>file</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>add!</h3>
+</div><div id="add!-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>add!</span><span class='args'>(name, file)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Adds an attachment to the collection and to the database. Document
+doesn&#8217;t have to be saved, but it does need to have an id.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/attachments.rb', line 47</span>
+
+<span class='def def kw'>def</span> <span class='add! fid id'>add!</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='file identifier id'>file</span> <span class='rparen token'>)</span>
+  <span class='add identifier id'>add</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='file identifier id'>file</span> <span class='rparen token'>)</span>
+  <span class='content_type identifier id'>content_type</span> <span class='assign token'>=</span> <span class='MIME constant id'>MIME</span><span class='colon2 op'>::</span><span class='Types constant id'>Types</span><span class='dot token'>.</span><span class='type_for identifier id'>type_for</span><span class='lparen token'>(</span><span class='file identifier id'>file</span><span class='dot token'>.</span><span class='path identifier id'>path</span><span class='rparen token'>)</span> 
+  <span class='content_type identifier id'>content_type</span> <span class='assign token'>=</span> <span class='content_type identifier id'>content_type</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span> <span class='integer val'>? </span><span class='string val'>'text\/plain'</span> <span class='colon op'>:</span> <span class='content_type identifier id'>content_type</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span>
+    <span class='string val'>'content-type'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='content_type identifier id'>content_type</span><span class='comma token'>,</span>
+    <span class='string val'>'data'</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Base64 constant id'>Base64</span><span class='dot token'>.</span><span class='encode64 identifier id'>encode64</span><span class='lparen token'>(</span> <span class='file identifier id'>file</span><span class='dot token'>.</span><span class='read identifier id'>read</span> <span class='rparen token'>)</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='regexp val'>/\s/</span><span class='comma token'>,</span><span class='string val'>''</span><span class='rparen token'>)</span> 
+  <span class='rbrace token'>}</span>
+  <span class='response identifier id'>response</span> <span class='assign token'>=</span> <span class='CouchDB constant id'>CouchDB</span><span class='dot token'>.</span><span class='put identifier id'>put</span><span class='lparen token'>(</span> <span class='uri_for identifier id'>uri_for</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span> <span class='rparen token'>)</span><span class='comma token'>,</span> <span class='data identifier id'>data</span> <span class='rparen token'>)</span>
+  <span class='update_doc_rev identifier id'>update_doc_rev</span><span class='lparen token'>(</span> <span class='response identifier id'>response</span> <span class='rparen token'>)</span>
+  <span class='file identifier id'>file</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>delete!</h3>
+</div><div id="delete!-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>File</tt></span>
+      <span class='name'>delete!</span><span class='args'>(name)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Deletes an attachment from the collection, and from the database. Use
+#delete (from Hash) to just delete the attachment from the collection.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>File</tt>, <tt>nil</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+File at that location or nil if no file found
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+67
+68
+69
+70
+71
+72
+73
+74
+75</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/attachments.rb', line 67</span>
+
+<span class='def def kw'>def</span> <span class='delete! fid id'>delete!</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span> <span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span>
+    <span class='file identifier id'>file</span> <span class='assign token'>=</span> <span class='delete identifier id'>delete</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span> <span class='rparen token'>)</span> 
+    <span class='unless unless kw'>unless</span> <span class='document identifier id'>document</span><span class='dot token'>.</span><span class='new? fid id'>new?</span>
+      <span class='CouchDB constant id'>CouchDB</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span> <span class='uri_for identifier id'>uri_for</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span> <span class='rparen token'>)</span> <span class='rparen token'>)</span>
+    <span class='end end kw'>end</span> 
+    <span class='file identifier id'>file</span> 
+  <span class='end end kw'>end</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>get</h3>
+</div><div id="get-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>File</tt></span>
+      <span class='name'>get</span><span class='args'>(name, stream = false)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Gets an attachment from the collection first. If not found, it will be
+requested from the database.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>File</tt>, <tt>nil</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+File for that name, or nil if not found in hash or in database
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+83
+84
+85
+86
+87
+88
+89</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/attachments.rb', line 83</span>
+
+<span class='def def kw'>def</span> <span class='get identifier id'>get</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='stream identifier id'>stream</span><span class='assign token'>=</span><span class='false false kw'>false</span> <span class='rparen token'>)</span>
+  <span class='file identifier id'>file</span> <span class='assign token'>=</span> <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span> 
+  <span class='unless unless kw'>unless</span> <span class='file identifier id'>file</span>
+    <span class='file identifier id'>file</span> <span class='assign token'>=</span> <span class='get! fid id'>get!</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='stream identifier id'>stream</span> <span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>
+  <span class='file identifier id'>file</span>  
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>get!</h3>
+</div><div id="get!-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt>File</tt></span>
+      <span class='name'>get!</span><span class='args'>(name, stream = false)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Gets an attachment from the database. Stores it in the hash.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>File</tt>, <tt>nil</tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+File for that name, or nil if not found in the database
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+<div class="raise">
+  <h3>Raises:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>Object</tt>]</span>
+      
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Any error encountered on retrieval of the attachment, json, http_client,
+Aqua etc
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+<div class="todo">
+  <h3>Todo Item:</h3>
+  <ul>
+  
+    <li><strong>make this more memory favorable, maybe streaming/saving in a max number of bytes</strong> </li>
+  
+  </ul>
+</div>
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/attachments.rb', line 101</span>
+
+<span class='def def kw'>def</span> <span class='get! fid id'>get!</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='stream identifier id'>stream</span><span class='assign token'>=</span><span class='false false kw'>false</span> <span class='rparen token'>)</span> 
+  <span class='file identifier id'>file</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
+  <span class='response identifier id'>response</span> <span class='assign token'>=</span> <span class='CouchDB constant id'>CouchDB</span><span class='dot token'>.</span><span class='get identifier id'>get</span><span class='lparen token'>(</span> <span class='uri_for identifier id'>uri_for</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='false false kw'>false</span> <span class='rparen token'>)</span> <span class='rparen token'>)</span> <span class='rescue rescue kw'>rescue</span> <span class='nil nil kw'>nil</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='Base64 constant id'>Base64</span><span class='dot token'>.</span><span class='decode64 identifier id'>decode64</span><span class='lparen token'>(</span> <span class='response identifier id'>response</span><span class='lbrack token'>[</span><span class='string val'>'data'</span><span class='rbrack token'>]</span> <span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='response identifier id'>response</span> 
+  <span class='if if kw'>if</span> <span class='data identifier id'>data</span>
+    <span class='file identifier id'>file</span> <span class='assign token'>=</span> <span class='Tempfile constant id'>Tempfile</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span> <span class='CGI constant id'>CGI</span><span class='dot token'>.</span><span class='escape identifier id'>escape</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span> <span class='rparen token'>)</span> <span class='rparen token'>)</span> 
+    <span class='file identifier id'>file</span><span class='dot token'>.</span><span class='binmode identifier id'>binmode</span> <span class='if if_mod kw'>if</span> <span class='file identifier id'>file</span><span class='dot token'>.</span><span class='respond_to? fid id'>respond_to?</span><span class='lparen token'>(</span> <span class='symbol val'>:binmode</span> <span class='rparen token'>)</span>
+    <span class='file identifier id'>file</span><span class='dot token'>.</span><span class='write identifier id'>write</span><span class='lparen token'>(</span> <span class='data identifier id'>data</span> <span class='rparen token'>)</span>
+    <span class='file identifier id'>file</span><span class='dot token'>.</span><span class='rewind identifier id'>rewind</span> 
+    <span class='self self kw'>self</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='file identifier id'>file</span>
+  <span class='end end kw'>end</span>  
+  <span class='stream identifier id'>stream</span> <span class='integer val'>? </span><span class='file identifier id'>file</span><span class='dot token'>.</span><span class='read identifier id'>read</span> <span class='colon op'>:</span> <span class='file identifier id'>file</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>update_doc_rev</h3>
+</div><div id="update_doc_rev-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>update_doc_rev</span><span class='args'>(response)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Goes into the document and updates it&#8217;s rev to match the returned
+rev. That way #new? will return false when an attachment is created before
+the document is saved. It also means that future attempts to save the doc
+won&#8217;t fail with a conflict.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="param">
+  <h3>Parameters:</h3>
+  <dl>
+  
+    
+      <dt>
+        <span class='type'>[<tt><a href="../../../Hash.html" title="Hash">Hash</a></tt>]</span>
+        <span class='name'>response</span>
+        
+      </dt>
+      <dd>
+        <span class='desc'><p>
+from the put request
+</p>
+</span>
+      </dd>
+    
+  
+  </dl>
+</div>
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+145
+146
+147</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/attachments.rb', line 145</span>
+
+<span class='def def kw'>def</span> <span class='update_doc_rev identifier id'>update_doc_rev</span><span class='lparen token'>(</span> <span class='response identifier id'>response</span> <span class='rparen token'>)</span>
+  <span class='document identifier id'>document</span><span class='lbrack token'>[</span><span class='symbol val'>:_rev</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='response identifier id'>response</span><span class='lbrack token'>[</span><span class='string val'>'rev'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>uri_for</h3>
+</div><div id="uri_for-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'></span>
+      <span class='name'>uri_for</span><span class='args'>(name, include_rev = true)</span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Constructs the standalone attachment uri for PUT and DELETE actions.
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="raise">
+  <h3>Raises:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt>ArgumentError</tt>]</span>
+      
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'></span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+120
+121
+122
+123</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/attachments.rb', line 120</span>
+
+<span class='def def kw'>def</span> <span class='uri_for identifier id'>uri_for</span><span class='lparen token'>(</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='include_rev identifier id'>include_rev</span> <span class='assign token'>=</span> <span class='true true kw'>true</span> <span class='rparen token'>)</span>
+  <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='string val'>'Document must have id in order to save an attachment'</span> <span class='if if_mod kw'>if</span> <span class='document identifier id'>document</span><span class='dot token'>.</span><span class='id identifier id'>id</span><span class='dot token'>.</span><span class='nil? fid id'>nil?</span> <span class='orop op'>||</span> <span class='document identifier id'>document</span><span class='dot token'>.</span><span class='id identifier id'>id</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+  <span class='document identifier id'>document</span><span class='dot token'>.</span><span class='uri identifier id'>uri</span> <span class='plus op'>+</span> <span class='dstring node'>&quot;/#{CGI.escape( name.to_s )}&quot;</span> <span class='plus op'>+</span> <span class='lparen token'>(</span> <span class='document identifier id'>document</span><span class='dot token'>.</span><span class='rev identifier id'>rev</span> <span class='andop op'>&amp;&amp;</span> <span class='include_rev identifier id'>include_rev</span> <span class='integer val'>? </span><span class='dstring node'>&quot;?rev=#{document.rev}&quot;</span> <span class='colon op'>:</span> <span class='string val'>&quot;&quot;</span> <span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
+  
+</div>
+  </div>
+
+</div>
+    </div>
+    <div id="yard_info">
+  Generated on Monday, August 31 2009 at 03:23:18 PM by 
+  <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
+  0.2.3.5 (ruby-1.8.6).
+</div>
+
+  </body>
+</html>

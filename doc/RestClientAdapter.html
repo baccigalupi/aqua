@@ -172,7 +172,7 @@
 <span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='convert_exception identifier id'>convert_exception</span><span class='lparen token'>(</span><span class='bitand op'>&amp;</span><span class='blk identifier id'>blk</span><span class='rparen token'>)</span>
   <span class='begin begin kw'>begin</span>
     <span class='yield yield kw'>yield</span>
-  <span class='rescue rescue kw'>rescue</span> <span class='Exception constant id'>Exception</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='e identifier id'>e</span>
+  <span class='rescue rescue kw'>rescue</span> <span class='Exception constant id'>Exception</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='e identifier id'>e</span> 
     <span class='ending identifier id'>ending</span> <span class='assign token'>=</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='class identifier id'>class</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='dot token'>.</span><span class='match identifier id'>match</span><span class='lparen token'>(</span><span class='regexp val'>/[a-z0-9_]*\z/i</span><span class='rparen token'>)</span>
     <span class='if if kw'>if</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='message identifier id'>message</span><span class='dot token'>.</span><span class='match identifier id'>match</span><span class='lparen token'>(</span><span class='regexp val'>/409\z/</span><span class='rparen token'>)</span>
       <span class='raise identifier id'>raise</span> <span class='Aqua constant id'>Aqua</span><span class='colon2 op'>::</span><span class='Store constant id'>Store</span><span class='colon2 op'>::</span><span class='CouchDB constant id'>CouchDB</span><span class='colon2 op'>::</span><span class='Conflict constant id'>Conflict</span><span class='comma token'>,</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='message identifier id'>message</span>
@@ -435,7 +435,7 @@
 </div>
     </div>
     <div id="yard_info">
-  Generated on Thursday, August 27 2009 at 05:50:23 PM by 
+  Generated on Monday, August 31 2009 at 03:23:20 PM by 
   <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
   0.2.3.5 (ruby-1.8.6).
 </div>

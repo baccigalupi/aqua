@@ -91,7 +91,7 @@ module Aqua
         # Gets an attachment from the database. Stores it in the hash.
         #
         # @param [String, Symbol] Name of the attachment
-        # @params [true, false] Stream boolean flag indicating whether the data should be converted to 
+        # @param [true, false] Stream boolean flag indicating whether the data should be converted to 
         #   a file or kept as a stream
         # @return [File, nil] File for that name, or nil if not found in the database 
         # @raise Any error encountered on retrieval of the attachment, json, http_client, Aqua etc
@@ -140,7 +140,7 @@ module Aqua
         # when an attachment is created before the document is saved. It also means that future attempts to save 
         # the doc won't fail with a conflict.
         #
-        # @params [Hash] response from the put request
+        # @param [Hash] response from the put request
         # @api private
         def update_doc_rev( response )
           document[:_rev] = response['rev']

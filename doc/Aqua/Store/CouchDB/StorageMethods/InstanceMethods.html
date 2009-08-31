@@ -65,6 +65,33 @@ sets the database.
       <th class="signature">
         
           <span class='overload'>
+            <span class='name'><a href="#attachments-instance_method" title="#attachments">#attachments</a></span><span class='args'></span>
+            <span class='block'></span>
+          </span>
+        
+        
+      </th>
+      <td class="docstring">
+        <p>
+Attachments ----------- maybe this should be
+it&#8217;s own class?? Hash of attachments, keyed by name.
+</p>
+
+        
+          <p class='returns'>
+            Returns: 
+              <span class='return_types'>
+                 <tt><a href="../../../../Hash.html" title="Hash">Hash</a></tt>
+              </span>
+          </p>
+        
+      </td>
+    </tr>
+  
+    <tr>
+      <th class="signature">
+        
+          <span class='overload'>
             <span class='name'><a href="#commit-instance_method" title="#commit">#commit</a></span><span class='args'>(defer = false)</span>
             <span class='block'></span>
           </span>
@@ -630,6 +657,79 @@ couchdb database url for this document.
   </div>
 <div class="section methoddetails instance public">
   <h1>Public Instance Method Details</h1>
+  
+    <div class="method">
+      <div class="method_header">
+  <h3>attachments</h3>
+</div><div id="attachments-instance_method" class="section method">
+  <div class="details_title">
+    <div class='section methodsignature'>
+    <tt class='def'>
+      <span class='visibility'>public</span>
+      <span class='return_types'><tt><a href="../../../../Hash.html" title="Hash">Hash</a></tt></span>
+      <span class='name'>attachments</span><span class='args'></span>
+      <span class='block'></span>
+    </tt>
+  </div>
+
+</div><div class="section docstring">
+  <p>
+Attachments ----------- maybe this should be
+it&#8217;s own class?? Hash of attachments, keyed by name
+</p>
+
+</div><div class="section tags">
+  <h2>Meta Tags</h2>
+  <div class="return">
+  <h3>Returns:</h3>
+  <dl>
+  
+    <dt>
+      
+        <span class='type'>[<tt><a href="../../../../Hash.html" title="Hash">Hash</a></tt>]</span>
+      
+      
+        <span class='name'></span>
+      
+      
+    </dt>
+    <dd>
+      <span class='desc'><p>
+Attachments keyed by name
+</p>
+</span>
+    </dd>
+  
+  </dl>
+</div>
+
+</div><div class="section source">
+  <span>[<a class="source_link" href="#">View source</a>]</span>
+  <div class="source_code">
+    <table>
+      <tr>
+        <td>
+          <pre class="lines">
+
+
+355
+356
+357</pre>
+        </td>
+        <td>
+          <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/storage_methods.rb', line 355</span>
+
+<span class='def def kw'>def</span> <span class='attachments identifier id'>attachments</span>
+  <span class='@attachments ivar id'>@attachments</span> <span class='opasgn op'>||=</span> <span class='Attachments constant id'>Attachments</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span> <span class='self self kw'>self</span> <span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+    </div>
   
     <div class="method">
       <div class="method_header">
@@ -1364,7 +1464,7 @@ Escapes a string for id usage
           <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/storage_methods.rb', line 344</span>
 
 <span class='def def kw'>def</span> <span class='escape_for_id identifier id'>escape_for_id</span><span class='lparen token'>(</span> <span class='str identifier id'>str</span> <span class='rparen token'>)</span>
-  <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='match identifier id'>match</span><span class='lparen token'>(</span><span class='regexp val'>/^_design\/(.*)/</span><span class='rparen token'>)</span> <span class='question op'>?</span> <span class='dstring node'>&quot;_design/#{CGI.escape($1)}&quot;</span> <span class='colon op'>:</span> <span class='CGI constant id'>CGI</span><span class='dot token'>.</span><span class='escape identifier id'>escape</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
+  <span class='CGI constant id'>CGI</span><span class='dot token'>.</span><span class='escape identifier id'>escape</span><span class='lparen token'>(</span><span class='str identifier id'>str</span><span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
         </td>
@@ -2414,7 +2514,7 @@ representing CouchDB uri for document
 </div>
     </div>
     <div id="yard_info">
-  Generated on Thursday, August 27 2009 at 05:50:24 PM by 
+  Generated on Monday, August 31 2009 at 03:23:20 PM by 
   <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
   0.2.3.5 (ruby-1.8.6).
 </div>

@@ -33,18 +33,12 @@ to implement:
 <li>A data query DSL and implementation (yeah, ouch!)
 
 </li>
-<li>Support of all objects in the Standard Library
-
-</li>
 <li>Class and code storage to allow the sharing and persistence of classes with
 their data
 
 </li>
 <li>Other storage systems, most notably a filestore, so that users can try Aqua
 out without having to install CouchDb
-
-</li>
-<li>Object keys, including symbols for hash-like objects
 
 </li>
 <li>Data storage amenity add-ons including: validation, callbacks, AR-styled
@@ -55,8 +49,8 @@ and searchability option.
 </ul>
 <p>
 Aqua aims to be lean and modular, in addition to transparent. Currently it
-weighs in at 1000 lines of code with half of that for the CouchDB storage
-engine.
+weighs in at &lt; 1200 lines of code with half of that for the CouchDB
+storage engine.
 </p>
 <h2>Usage</h2>
 <p>
@@ -133,8 +127,22 @@ source, and then do a sudo gem install
 </p>
 <pre class="code">
   <span class='gem identifier id'>gem</span> <span class='sources identifier id'>sources</span> <span class='minus op'>-</span><span class='a identifier id'>a</span> <span class='http identifier id'>http</span><span class='symbol val'>:/</span><span class='regexp val'>/gems.github.com
-  sudo gem install baccigalupi-aqua
+  sudo gem install 'baccigalupi-aqua'
 </span></pre>
+<p>
+Also, beware that Aqua has an unstated dependency: httpclient. The CouchDB
+engine was built with flexibility and speed in mind. The http_client gem
+seems like the best thing since sliced bread now, but may become outdated
+or slow comparatively. Developers are encouraged to build adapters to their
+preferred http clients. To do this please fork the project and request a
+pull once you have your adapter built and tested.
+</p>
+<p>
+Meanwhile, you will want to make sure that httpclient is available to Aqua.
+</p>
+<pre class="code">
+  <span class='sudo identifier id'>sudo</span> <span class='gem identifier id'>gem</span> <span class='install identifier id'>install</span> <span class='string val'>'httpclient'</span>
+</pre>
 <h2>More Info</h2>
 <p>
 Twitter: rubyaqua
@@ -176,7 +184,7 @@ also included and will apply.
       </div>
     </div>
     <div id="yard_info">
-  Generated on Thursday, August 27 2009 at 05:50:20 PM by 
+  Generated on Monday, August 31 2009 at 03:23:16 PM by 
   <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
   0.2.3.5 (ruby-1.8.6).
 </div>

@@ -349,7 +349,7 @@ module Aqua
           # maybe this should be it's own class?? 
           
           # Hash of attachments, keyed by name
-          # @returns [Hash] Attachments keyed by name
+          # @return [Hash] Attachments keyed by name
           # 
           # @api public
           def attachments

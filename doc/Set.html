@@ -3,28 +3,42 @@
 <html>
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8" />
-<link rel="stylesheet" href="../custom.css" type="text/css" charset="utf-8" />
-<link rel="stylesheet" href="../syntax_highlight.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="style.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="custom.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="syntax_highlight.css" type="text/css" charset="utf-8" />
 
-    <script src="../jquery.js" type="text/javascript" charset="utf-8"></script>
-    <script src="../app.js" type="text/javascript" charset="utf-8"></script>
-    <title>Module: Aqua::To</title>
+    <script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="app.js" type="text/javascript" charset="utf-8"></script>
+    <title>Class: Set</title>
   </head>
   <body>
     <div id="content">
-      <div class="section module Aqua_To">
-  <h1 class="title">Module: Aqua::To</h1>
-  <div class="section docstring">
-  <p>
-To
-</p>
-
-</div><div class="section constants">
+      <div class="section class Set">
+  <h1 class="title">Class: Set</h1>
+  <div class="section mixins">
+  <h1>Extended Modules</h1>
+  <p><a href="Aqua/From.html" title="Aqua::From">Aqua::From</a></p>
+</div>
+<div class="section mixins">
+  <h1>Included Modules</h1>
+  <p><a href="Aqua/From.html" title="Aqua::From">Aqua::From</a></p>
+</div>
+<div class="section constants">
   
 </div>  <div class="section visibilitygroup public">
     <h1>Public Visibility</h1>
-      <div class="section methodsummary instance public">
+      <div class="section methodsummary class public">
+    <div class="included">
+  
+  <div>
+    <h1>Public Class Methods Included from <a href="Aqua/From.html" title="Aqua::From">Aqua::From</a></h1>
+    <p><span class='name'><a href="Aqua/From.html#aqua_init-instance_method" title="aqua_init">aqua_init</a></span></p>
+  </div>
+  
+</div>
+<div class="clear"></div>
+  </div>
+  <div class="section methodsummary instance public">
     <h1>Public Instance Method Summary</h1>
 <table class="summary">
   
@@ -61,7 +75,15 @@ To
     </tr>
   
 </table>
-
+<div class="included">
+  
+  <div>
+    <h1>Public Instance Methods Included from <a href="Aqua/From.html" title="Aqua::From">Aqua::From</a></h1>
+    <p><span class='name'><a href="Aqua/From.html#aqua_init-instance_method" title="aqua_init">aqua_init</a></span></p>
+  </div>
+  
+</div>
+<div class="clear"></div>
   </div>
 <div class="section methoddetails instance public">
   <h1>Public Instance Method Details</h1>
@@ -89,7 +111,6 @@ To
           <pre class="lines">
 
 
-10
 11
 12
 13
@@ -98,10 +119,11 @@ To
 16
 17
 18
-19</pre>
+19
+20</pre>
         </td>
         <td>
-          <pre class="code"><span class="info file"># File 'lib/aqua/support/initializers.rb', line 10</span>
+          <pre class="code"><span class="info file"># File 'lib/aqua/support/set.rb', line 11</span>
 
 <span class='def def kw'>def</span> <span class='to_aqua identifier id'>to_aqua</span><span class='lparen token'>(</span> <span class='base_object identifier id'>base_object</span> <span class='rparen token'>)</span>
   <span class='hash identifier id'>hash</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span> 
@@ -145,15 +167,19 @@ To
           <pre class="lines">
 
 
-21
 22
-23</pre>
+23
+24
+25
+26</pre>
         </td>
         <td>
-          <pre class="code"><span class="info file"># File 'lib/aqua/support/initializers.rb', line 21</span>
+          <pre class="code"><span class="info file"># File 'lib/aqua/support/set.rb', line 22</span>
 
-<span class='def def kw'>def</span> <span class='to_aqua_init identifier id'>to_aqua_init</span><span class='lparen token'>(</span> <span class='base_object identifier id'>base_object</span> <span class='rparen token'>)</span> 
-  <span class='self self kw'>self</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
+<span class='def def kw'>def</span> <span class='to_aqua_init identifier id'>to_aqua_init</span><span class='lparen token'>(</span> <span class='base_object identifier id'>base_object</span> <span class='rparen token'>)</span>
+  <span class='comment val'># keys returns an array</span>
+  <span class='comment val'># to_aqua_init will ensure that each of the objects is unpacked to aqua </span>
+  <span class='instance_variable_get identifier id'>instance_variable_get</span><span class='lparen token'>(</span><span class='string val'>&quot;@hash&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='keys identifier id'>keys</span><span class='dot token'>.</span><span class='to_aqua_init identifier id'>to_aqua_init</span><span class='lparen token'>(</span> <span class='base_object identifier id'>base_object</span> <span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
         </td>

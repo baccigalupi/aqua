@@ -467,8 +467,8 @@ def self.copy(uri, headers) end
           <pre class="code"><span class="info file"># File 'lib/aqua/store/couch_db/http_client/rest_api.rb', line 27</span>
 
 <span class='def def kw'>def</span> <span class='put identifier id'>put</span><span class='lparen token'>(</span><span class='uri identifier id'>uri</span><span class='comma token'>,</span> <span class='doc identifier id'>doc</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span><span class='rparen token'>)</span>
-  <span class='hash identifier id'>hash</span> <span class='assign token'>=</span> <span class='doc identifier id'>doc</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span> <span class='if if_mod kw'>if</span> <span class='doc identifier id'>doc</span>
-  <span class='response identifier id'>response</span> <span class='assign token'>=</span> <span class='RestAPI constant id'>RestAPI</span><span class='dot token'>.</span><span class='adapter identifier id'>adapter</span><span class='dot token'>.</span><span class='put identifier id'>put</span><span class='lparen token'>(</span> <span class='uri identifier id'>uri</span><span class='comma token'>,</span> <span class='hash identifier id'>hash</span> <span class='rparen token'>)</span>
+  <span class='hash identifier id'>hash</span> <span class='assign token'>=</span> <span class='doc identifier id'>doc</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span> <span class='if if_mod kw'>if</span> <span class='doc identifier id'>doc</span> 
+  <span class='response identifier id'>response</span> <span class='assign token'>=</span> <span class='RestAPI constant id'>RestAPI</span><span class='dot token'>.</span><span class='adapter identifier id'>adapter</span><span class='dot token'>.</span><span class='put identifier id'>put</span><span class='lparen token'>(</span> <span class='uri identifier id'>uri</span><span class='comma token'>,</span> <span class='hash identifier id'>hash</span> <span class='rparen token'>)</span> 
   <span class='JSON constant id'>JSON</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span><span class='lparen token'>(</span> <span class='response identifier id'>response</span> <span class='rparen token'>)</span>
 <span class='end end kw'>end</span>
 </pre>
@@ -486,7 +486,7 @@ def self.copy(uri, headers) end
 </div>
     </div>
     <div id="yard_info">
-  Generated on Thursday, August 27 2009 at 05:50:23 PM by 
+  Generated on Monday, August 31 2009 at 03:23:17 PM by 
   <abbr class="yard" title="Yay! A Ruby Documentation Tool"><a href="http://yard.soen.ca">YARD</a></abbr> 
   0.2.3.5 (ruby-1.8.6).
 </div>
