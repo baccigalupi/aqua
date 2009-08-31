@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/http_client/rest_api'
 require File.dirname(__FILE__) + '/server'
 require File.dirname(__FILE__) + '/database'
+require File.dirname(__FILE__) + '/attachments'
 require File.dirname(__FILE__) + '/storage_methods'
 require File.dirname(__FILE__) + '/design_document'
 

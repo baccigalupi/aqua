@@ -6,13 +6,11 @@ Even with ORMs like ActiveRecord, DataMapper which ease the pain of relational d
 
 Currently Aqua is in pre-alpha testing, with the following big things left to implement: 
 * A data query DSL and implementation (yeah, ouch!) 
-* Support of all objects in the Standard Library 
 * Class and code storage to allow the sharing and persistence of classes with their data
 * Other storage systems, most notably a filestore, so that users can try Aqua out without having to install CouchDb
-* Object keys, including symbols for hash-like objects
 * Data storage amenity add-ons including: validation, callbacks, AR-styled syntax, and properties that automate some of the object typing, validation, and searchability option.   
 
-Aqua aims to be lean and modular, in addition to transparent. Currently it weighs in at 1000 lines of code with half of that for the CouchDB storage engine.
+Aqua aims to be lean and modular, in addition to transparent. Currently it weighs in at < 1200 lines of code with half of that for the CouchDB storage engine.
 
 == Usage 
 

@@ -1,12 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 Aqua.set_storage_engine('CouchDB') # to initialize the Aqua::Store namespace
-require File.dirname(__FILE__) + '/document_fixture' # Document ... a Mash with the collection of methods
+require File.dirname(__FILE__) + '/fixtures_and_data/document_fixture' # Document ... a Mash with the collection of methods
 
 # Conveniences for typing with tests ... 
-CouchDB =   Aqua::Store::CouchDB unless defined?( CouchDB ) 
-Database =  CouchDB::Database unless defined?( Database )
-Server =    CouchDB::Server unless defined?( Server)
+CouchDB =     Aqua::Store::CouchDB unless defined?( CouchDB ) 
+Database =    CouchDB::Database unless defined?( Database )
+Server =      CouchDB::Server unless defined?( Server)
+Attachments = CouchDB::Attachments unless defined?( Attachments )
 
 describe 'CouchDB::StorageMethods' do
   before(:each) do
@@ -261,5 +262,12 @@ describe 'CouchDB::StorageMethods' do
       @doc.retrieve['more'].should == 'less ... really'
     end  
   end
+  
+  describe 'attachments' do 
+    it 'should have an Attachment accessor for storing attachments' do 
+      @doc.attachments.should == Attachments.new( @doc )
+    end
+      
+  end  
 
 end

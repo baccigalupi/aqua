@@ -4,7 +4,7 @@ module RestClientAdapter
   def self.convert_exception(&blk)
     begin
       yield
-    rescue Exception => e
+    rescue Exception => e 
       ending = e.class.to_s.match(/[a-z0-9_]*\z/i)
       if e.message.match(/409\z/)
         raise Aqua::Store::CouchDB::Conflict, e.message

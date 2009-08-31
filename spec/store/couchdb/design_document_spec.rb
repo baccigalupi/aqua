@@ -1,7 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 Aqua.set_storage_engine('CouchDB') # to initialize the Aqua::Store namespace
-require File.dirname(__FILE__) + '/document_fixture' # Document ... a Mash with the collection of methods
 
 # Conveniences for typing with tests ... 
 CouchDB =   Aqua::Store::CouchDB unless defined?( CouchDB ) 

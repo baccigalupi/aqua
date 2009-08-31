@@ -345,7 +345,17 @@ module Aqua
             CGI.escape(str)
           end    
           
-
+          # Attachments ----------------
+          # maybe this should be it's own class?? 
+          
+          # Hash of attachments, keyed by name
+          # @returns [Hash] Attachments keyed by name
+          # 
+          # @api public
+          def attachments
+            @attachments ||= Attachments.new( self )
+          end  
+          
           # TODO: Attachments
           # def encode_attachments(attachments)
           #   attachments.each do |key, value|
