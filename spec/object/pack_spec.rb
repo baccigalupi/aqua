@@ -56,9 +56,9 @@ describe Aqua::Pack do
       end 
       
       it "should pack a stub of an object with embed=>false" do
-        suger = Suger.new
-        suger.sweetness = Suger.new
-        lambda {suger._pack}.should_not raise_error
+        sugar = Sugar.new
+        sugar.sweetness = Sugar.new
+        lambda {sugar._pack}.should_not raise_error
       end
       
       it 'should pack an array of stubbed methods' do 
