@@ -2,6 +2,7 @@
 # require gems
 require 'rubygems' 
 require 'ruby2ruby'
+require 'mime/types'
 # Pick your json poison. Just make sure that in adds the JSON constant
 unless defined?(JSON)
   begin

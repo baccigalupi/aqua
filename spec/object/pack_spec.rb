@@ -219,14 +219,14 @@ describe Aqua::Pack do
         end
         
         describe 'true and false' do
-          it 'should save as a hash with only the class' do 
+          it 'should save as self' do 
             @user.grab_bag = true
             pack = @user._pack
-            pack[:ivars][:@grab_bag].should == {'class' => 'TrueClass', 'init' => 'true'}
+            pack[:ivars][:@grab_bag].should == true
             
             @user.grab_bag = false
             pack = @user._pack
-            pack[:ivars][:@grab_bag].should == {'class' => 'FalseClass', 'init' => 'false'}
+            pack[:ivars][:@grab_bag].should == false
           end  
         end    
         
@@ -378,7 +378,7 @@ describe Aqua::Pack do
               init_keys.should include(':cat')
               init_keys.should include(':disaster')
               init_keys.should include(':gerbil')
-              @grab_bag['init'][':gerbil'].should == {'class' => 'TrueClass', 'init' => 'true'}
+              @grab_bag['init'][':gerbil'].should == true
               @grab_bag['init'][':cat'].should == 'yup, that too!'
               @grab_bag['init'][':disaster'].should == {'class' => 'Array', 'init' => ['pow', 'blame', 'chase', 'spew']}
             end

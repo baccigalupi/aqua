@@ -116,7 +116,7 @@ describe Aqua::Unpack do
       
       it 'should unpack true and false' do 
         # true
-        @user.grab_bag = true
+        @user.grab_bag = true 
         @user.commit!
         user = User.load(@user.id)
         user.grab_bag.should == true

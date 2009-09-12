@@ -1,4 +1,3 @@
-require 'mime/types'
 require 'tempfile'
 
 module Aqua

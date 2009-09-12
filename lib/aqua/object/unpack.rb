@@ -180,7 +180,8 @@ module Aqua::Unpack
       end    
       
       # The real workhorse behind object construction: it recursively rebuilds objects based on 
-      # whether the passed in object is an Array, String or a Hash. A hash that has the class key 
+      # whether the passed in object is an Array, String or a Hash (true/false too now). 
+      # A hash that has the class key 
       # is an object representation. If it does not have a hash key then it is an ordinary hash.
       # An array will either have strings or object representations values.
       #
@@ -190,7 +191,7 @@ module Aqua::Unpack
       # @api private
       def _unpack_object( store_pack )
         package_class = store_pack.class 
-        if package_class == String
+        if package_class == String || store_pack == true || store_pack == false
           store_pack
         elsif package_class == Array 
           _unpack_array( store_pack )  

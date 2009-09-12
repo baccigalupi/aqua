@@ -41,10 +41,18 @@ class TrueClass
   def self.aqua_init( init )
     true
   end
+  
+  def to_aqua( base_object )
+    true
+  end 
 end
 
 class FalseClass
   def self.aqua_init( init )
+    false
+  end
+  
+  def to_aqua( base_object )
     false
   end
 end   
