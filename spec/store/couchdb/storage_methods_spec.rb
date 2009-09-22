@@ -201,7 +201,14 @@ describe 'CouchDB::StorageMethods' do
     
     it 'should not #exists? if the document is new' do
       @doc.should_not be_exists
-    end    
+    end
+    
+    it 'should reload' do
+      @doc.save!
+      @doc[:noodle] = 'spaghetti'
+      @doc.reload
+      @doc[:noodle].should be_nil
+    end      
   end 
   
   describe 'deleting' do
@@ -263,10 +270,114 @@ describe 'CouchDB::StorageMethods' do
     end  
   end
   
-  describe 'attachments' do 
-    it 'should have an Attachment accessor for storing attachments' do 
+  describe 'attachments' do
+    before(:each) do
+      @file = File.new( File.dirname( __FILE__ ) + '/fixtures_and_data/image_attach.png' )
+    end
+       
+    it 'should have an accessor for storing attachments' do 
       @doc.attachments.should == Attachments.new( @doc )
     end
+    
+    it 'should add attachments' do 
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments[:my_file].should == @file
+    end
+    
+    it 'should pack attachments' do
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments.add("dup.png", @file)
+      pack = @doc.attachments.pack
+      pack.keys.should include('my_file', 'dup.png')
+    end
+    
+    it 'should pack attachments to key _attachments on save' do 
+      @doc.delete! if @doc.exists?
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments.add("dup.png", @file)
+      pack = @doc.attachments.pack
+      @doc.save!
+      @doc[:_attachments].should == pack
+    end   
+    
+    it 'should pack attachments before save' do 
+      @doc.delete! if @doc.exists?
+      
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments.add("dup.png", @file)
+      pack = @doc.attachments.pack
+       
+      @doc.attachments.should_receive( :pack ).and_return( pack )
+      @doc.commit
+    end 
+    
+    it 'should pack attachments before save' do 
+      @doc.delete! if @doc.exists?
+      
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments.add("dup.png", @file)
+      pack = @doc.attachments.pack
+       
+      @doc.attachments.should_receive( :pack ).and_return( pack )
+      @doc.commit
+    end 
+    
+    it 'should be correctly formed in database' do
+      @doc.delete! if @doc.exists?
+      
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments.add("dup.png", @file)
+      @doc.commit
+      @doc.reload
+      
+      @doc[:_attachments]['dup.png']['content_type'].should == 'image/png'
+      @doc[:_attachments]['dup.png']['stub'].should == true
+      (@doc[:_attachments]['my_file']['length'] > 0).should == true
+      @doc[:_attachments]['my_file']['content_type'].should == 'image/png'
+      @doc[:_attachments]['my_file']['stub'].should == true
+      (@doc[:_attachments]['my_file']['length'] > 0).should == true
+    end 
+    
+    it 'should be retrievable by a url' do
+      @doc.delete! if @doc.exists?
+      
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments.add("dup.png", @file)
+      @doc.commit
+      
+      url = @doc.attachments.uri_for('dup.png')
+      lambda{ CouchDB.get( url, true ) }.should_not raise_error
+    end  
+    
+    it 'should save and retrieve the data correctly' do 
+      @doc.delete! if @doc.exists?
+      
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments.add("dup.png", @file)
+      @doc.commit
+      
+      data = @file.read
+      data.should_not be_nil
+      data.should_not be_empty
+      
+      file = @doc.attachments.get!( :my_file ) 
+      file.read.should == data
+    end
+    
+    it 'should save and stream the data correctly' do 
+      @doc.delete! if @doc.exists?
+      
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments.add("dup.png", @file)
+      @doc.commit
+      
+      data = @file.read
+      data.should_not be_nil
+      data.should_not be_empty
+      
+      streamed = @doc.attachments.get!( :my_file, true ) 
+      streamed.should == data
+    end  
       
   end  
 

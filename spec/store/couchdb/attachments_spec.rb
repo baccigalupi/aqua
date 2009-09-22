@@ -28,7 +28,11 @@ describe CouchDB::Attachments do
     it 'when initializing with a hash, it should check that each key is a string and each value is a file' do
       lambda{ Attachments.new( @doc, { 1 => @file }) }.should raise_error( ArgumentError  )
       lambda{ Attachments.new( @doc, {:my_file => 1}) }.should raise_error( ArgumentError )
-    end     
+    end
+    
+    it 'document should be an object reference to the original document, not a dup' do 
+      @attachments.document.should === @doc
+    end       
   end     
   
   describe 'attachment_uri' do 
@@ -79,7 +83,13 @@ describe CouchDB::Attachments do
     it 'should save the attachment to the database' do
       lambda{ @attachments.add!( :my_file, @file ) }.should_not raise_error
       lambda{ CouchDB.get( @attachments.uri_for(:my_file) ) }.should_not raise_error 
-    end  
+    end
+    
+    it 'should have the right mime-type after addition to database' do 
+      @attachments.add!( :my_file, @file )
+      attach_hash = CouchDB.get( @attachments.uri_for(:my_file) )
+      attach_hash['content_type'].should == 'image/png'
+    end    
   end
   
   describe 'removing attachments' do
@@ -119,9 +129,36 @@ describe CouchDB::Attachments do
     it 'should have the same data as the original file' do 
       @attachments.add!( :my_file, @file )
       file = @attachments.get!(:my_file)
-      @file.rewind
       file.read.should == @file.read
-    end       
+    end
+    
+    it 'should stream an attachment' do
+      @attachments.add!( :my_file, @file )
+      data = @attachments.get!( :my_file, true ) 
+      data.should_not be_nil
+      data.should_not be_empty
+      data.should == @file.read
+    end         
   end     
+  
+  describe 'packing all files' do 
+    before(:each) do
+      @attachments.add( :my_file, @file )
+      @attachments.add( 'dup.png', @file )
+      @pack = @attachments.pack 
+    end  
+    
+    it 'should pack all the added files' do
+      @pack.keys.sort.should == ['dup.png', 'my_file'] 
+    end
+   
+    it 'should have correct keys for each attachment' do   
+      @pack['dup.png'].keys.sort.should include( 'content_type', 'data' )
+    end 
+    
+    it 'should have the correct mime type' do
+      @pack['dup.png']['content_type'].should == 'image/png'
+    end   
+  end  
     
 end

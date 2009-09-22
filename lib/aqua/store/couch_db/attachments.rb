@@ -9,7 +9,7 @@ module Aqua
       # it will try to load it from CouchDB.
       class Attachments < Mash
         attr_reader :document
-        attr_reader :stub
+        attr_reader :stubs
         
         # Creates a new attachment collection with keys that are attachment names and values that are
         # file-type objects. The collection manages both the key and the value types.
@@ -45,12 +45,13 @@ module Aqua
         # @api public
         def add!( name, file )
           add( name, file )
-          content_type = MIME::Types.type_for(file.path) 
-          content_type = content_type.empty? ? 'text\/plain' : content_type
+          content_type = MIME::Types.type_for(file.path).first 
+          content_type = content_type.nil? ? "text\/plain" : content_type.simplified
           data = {
-            'content-type' => content_type,
+            'content_type' => content_type,
             'data'         => Base64.encode64( file.read ).gsub(/\s/,'') 
           }
+          file.rewind 
           response = CouchDB.put( uri_for( name ), data )
           update_doc_rev( response )
           file
@@ -84,6 +85,7 @@ module Aqua
           unless file
             file = get!( name, stream )
           end
+          file.rewind if file # just in case of previous streaming
           file  
         end  
         
@@ -99,12 +101,12 @@ module Aqua
         # @api public
         def get!( name, stream=false ) 
           file = nil
-          response = CouchDB.get( uri_for( name, false ) ) rescue nil
-          data = Base64.decode64( response['data'] ) if response 
-          if data
+          response = CouchDB.get( uri_for( name, false ), true ) rescue nil
+          data = response && response.respond_to?(:keys) ? Base64.decode64( response['data'] ) : nil
+          if data || response
             file = Tempfile.new( CGI.escape( name.to_s ) ) 
             file.binmode if file.respond_to?( :binmode )
-            file.write( data )
+            data ? file.write( data ) : file.write( response )
             file.rewind 
             self[name] = file
           end  
@@ -143,7 +145,39 @@ module Aqua
         # @api private
         def update_doc_rev( response )
           document[:_rev] = response['rev']
-        end  
+        end
+        
+        # Creates a hash for the CouchDB _attachments key.
+        # @example 
+        #   "_attachments":
+        #   {
+        #     "foo.txt":
+        #     {
+        #       "content_type":"text\/plain",
+        #       "data": "VGhpcyBpcyBhIGJhc2U2NCBlbmNvZGVkIHRleHQ="
+        #     },
+        # 
+        #    "bar.txt":
+        #     {
+        #       "content_type":"text\/plain",
+        #       "data": "VGhpcyBpcyBhIGJhc2U2NCBlbmNvZGVkIHRleHQ="
+        #     }
+        #   }
+        def pack
+          pack_hash = {} 
+          self.keys.each do |key| 
+            file = self[key]
+            content_type = MIME::Types.type_for(file.path).first 
+            content_type = content_type.nil? ? "text\/plain" : content_type.simplified
+            data = {
+              'content_type' => content_type,
+              'data'         => Base64.encode64( file.read ).gsub(/\s/,'') 
+            }
+            file.rewind 
+            pack_hash[key.to_s] = data
+          end
+          pack_hash  
+        end    
          
       end # Attachments
     end # CouchDB

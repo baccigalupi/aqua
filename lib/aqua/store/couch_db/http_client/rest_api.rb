@@ -30,9 +30,17 @@ module RestAPI
     JSON.parse( response )
   end
 
-  def get(uri) 
+  def get(uri, streamable=false) 
     response = RestAPI.adapter.get(uri)
-    JSON.parse( response , :max_nesting => false)
+    begin
+      JSON.parse( response , :max_nesting => false)
+    rescue Exception => e 
+      if streamable
+        response
+      else
+        raise e
+      end    
+    end    
   end
 
   def post(uri, doc = nil)

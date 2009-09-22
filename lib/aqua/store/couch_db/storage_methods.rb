@@ -97,8 +97,8 @@ module Aqua
           #
           # @api private
           def save_logic( defer=false, mask_exception = true )
-            encode_attachments if self[:_attachment] 
             ensure_id
+            self[:_attachments] = attachments.pack unless attachments.empty?
             if defer
               database.add_to_bulk_cache( self )
             else
@@ -150,7 +150,14 @@ module Aqua
           # @api public
           def retrieve
             self.class.new( CouchDB.get( uri ) )
-          end  
+          end
+          
+          # reloads self from CouchDB database
+          # @return [Hash] representing CouchDB data
+          # @api public
+          def reload
+            self.replace( CouchDB.get( uri ) )
+          end   
         
           # Deletes an document from CouchDB. Delete can be deferred for bulk saving/deletion.
           #
@@ -345,29 +352,14 @@ module Aqua
             CGI.escape(str)
           end    
           
-          # Attachments ----------------
-          # maybe this should be it's own class?? 
-          
           # Hash of attachments, keyed by name
+          # @params [Document] Document object that is self
           # @return [Hash] Attachments keyed by name
           # 
           # @api public
           def attachments
             @attachments ||= Attachments.new( self )
           end  
-          
-          # TODO: Attachments
-          # def encode_attachments(attachments)
-          #   attachments.each do |key, value|
-          #     next if value['stub']
-          #     value['data'] = base64(value['data'])
-          #   end
-          #   attachments
-          # end
-          # 
-          # def base64(data)
-          #   Base64.encode64(data).gsub(/\s/,'')
-          # end
             
         end # InstanceMethods           
         
