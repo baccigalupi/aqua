@@ -2,22 +2,18 @@
 require 'set'
 
 class Set 
-  # implements initialization in a way that works provided that init is an array 
-  extend Aqua::From
-  
-  # implements #to_aqua correctly, we will have to rewrite #to_aqua_init to return an array
-  include Aqua::From 
+  include Aqua::Initializers  
   
   def to_aqua( base_object )
     hash = { 
       'class' => self.class.to_s, 
       'init' => to_aqua_init( base_object ) 
     }
-    if instance_variables.size > 0 
+    if (instance_variables - ['@hash']).size > 0 
       hash.merge!({ 'ivars' => base_object._pack_ivars( self ) })
     end
     hash
-  end
+  end   
 
   def to_aqua_init( base_object )
     # keys returns an array

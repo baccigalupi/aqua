@@ -1,5 +1,3 @@
-require 'tempfile'
-
 module Aqua
   module Store
     module CouchDB 

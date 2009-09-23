@@ -377,8 +377,8 @@ describe 'CouchDB::StorageMethods' do
       
       streamed = @doc.attachments.get!( :my_file, true ) 
       streamed.should == data
-    end  
-      
+    end
+    
   end  
 
 end

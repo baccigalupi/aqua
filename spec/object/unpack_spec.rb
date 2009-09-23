@@ -272,7 +272,7 @@ describe Aqua::Unpack do
       end
       
       it 'should unpack a Set' do
-        set = Set.new([1,2,3])
+        set = Set.new([1,2,3])   
         @user.grab_bag = set
         @user.commit!
         user = User.load(@user.id)

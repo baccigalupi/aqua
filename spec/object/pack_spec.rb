@@ -240,6 +240,10 @@ describe Aqua::Pack do
           it 'the value should be reconstitutable with Date.parse' do 
             @date.should == Date.parse( @pack[:ivars][:@dob]['init'] )
           end 
+          
+          it 'should not pack internally used ivars as specified by the class' do
+            @pack[:ivars][:@dob][:ivars].keys.should_not include('@sg', '@of', '@ajd')
+          end  
         end      
         
         describe 'Numbers' do
@@ -369,8 +373,8 @@ describe Aqua::Pack do
               @grab_bag['class'].should == 'OpenStruct'
             end
             
-            it 'the key "ivars" should have the keys "@table"' do
-              @grab_bag['ivars'].keys.should == ['@table'] 
+            it 'the key "ivars" should have the key "@table", a private variable' do
+              @grab_bag['ivars'].keys.should_not == ['@table'] 
             end
             
             it 'should initialize with the @table instance variable' do  

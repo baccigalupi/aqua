@@ -6,35 +6,47 @@
 #  * building your own methods for #to_aqua, #to_aqua_init, MyClass.aqua_init
 # See set.rb in this file for more an example
 module Aqua
-  module To
-    def to_aqua( base_object )
-      hash = { 
-        'class' => self.class.to_s, 
-        'init' => to_aqua_init( base_object ) 
-      }
-      if instance_variables.size > 0 
-        hash.merge!({ 'ivars' => base_object._pack_ivars( self ) })
+  module Initializers 
+    def self.included( klass ) 
+      klass.class_eval do
+        include InstanceMethods
+        extend ClassMethods
+        
+        unless methods.include?( :hide_attributes )
+          include Aqua::Pack::HiddenAttributes
+        end
       end
-      hash
     end
+    
+    module InstanceMethods 
+      def to_aqua( base_object )
+        hash = { 
+          'class' => self.class.to_s, 
+          'init' => to_aqua_init( base_object ) 
+        }
+        if instance_variables.size > 0 
+          hash.merge!({ 'ivars' => base_object._pack_ivars( self ) })
+        end
+        hash
+      end
   
-    def to_aqua_init( base_object ) 
-      self.to_s
-    end
-  end # To
-  
-  module From 
-    def aqua_init( init ) 
-      new( init )
-    end    
-  end # From       
+      def to_aqua_init( base_object ) 
+        self.to_s
+      end 
+    end # InstanceMethods
+    
+    module ClassMethods 
+      def aqua_init( init ) 
+        new( init )
+      end    
+    end # ClassMethods   
+    
+  end # Initializers
+         
 end  
 
 [ TrueClass, FalseClass, Time, Date, Fixnum, Bignum, Float, Rational, Hash, Array, OpenStruct, Range].each do |klass|
-  klass.class_eval do 
-    include Aqua::To
-    extend Aqua::From
-  end
+  klass.class_eval { include Aqua::Initializers }
 end 
 
 class TrueClass
@@ -58,6 +70,8 @@ class FalseClass
 end   
 
 class Date
+  hide_attributes :sg, :of, :ajd
+  
   def self.aqua_init( init )
     parse( init )
   end
@@ -141,10 +155,9 @@ class Array
 end
 
 class OpenStruct
+  hide_attributes :table
+  
   def to_aqua_init( base_object )
     instance_variable_get("@table").to_aqua_init( base_object )
   end  
 end    
-
-    
-  

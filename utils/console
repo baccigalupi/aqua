@@ -3,6 +3,9 @@
 require 'rubygems'
 require 'irb'
 require 'ruby-debug'
-require File.dirname(__FILE__) + "/../lib/aqua" 
+require File.dirname(__FILE__) + "/../lib/aqua"
+Dir[ File.dirname(__FILE__) + "/../spec/object/object_fixtures/**/*.rb" ].each do |file|
+  require file
+end 
 
 IRB.start if __FILE__ == $0      

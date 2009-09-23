@@ -16,21 +16,24 @@ end
 # It is required when a libarary is configured. If the library is not configured then it will 
 # automatically load the default: rest_client
 
-# non-gem language libraries
+# standard libraries
 require 'cgi'
 require 'time'
 require 'ostruct'
+require 'tempfile'
 
 # require local libs
 $:.unshift File.join(File.dirname(__FILE__))
   # support aka. monkey pathches
 require 'aqua/support/mash'
 require 'aqua/support/string_extensions'
-require 'aqua/support/initializers'
-  # storage 
-require 'aqua/store/storage' 
   # object methods
 require 'aqua/object/tank'
+  # a little more monkey patching
+require 'aqua/support/initializers'
+require 'aqua/support/file_attach'
+  # storage 
+require 'aqua/store/storage' 
 
 
 # LIBRARY SETUP -----------------------------------
