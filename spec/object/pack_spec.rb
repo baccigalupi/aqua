@@ -489,6 +489,54 @@ describe Aqua::Pack do
               user_2._pack[:ivars][:@grab_bag].should == @grab_bag[:init][:random_struct]
             end
           end    
+        
+          describe 'Embedded IO:' do
+            before(:each) do
+              @file = File.new(File.dirname(__FILE__) + '/../store/couchdb/fixtures_and_data/image_attach.png')
+              @tempfile = Tempfile.new('temp.txt')
+              @tempfile.write('I am a tempfile!')
+              @tempfile.rewind
+            end
+            
+            it 'File should have pack its class name as Aqua::FileStub' do
+              @user.grab_bag = @file
+              @user._pack
+              @user._pack[:ivars][:@grab_bag][:class].should == 'Aqua::FileStub'
+            end
+            
+            it 'File should have pack with an initialization key' do
+              @user.grab_bag = @file
+              pack = @user._pack
+              pack[:ivars][:@grab_bag][:init].should == '/FILE_image_attach.png'
+            end
+            
+            it 'should add an attachment to the pack' do 
+              @user.grab_bag = @file
+              pack = @user._pack
+              pack.attachments.size.should == 1
+              pack.attachments.get('image_attach.png').should == @file 
+            end                                                        
+            
+            it 'Tempfile should have pack its class name as Aqua::FileStub' do
+              @user.grab_bag = @tempfile
+              @user._pack
+              @user._pack[:ivars][:@grab_bag][:class].should == 'Aqua::FileStub'
+            end
+            
+            it 'Tempfile should have pack with an initialization key' do
+              @user.grab_bag = @tempfile
+              pack = @user._pack
+              pack[:ivars][:@grab_bag][:init].should == '/FILE_temp.txt'
+            end
+            
+            it 'should add an attachment to the pack' do 
+              @user.grab_bag = @tempfile
+              pack = @user._pack 
+              pack.attachments.size.should == 1
+              pack.attachments.get('temp.txt').path.should == @tempfile.path 
+            end                                                        
+            
+          end  
         end
       end   
     end

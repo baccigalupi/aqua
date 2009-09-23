@@ -24,14 +24,13 @@ require 'tempfile'
 
 # require local libs
 $:.unshift File.join(File.dirname(__FILE__))
-  # support aka. monkey pathches
+  # monkey pathches
 require 'aqua/support/mash'
 require 'aqua/support/string_extensions'
   # object methods
 require 'aqua/object/tank'
-  # a little more monkey patching
+  # a little more monkey patching for object packaging
 require 'aqua/support/initializers'
-require 'aqua/support/file_attach'
   # storage 
 require 'aqua/store/storage' 
 

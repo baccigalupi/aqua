@@ -21,14 +21,21 @@ module Aqua
     module InstanceMethods 
       def to_aqua( base_object )
         hash = { 
-          'class' => self.class.to_s, 
+          'class' => to_aqua_class, 
           'init' => to_aqua_init( base_object ) 
         }
-        if instance_variables.size > 0 
-          hash.merge!({ 'ivars' => base_object._pack_ivars( self ) })
-        end
+        ivars = _pack_instance_vars( base_object )
+        hash.merge!( ivars ) if ivars
         hash
       end
+      
+      def to_aqua_class
+        self.class.to_s
+      end  
+      
+      def _pack_instance_vars( base_object ) 
+        { 'ivars' => base_object._pack_ivars( self ) } if instance_variables.size > 0 
+      end  
   
       def to_aqua_init( base_object ) 
         self.to_s
@@ -45,7 +52,7 @@ module Aqua
          
 end  
 
-[ TrueClass, FalseClass, Time, Date, Fixnum, Bignum, Float, Rational, Hash, Array, OpenStruct, Range].each do |klass|
+[ TrueClass, FalseClass, Time, Date, Fixnum, Bignum, Float, Rational, Hash, Array, OpenStruct, Range, File, Tempfile].each do |klass|
   klass.class_eval { include Aqua::Initializers }
 end 
 
@@ -160,4 +167,59 @@ class OpenStruct
   def to_aqua_init( base_object )
     instance_variable_get("@table").to_aqua_init( base_object )
   end  
-end    
+end 
+
+class File
+  def to_aqua( base_object )
+    hash = { 
+      'class' => 'Aqua::FileStub', 
+      'init' => to_aqua_init( base_object ) 
+    }
+    ivars = _pack_instance_vars( base_object )
+    hash.merge!( ivars ) if ivars
+    hash
+  end 
+  
+  def filename
+    path.match(/([^\/]*)\z/).to_s
+  end
+    
+  def to_aqua_init( base_object )
+    name = filename
+    base_object._pack_file(name, self)
+    "/FILE_#{name}"      
+  end  
+end 
+
+
+module Aqua
+  module FileInitializations 
+    def to_aqua_class
+      'Aqua::FileStub'
+    end   
+       
+    def filename
+      path.match(/([^\/]*)\z/).to_s
+    end
+    
+    def to_aqua_init( base_object )
+      name = filename
+      base_object._pack_file(name, self)
+      "/FILE_#{name}"      
+    end  
+  end # FileInitializations
+end # Aqua
+   
+class File
+  include Aqua::FileInitializations 
+end
+
+class Tempfile
+  include Aqua::FileInitializations
+  
+  hide_attributes :clean_proc, :data, :tmpname, :tmpfile, :_dc_obj
+  
+  def filename
+    path.match(/([^\/]*)\.\d*\.\d*\z/).captures.first
+  end
+end       

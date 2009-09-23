@@ -159,7 +159,17 @@ module Aqua
         index = self.__pack[:keys].length
         self.__pack[:keys] << _pack_object( obj )
         index # return key
-      end    
+      end 
+      
+      # Adds an attachment to the __pack document. Before save the attachments are encoded into the doc  
+      #
+      # @param [String] filename used as the key/index
+      # @param [File, Tempfile] file to be attached
+      #
+      # @api semi-public
+      def _pack_file( filename, file )
+        __pack.attachments.add( filename, file )
+      end     
            
     
       attr_accessor :_warnings 
