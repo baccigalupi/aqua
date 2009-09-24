@@ -10,7 +10,7 @@ Design =    CouchDB::DesignDocument unless defined?( Design )
 
 describe CouchDB::DesignDocument do 
   before(:each) do
-    CouchDB.server.delete_all  
+    Aqua::Storage.database.delete_all
   end  
     
   describe 'new and create' do

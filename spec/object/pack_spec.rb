@@ -35,7 +35,7 @@ describe Aqua::Pack do
   
   describe 'external saves and stubs' do
     before(:each) do
-      CouchDB.server.delete_all
+      Aqua::Storage.database.delete_all
       @graeme = User.new(:username => 'graeme', :name => ['Graeme', 'Nelson'])
       @user.other_user = @graeme
       @pack = @user._pack
@@ -544,7 +544,7 @@ describe Aqua::Pack do
   
   describe 'committing packed objects to the store' do 
     before(:each) do 
-      CouchDB.server.delete_all
+      Aqua::Storage.database.delete_all
     end
       
     it 'commit! should not raise errors on successful save' do

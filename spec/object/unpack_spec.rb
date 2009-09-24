@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + "/../../lib/aqua/support/set"
 
 describe Aqua::Unpack do
   before(:each) do
-    CouchDB.server.delete_all 
+    Aqua::Storage.database.delete_all
     @time = Time.now
     @date = Date.parse('12/23/1969')
     @log = Log.new( :message => "Hello World! This is a log entry", :created_at => Time.now )

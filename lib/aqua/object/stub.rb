@@ -1,5 +1,9 @@
 # NOTES: I just checked and Delegator does all its delegation through method missing, so 
-# it probably makes sense to make this all one class, with method_missing doing the work. 
+# it probably makes sense to make this all one class, with method_missing doing the work.
+# It might be faster, but harder, to pass a reference to the parent object and the way that
+# the stub is accessed as a way to replace self with the actual object instead of stubbing.
+# Not sure how that would work, but I am looking for something like self = something_else,
+# which isn't kosher. 
 
 module Aqua 
   class TempStub
@@ -52,11 +56,11 @@ module Aqua
       end
       
       def __getobj__
-         @_sd_obj          # return object we are delegating to, required
+         @_sd_obj          # return object we are delegating to
        end
 
        def __setobj__(obj)
-         @_sd_obj = obj    # change delegation object, a feature we're providing
+         @_sd_obj = obj    # change delegation object
        end
       
       def load_delegate
@@ -64,5 +68,24 @@ module Aqua
       end   
     public
         
+  end  
+
+  class FileStub < Stub
+    
+    # Methods are those stubbed by the store for an attachment.
+    # delegate_id will be the id required by the parent class to load the object.
+    # For example, if a User object has an attribute @attachment that is a file.
+    #   User.load_attachment( id ) should find a specified attachment for a given user
+    # i.e. the id has to encompass anything that may be required to find the exact file.
+    # In CouchDB there are specific urls for attachments (post version 0.9): 
+    #   http://127.0.0.1:5984/user_database/object_id/attachment_id
+    # Since the CouchDB store will know which database to use the object_id/attachment_id
+    # portion should work
+    
+    protected
+      def load_delegate
+        __setobj__( delegate_class.constantize.attachment( delegate_id ) )
+      end   
+    public    
   end  
 end  

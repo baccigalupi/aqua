@@ -43,6 +43,39 @@ module Aqua
             doc.save!
           end
           
+          # In CouchDB there are specific urls for attachments (post version 0.9): 
+          #   http://127.0.0.1:5984/user_database/object_id/attachment_id
+          # Since the CouchDB store will know which database to use the object_id/attachment_id
+          # portion should work.
+          #
+          # @param [String] object_id/attachment_id with no leading slash
+          # 
+          # @api public
+          def attachment( document_id, attachment_id ) 
+            attachment_uri = "#{database.uri}/#{CGI.escape( document_id )}/#{attachment_id}" 
+            CouchDB.get( attachment_uri, true ) # second argument catches json packing errors for streamed data
+          end
+          
+          # Sets default database for class. This can be overwritten by individual documents
+          # @todo Look to CouchDB database strategy to determine if there is a database per class
+          #   or just one big database for all classes
+          # 
+          # @return [Aqua::Database]
+          #
+          # @api public
+          def database
+            @database ||= Database.create # defaults to 'aqua' 
+          end 
+          
+          # Setter for the database per class. Used to override default per class or default strategy. 
+          #
+          # @return [Aqua::Database]
+          #
+          # @api public
+          def database=( db )
+            @database = db
+          end  
+          
         end     
         
         module InstanceMethods
@@ -249,13 +282,13 @@ module Aqua
             @database ||= determine_database
           end  
         
-          # Looks to CouchDB.database_strategy for information about how the CouchDB store has generally
+          # Looks to class for database information about how the CouchDB store has generally
           # been configured to store its data across databases and/or servers. In some cases the class for
           # the parent object has configuration details about the database and server to use.
           # @todo Build the strategies in CouchDB. Use them here
           # @api private
           def determine_database
-            Database.create # defaults to database 'aqua' using default server :aqua   
+            self.class.database    
           end  
         
           # setters and getters couchdb document specifics -------------------------
@@ -280,7 +313,7 @@ module Aqua
           # @api public 
           def id=( str )
             if str.respond_to?(:match)
-              escaped = escape_for_id( str )
+              escaped = CGI.escape( str )
               
               # CLEANUP: do a bulk delete request on the old id, now that it has changed
               delete(true) if !new? && escaped != self[:_id]
@@ -342,15 +375,9 @@ module Aqua
           
           # Escapes document id. Different strategies for design documents and normal documents.
           # @api private
-          def escape_doc_id
-            escape_for_id( id )
+          def escape_doc_id 
+            CGI.escape( id )
           end
-          
-          # Escapes a string for id usage
-          # @api private
-          def escape_for_id( str )
-            CGI.escape(str)
-          end    
           
           # Hash of attachments, keyed by name
           # @params [Document] Document object that is self

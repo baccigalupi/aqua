@@ -43,7 +43,7 @@ describe 'CouchDB::StorageMethods' do
     
     describe 'revisions' do
       before(:each) do
-        CouchDB.server.delete_all  
+        @doc.delete if @doc.exists?  
       end  
     
       it 'should be an empty array for a new record' do 
@@ -70,7 +70,7 @@ describe 'CouchDB::StorageMethods' do
     
     describe 'changing the id, post save' do
       before(:each) do
-        CouchDB.server.delete_all
+        @doc.database.delete_all
         @doc.save!
         @doc.id = 'something/new_and_fresh'
       end  
@@ -98,8 +98,13 @@ describe 'CouchDB::StorageMethods' do
   
   describe 'database' do 
     before(:each) do
-      CouchDB.server.delete_all  
-    end  
+      @doc.delete  
+    end
+    
+    it 'should have a database per class' do
+      Document.database.should_not be_nil
+      Document.database.uri.should == 'http://127.0.0.1:5984/aqua'
+    end    
     
     it 'should not be nil' do
       @doc.database.should_not be_nil
@@ -121,7 +126,7 @@ describe 'CouchDB::StorageMethods' do
   
   describe 'uri' do 
     before(:each) do
-      CouchDB.server.delete_all  
+      @doc.delete if @doc.exists?  
     end  
     
     it 'should have use the default database uri by default with the document id'  do 
@@ -144,7 +149,7 @@ describe 'CouchDB::StorageMethods' do
   
   describe 'save/create' do 
     before(:each) do
-      CouchDB.server.delete_all  
+      @doc.delete if @doc.exists?  
     end  
     
     it 'saving should create a document in the database' do 
@@ -213,7 +218,7 @@ describe 'CouchDB::StorageMethods' do
   
   describe 'deleting' do
     before(:each) do
-      CouchDB.server.delete_all  
+      @doc.delete if @doc.exists?  
     end  
     
     it 'should #delete a record' do
@@ -242,7 +247,7 @@ describe 'CouchDB::StorageMethods' do
   
   describe 'updating' do
     before(:each) do
-      CouchDB.server.delete_all!
+      @doc.delete if @doc.exists?
     end  
     
     it 'saving after a change should change the revision number' do 
@@ -378,6 +383,21 @@ describe 'CouchDB::StorageMethods' do
       streamed = @doc.attachments.get!( :my_file, true ) 
       streamed.should == data
     end
+    
+    it 'should have a class accessor for attachments' do
+      @doc.delete! if @doc.exists?
+      
+      @doc.attachments.add(:my_file, @file)
+      @doc.attachments.add("dup.png", @file)
+      @doc.commit 
+      
+      data = @file.read
+      data.should_not be_nil
+      data.should_not be_empty
+      
+      attachment = Document.attachment( @doc.id, 'my_file' ) 
+      #puts attachment.inspect
+    end  
     
   end  
 

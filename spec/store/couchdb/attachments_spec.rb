@@ -9,7 +9,7 @@ Attachments =   CouchDB::Attachments unless defined?( Attachments )
 
 describe CouchDB::Attachments do
   before(:each) do
-    CouchDB.server.delete_all! 
+    Aqua::Storage.database.delete_all
     @doc = Document.new(:id => 'attachments_doc')
     @attachments = Attachments.new( @doc )
     @file = File.new( File.dirname( __FILE__ ) + '/fixtures_and_data/image_attach.png' )
