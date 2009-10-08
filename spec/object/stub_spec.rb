@@ -48,5 +48,4 @@ describe Aqua::Stub do
       @stub.herd.should == 'Yah, yah, little gerbil'
     end   
   end     
-
-end
+end 

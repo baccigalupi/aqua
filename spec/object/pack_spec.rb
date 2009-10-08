@@ -35,7 +35,7 @@ describe Aqua::Pack do
   
   describe 'external saves and stubs' do
     before(:each) do
-      Aqua::Storage.database.delete_all
+      User::Storage.database.delete_all
       @graeme = User.new(:username => 'graeme', :name => ['Graeme', 'Nelson'])
       @user.other_user = @graeme
       @pack = @user._pack
@@ -498,44 +498,55 @@ describe Aqua::Pack do
               @tempfile.rewind
             end
             
-            it 'File should have pack its class name as Aqua::FileStub' do
-              @user.grab_bag = @file
-              @user._pack
-              @user._pack[:ivars][:@grab_bag][:class].should == 'Aqua::FileStub'
-            end
+            describe "File" do
+              it 'should have pack its class name as Aqua::FileStub' do
+                @user.grab_bag = @file
+                @user._pack
+                @user._pack[:ivars][:@grab_bag][:class].should == 'Aqua::FileStub'
+              end
             
-            it 'File should have pack with an initialization key' do
-              @user.grab_bag = @file
-              pack = @user._pack
-              pack[:ivars][:@grab_bag][:init].should == '/FILE_image_attach.png'
-            end
+              it 'should have pack with an initialization key' do
+                @user.grab_bag = @file
+                pack = @user._pack
+                pack[:ivars][:@grab_bag][:init].should == '/FILE_image_attach.png'
+              end
             
-            it 'should add an attachment to the pack' do 
-              @user.grab_bag = @file
-              pack = @user._pack
-              pack.attachments.size.should == 1
-              pack.attachments.get('image_attach.png').should == @file 
+              it 'should add an attachment to the pack' do 
+                @user.grab_bag = @file
+                pack = @user._pack
+                pack.attachments.size.should == 1
+                pack.attachments.get('image_attach.png').should == @file 
+              end
+              
+              it 'should stub content type and length' do
+                @user.grab_bag = @file
+                pack = @user._pack
+                pack[:ivars][:@grab_bag][:methods].should include('content_type', 'content_length') 
+                pack[:ivars][:@grab_bag][:methods]['content_type'].should == 'image/png'
+                pack[:ivars][:@grab_bag][:methods]['content_length'].should == 26551
+              end    
             end                                                        
             
-            it 'Tempfile should have pack its class name as Aqua::FileStub' do
-              @user.grab_bag = @tempfile
-              @user._pack
-              @user._pack[:ivars][:@grab_bag][:class].should == 'Aqua::FileStub'
-            end
+            describe 'Tempfile' do
+              it 'should have pack its class name as Aqua::FileStub' do
+                @user.grab_bag = @tempfile
+                @user._pack
+                @user._pack[:ivars][:@grab_bag][:class].should == 'Aqua::FileStub'
+              end
             
-            it 'Tempfile should have pack with an initialization key' do
-              @user.grab_bag = @tempfile
-              pack = @user._pack
-              pack[:ivars][:@grab_bag][:init].should == '/FILE_temp.txt'
-            end
+              it 'should have pack with an initialization key' do
+                @user.grab_bag = @tempfile
+                pack = @user._pack
+                pack[:ivars][:@grab_bag][:init].should == '/FILE_temp.txt'
+              end
             
-            it 'should add an attachment to the pack' do 
-              @user.grab_bag = @tempfile
-              pack = @user._pack 
-              pack.attachments.size.should == 1
-              pack.attachments.get('temp.txt').path.should == @tempfile.path 
-            end                                                        
-            
+              it 'should add an attachment to the pack' do 
+                @user.grab_bag = @tempfile
+                pack = @user._pack 
+                pack.attachments.size.should == 1
+                pack.attachments.get('temp.txt').path.should == @tempfile.path 
+              end 
+            end                                                         
           end  
         end
       end   
@@ -544,7 +555,7 @@ describe Aqua::Pack do
   
   describe 'committing packed objects to the store' do 
     before(:each) do 
-      Aqua::Storage.database.delete_all
+      User::Storage.database.delete_all
     end
       
     it 'commit! should not raise errors on successful save' do

@@ -83,12 +83,12 @@ module Aqua
       end
     
       # packs an object from it's Ruby state into a Hash-like object for storage. 
-      # @return [Aqua::Storage]
+      # @return [Storage]
       #
       # @api private
       def _pack
         class_name = self.class.to_s
-        self.__pack = Aqua::Storage.new
+        self.__pack = Storage.new
         self.__pack.id = @id if @id
         self.__pack[:_rev] = _rev if _rev 
         self.__pack[:keys] = []
@@ -178,7 +178,7 @@ module Aqua
       # clogging the object instance space. Some of the public ones above are too!
       protected
       
-        # __pack is an Aqua::Storage object into which the object respresentation is packed
+        # __pack is an Storage object into which the object respresentation is packed
         #
         # _store is the current state of the storage of the object on CouchDB. It is used lazily
         # and will be empty unless it is needed for unpacking or checking for changed data.

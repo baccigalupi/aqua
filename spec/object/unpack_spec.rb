@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + "/../../lib/aqua/support/set"
 
 describe Aqua::Unpack do
   before(:each) do
-    Aqua::Storage.database.delete_all
+    User::Storage.database.delete_all
     @time = Time.now
     @date = Date.parse('12/23/1969')
     @log = Log.new( :message => "Hello World! This is a log entry", :created_at => Time.now )
@@ -174,7 +174,6 @@ describe Aqua::Unpack do
         user = User.load(@user.id)
         user.grab_bag.should == @user.grab_bag
       end        
-      
         
       it 'should unpack an Array derivative' do
         array_udder = ArrayUdder['1','2','3']
@@ -184,48 +183,73 @@ describe Aqua::Unpack do
         user = User.load( @user.id )
         user.grab_bag.should == @user.grab_bag
       end
-        
-      it 'should unpack a Hash' do 
+      
+      describe 'hash' do
+        it 'should unpack a basic hash' do 
         @user.grab_bag = {'1' => '2'}
         @user.commit!
         user = User.load(@user.id)
         user.grab_bag.should == @user.grab_bag
       end
       
-      it 'should unpack symbol keys differently than unpacking string keys' do  
-        @user.grab_bag = {'first' => '1', :second => '2'}
-        @user.commit!
-        user = User.load(@user.id)
-        user.grab_bag.keys.should include('first', :second)
-      end
+        describe 'hash keys' do
+          it 'should unpack as symbol and strings' do  
+            @user.grab_bag = {'first' => '1', :second => '2'}
+            @user.commit!
+            user = User.load(@user.id)
+            user.grab_bag.keys.should include('first', :second)
+          end
       
-      it 'should unpack a numeric object key' do
-        @user.grab_bag = {1 => 'first', 2 => 'second'}
-        @user.commit!
-        user = User.load(@user.id)
-        user.grab_bag.keys.should include( 1, 2 )
-      end
+          it 'should unpack a numeric object' do
+            @user.grab_bag = {1 => 'first', 2 => 'second'}
+            @user.commit!
+            user = User.load(@user.id)
+            user.grab_bag.keys.should include( 1, 2 )
+          end
       
-      it 'should unpack a more complex object as a key' do
-        struct = OpenStruct.new( :gerbil => true ) 
-        @user.grab_bag = { struct => 'first' }
-        @user.commit!
-        user = User.load(@user.id) 
-        user.grab_bag.keys.should include( struct )
-      end      
+          it 'should unpack a more complex object' do
+            struct = OpenStruct.new( :gerbil => true ) 
+            @user.grab_bag = { struct => 'first' }
+            @user.commit!
+            user = User.load(@user.id) 
+            user.grab_bag.keys.should include( struct )
+          end      
+        end
       
-      it 'should unpack a Hash with non-string values' do 
-        @user.grab_bag = {'1' => 2}
-        @user.commit!
-        user = User.load(@user.id)
-        user.grab_bag.should == @user.grab_bag
-      end  
+        it 'should unpack non-string values' do 
+          @user.grab_bag = {'1' => 2}
+          @user.commit!
+          user = User.load(@user.id)
+          user.grab_bag.should == @user.grab_bag
+        end    
       
-      it 'should unpack a deeply nested Hash' do
-        @user.grab_bag = {'1' => {'2' => {'3' => 4}}}
-        @user.commit!
-        user = User.load(@user.id)
-        user.grab_bag.should == @user.grab_bag 
+        it 'should unpack deep nesting' do
+          @user.grab_bag = {'1' => {'2' => {'3' => 4}}}
+          @user.commit!
+          user = User.load(@user.id)
+          user.grab_bag.should == @user.grab_bag 
+        end
+        
+        it 'should unpack a Hash derivative' do
+          @struct = OpenStruct.new(
+            :gerbil => true, 
+            :cat => 'yup, that too!', 
+            :disaster => ['pow', 'blame', 'chase', 'spew'],
+            :nipples => 'yes'
+          )
+        
+          @hash_derivative = CannedHash.new( 
+            :ingredients => ['Corned Beef', 'Potatoes', 'Tin Can'],
+            :healthometer => false,
+            :random_struct => @struct 
+          )
+        
+          @user.grab_bag = @hash_derivative
+          @user.commit! 
+        
+          user = User.load(@user.id)
+          user.grab_bag.should == @user.grab_bag 
+        end 
       end  
       
       it 'should unpack a Struct' do 
@@ -243,27 +267,6 @@ describe Aqua::Unpack do
         user.grab_bag.should == @user.grab_bag
       end 
       
-      it 'should unpack a Hash derivative' do
-        @struct = OpenStruct.new(
-          :gerbil => true, 
-          :cat => 'yup, that too!', 
-          :disaster => ['pow', 'blame', 'chase', 'spew'],
-          :nipples => 'yes'
-        )
-        
-        @hash_derivative = CannedHash.new( 
-          :ingredients => ['Corned Beef', 'Potatoes', 'Tin Can'],
-          :healthometer => false,
-          :random_struct => @struct 
-        )
-        
-        @user.grab_bag = @hash_derivative
-        @user.commit! 
-        
-        user = User.load(@user.id)
-        user.grab_bag.should == @user.grab_bag 
-      end
-      
       it 'should unpack a Range' do
         @user.grab_bag = 1..3
         @user.commit!
@@ -278,7 +281,32 @@ describe Aqua::Unpack do
         user = User.load(@user.id)
         user.grab_bag.should == set
       end  
-         
+      
+      describe 'embedded IO:' do
+        describe 'File' do
+          before(:each) do 
+            @file = File.new(File.dirname(__FILE__) + '/../store/couchdb/fixtures_and_data/image_attach.png')
+            @user.grab_bag = @file
+            @user.commit!
+            user = User.load(@user.id) 
+            @grab_bag = user.grab_bag
+          end
+            
+          it 'should unpack Files as FileStubs' do 
+            @grab_bag.class.should == Aqua::FileStub
+          end
+          
+          it 'stub should have methods for content_type and content_length' do 
+            @grab_bag.methods.should include('content_type', 'content_length')
+          end
+          
+          it 'should retrieve the attachment' do  
+            data = @grab_bag.read
+            data.should_not be_nil
+            data.should == @file.read
+          end    
+        end
+      end      
       
       it 'should unpack an aquatic object' do 
         @user.commit!

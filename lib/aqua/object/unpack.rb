@@ -18,7 +18,7 @@ module Aqua::Unpack
       instance.id = id
       instance.reload
       instance
-    end  
+    end
   end
   
   module InstanceMethods
@@ -46,7 +46,7 @@ module Aqua::Unpack
           end    
         end      
       end  
-    end
+    end 
     
     # Reloads database information into the object, and raises an error on failure.
     # @return [Object] Will return raise error on failure and return self on success.
@@ -69,16 +69,16 @@ module Aqua::Unpack
       end
       
       # Retrieves objects storage from its engine.
-      # @return [Aqua::Storage]
+      # @return [Storage]
       # 
       # @api private
       def _get_store
-        # this is kind of klunky, should refactor
-        self._store = Aqua::Storage.new(:id => self.id).retrieve 
+        # this is kind of klunky, should refactor 
+        self._store = self.class::Storage.new(:id => self.id).retrieve
       end
       
       # Unpacks an object from hash representation of data and metadata
-      # @return [Aqua::Storage]
+      # @return [Storage]
       # @todo Refactor to move more of this into individual classes
       #
       # @api private
@@ -121,10 +121,12 @@ module Aqua::Unpack
       def _unpack_initialization( obj )
         if init = obj[:init] 
           init_class = init.class
-          if init_class == String 
+          if init_class == String
             if init.match(/\A\/STUB_(\d*)\z/)
               _unpack_stub( $1.to_i )
-            else  
+            elsif init.match(/\A\/FILE_(.*)\z/) 
+              _unpack_file( $1, obj )
+            else    
               init
             end  
           elsif init.class == Array 
@@ -137,11 +139,27 @@ module Aqua::Unpack
       
       # Retrieves and unpacks a stubbed object from its separate storage area
       # @return [Aqua::Stub] Delegate object for externally saved class
+      # @param [Fixnum] Array index for the stub details, garnered from the key name
       #
       # @api private
       def _unpack_stub( index ) 
         hash = _store[:stubs][index] 
         Aqua::Stub.new( hash ) 
+      end 
+      
+      # Retrieves and unpacks a stubbed object from its separate storage area
+      # @param [String] File name, and attachment id
+      # @return [Aqua::FileStub] Delegate object for file attachments
+      #
+      # @api private
+      def _unpack_file( name, obj )
+        hash = { 
+          :class => self.class.to_s, 
+          :id => id,
+          :attachment_id => name,
+          :methods => obj[:methods] 
+        } 
+        Aqua::FileStub.new( hash ) 
       end    
        
       # Unpacks an Array. 
@@ -203,7 +221,7 @@ module Aqua::Unpack
             # build from initialization 
             init = _unpack_initialization( store_pack )
             return_object = if init
-              obj_class == Aqua::Stub ? init : obj_class.aqua_init( init )
+              [Aqua::Stub, Aqua::FileStub].include?( obj_class ) ? init : obj_class.aqua_init( init )
             end
             
             # Build uninitialized object

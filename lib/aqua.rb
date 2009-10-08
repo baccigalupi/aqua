@@ -27,12 +27,12 @@ $:.unshift File.join(File.dirname(__FILE__))
   # monkey pathches
 require 'aqua/support/mash'
 require 'aqua/support/string_extensions'
+  # storage 
+require 'aqua/store/storage' 
   # object methods
 require 'aqua/object/tank'
   # a little more monkey patching for object packaging
 require 'aqua/support/initializers'
-  # storage 
-require 'aqua/store/storage' 
 
 
 # LIBRARY SETUP -----------------------------------

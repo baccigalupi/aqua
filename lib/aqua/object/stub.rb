@@ -70,21 +70,20 @@ module Aqua
         
   end  
 
-  class FileStub < Stub
+  class FileStub < Stub 
     
     # Methods are those stubbed by the store for an attachment.
-    # delegate_id will be the id required by the parent class to load the object.
-    # For example, if a User object has an attribute @attachment that is a file.
-    #   User.load_attachment( id ) should find a specified attachment for a given user
-    # i.e. the id has to encompass anything that may be required to find the exact file.
-    # In CouchDB there are specific urls for attachments (post version 0.9): 
-    #   http://127.0.0.1:5984/user_database/object_id/attachment_id
-    # Since the CouchDB store will know which database to use the object_id/attachment_id
-    # portion should work
+    def initialize( opts ) 
+      self.attachment_id = opts.delete(:attachment_id)
+      super( opts )
+    end
     
     protected
+      attr_accessor :attachment_id, :parent
+    
       def load_delegate
-        __setobj__( delegate_class.constantize.attachment( delegate_id ) )
+        self.parent = delegate_class.constantize.load( delegate_id )
+        __setobj__( parent.attachments.get( :attachment_id ) )
       end   
     public    
   end  

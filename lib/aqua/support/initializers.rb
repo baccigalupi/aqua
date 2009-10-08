@@ -169,31 +169,22 @@ class OpenStruct
   end  
 end 
 
-class File
-  def to_aqua( base_object )
-    hash = { 
-      'class' => 'Aqua::FileStub', 
-      'init' => to_aqua_init( base_object ) 
-    }
-    ivars = _pack_instance_vars( base_object )
-    hash.merge!( ivars ) if ivars
-    hash
-  end 
-  
-  def filename
-    path.match(/([^\/]*)\z/).to_s
-  end
-    
-  def to_aqua_init( base_object )
-    name = filename
-    base_object._pack_file(name, self)
-    "/FILE_#{name}"      
-  end  
-end 
-
-
 module Aqua
   module FileInitializations 
+    def to_aqua( base_object )
+      hash = { 
+        'class' => to_aqua_class, 
+        'init' => to_aqua_init( base_object ),
+        'methods' => {
+          'content_type' => MIME::Types.type_for( path ).first,
+          'content_length' => stat.size
+        } 
+      }
+      ivars = _pack_instance_vars( base_object )
+      hash.merge!( ivars ) if ivars
+      hash
+    end  
+    
     def to_aqua_class
       'Aqua::FileStub'
     end   
@@ -211,7 +202,7 @@ module Aqua
 end # Aqua
    
 class File
-  include Aqua::FileInitializations 
+  include Aqua::FileInitializations        
 end
 
 class Tempfile

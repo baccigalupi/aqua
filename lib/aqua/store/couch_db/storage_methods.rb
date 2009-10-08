@@ -43,19 +43,6 @@ module Aqua
             doc.save!
           end
           
-          # In CouchDB there are specific urls for attachments (post version 0.9): 
-          #   http://127.0.0.1:5984/user_database/object_id/attachment_id
-          # Since the CouchDB store will know which database to use the object_id/attachment_id
-          # portion should work.
-          #
-          # @param [String] object_id/attachment_id with no leading slash
-          # 
-          # @api public
-          def attachment( document_id, attachment_id ) 
-            attachment_uri = "#{database.uri}/#{CGI.escape( document_id )}/#{attachment_id}" 
-            CouchDB.get( attachment_uri, true ) # second argument catches json packing errors for streamed data
-          end
-          
           # Sets default database for class. This can be overwritten by individual documents
           # @todo Look to CouchDB database strategy to determine if there is a database per class
           #   or just one big database for all classes
@@ -73,6 +60,7 @@ module Aqua
           #
           # @api public
           def database=( db )
+            db = Database.create( db ) if db.class == String
             @database = db
           end  
           
