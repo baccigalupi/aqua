@@ -24,19 +24,19 @@ describe Aqua::Config do
       configure_aqua :database => 'someplace_else', :embed => { :stub => [:username] } 
     end
     opts = User.aquatic_options 
-    Persistent::Storage.database.name.should == 'someplace_else'
+    User::Storage.database.name.should == 'someplace_else'
     opts[:embed].should_not be_false
     opts[:embed][:stub].class.should == Array
   end
   
   it 'should be able to add to already custom configured options' do
     opts = User.aquatic_options 
-    Persistent::Storage.database.name.should == 'someplace_else' # make sure it is held over from the last test
+    User::Storage.database.name.should == 'someplace_else' # make sure it is held over from the last test
     User.class_eval do
       configure_aqua :database => 'newer_than_that' 
     end 
     opts = User.aquatic_options 
-    Persistent::Storage.database.name.should == 'newer_than_that'
+    User::Storage.database.name.should == 'newer_than_that'
     opts[:embed].should_not be_false
     opts[:embed][:stub].class.should == Array 
   end 
@@ -45,6 +45,10 @@ describe Aqua::Config do
     opts = Log.aquatic_options
     opts[:embed].should == true
   end 
+  
+  it 'each class should have different Storage class options' do
+    Persistent::Storage.database.should_not == User::Storage.database
+  end  
    
 end  
    

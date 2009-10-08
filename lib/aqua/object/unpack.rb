@@ -156,7 +156,6 @@ module Aqua::Unpack
         hash = { 
           :class => self.class.to_s, 
           :id => id,
-          :attachment_id => name,
           :methods => obj[:methods] 
         } 
         Aqua::FileStub.new( hash ) 

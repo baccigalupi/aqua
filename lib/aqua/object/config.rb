@@ -1,26 +1,25 @@
 module Aqua::Config
-  
   def self.included( klass ) 
+    # This per aquatic class storage class is used to maintain the storage specific options, 
+    # such as a particular database for the class. Otherwise, appeals directly to Aqua::Storage 
+    # for class methods will loose database and other class specific storage options
+    klass.class_eval "
+      class Storage < Aqua::Storage
+      end  
+    "
+    
     klass.class_eval do
       extend ClassMethods
       configure_aqua
       
       hide_attributes :_aqua_opts
-    end  
+    end   
   end
-  
-  # This is used to maintain the storage specific options
-  # for a given class, such as a particular database for the class.
-  # Otherwise, appeals directly to Storage for class methods will loose 
-  # this information.
-  class Storage < Aqua::Storage 
-  end  
-     
   
   module ClassMethods 
     def configure_aqua(opts={})
       database = opts.delete(:database)
-      Storage.database = database
+      self::Storage.database = database
       @_aqua_opts = Mash.new( _aqua_opts ).merge!(opts)
     end
     

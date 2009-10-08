@@ -25,7 +25,7 @@ describe Aqua::Unpack do
   
   describe 'loading from storage' do
     
-    it 'should raise in error if the id doesn\' exist in the data store' do 
+    it 'should raise in error if the id doesn\'t exist in the data store' do 
       user = User.new(:id => 'gerbil_farts')
       user.id.should == 'gerbil_farts'
       lambda{ user.reload! }.should raise_error

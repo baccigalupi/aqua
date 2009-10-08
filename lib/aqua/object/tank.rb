@@ -12,7 +12,7 @@ module Aqua::Tank
       include Aqua::Unpack
       include Aqua::Config
       include Aqua::Query 
-    end  
+    end
   end
 end
 

@@ -71,19 +71,9 @@ module Aqua
   end  
 
   class FileStub < Stub 
-    
-    # Methods are those stubbed by the store for an attachment.
-    def initialize( opts ) 
-      self.attachment_id = opts.delete(:attachment_id)
-      super( opts )
-    end
-    
     protected
-      attr_accessor :attachment_id, :parent
-    
       def load_delegate
-        self.parent = delegate_class.constantize.load( delegate_id )
-        __setobj__( parent.attachments.get( :attachment_id ) )
+        __setobj__( delegate_class.constantize::Storage.attachment( delegate_id ) )
       end   
     public    
   end  
