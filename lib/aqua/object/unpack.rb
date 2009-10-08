@@ -73,7 +73,7 @@ module Aqua::Unpack
       # 
       # @api private
       def _get_store
-        # this is kind of klunky, should refactor 
+        # this is kind of klunky, should refactor
         self._store = self.class::Storage.new(:id => self.id).retrieve
       end
       
@@ -154,8 +154,8 @@ module Aqua::Unpack
       # @api private
       def _unpack_file( name, obj )
         hash = { 
-          :class => self.class.to_s, 
-          :id => id,
+          :parent => self, 
+          :id => name,
           :methods => obj[:methods] 
         } 
         Aqua::FileStub.new( hash ) 

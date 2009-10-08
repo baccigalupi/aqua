@@ -17,8 +17,19 @@ module Aqua
       end  
     end   
   end
+  
+  module StubDelegate 
+    def __getobj__
+      @_sd_obj          # return object we are delegating to
+    end
+
+    def __setobj__(obj)
+      @_sd_obj = obj    # change delegation object
+    end  
+  end  
     
-  class Stub < Delegator
+  class Stub < Delegator 
+    include StubDelegate
     
     # Builds a new stub object which returns cached/stubbed methods until such a time as a non-cached method 
     # is requested.
@@ -37,31 +48,24 @@ module Aqua
       self.delegate_class = opts[:class]
       self.delegate_id = opts[:id]
     end
+    
+    def method_missing( method, *args )
+      if __getobj__.class.to_s != delegate_class.to_s
+        load_delegate
+        # resend! 
+        if (args.size == 1 && !args.first.nil?) 
+          __getobj__.send( method.to_sym, eval(args.map{|value| "'#{value}'"}.join(', ')) )
+        else
+          __getobj__.send( method.to_sym )
+        end    
+      else
+        raise NoMethodError
+      end
+    end
+    
       
     protected 
       attr_accessor :delegate_class, :delegate_id
-    
-      def method_missing( method, *args )
-        if __getobj__.class.to_s != delegate_class.to_s
-          load_delegate
-          # resend! 
-          if (args.size == 1 && !args.first.nil?) 
-            __getobj__.send( method.to_sym, eval(args.map{|value| "'#{value}'"}.join(', ')) )
-          else
-            __getobj__.send( method.to_sym )
-          end    
-        else
-          raise NoMethodError
-        end
-      end
-      
-      def __getobj__
-         @_sd_obj          # return object we are delegating to
-       end
-
-       def __setobj__(obj)
-         @_sd_obj = obj    # change delegation object
-       end
       
       def load_delegate
         __setobj__( delegate_class.constantize.load( delegate_id ) )
@@ -70,10 +74,48 @@ module Aqua
         
   end  
 
-  class FileStub < Stub 
-    protected
+  class FileStub < Delegator 
+    include StubDelegate
+    
+    # Builds a new stub object which returns cached/stubbed methods until such a time as a non-cached method 
+    # is requested.
+    #
+    # @param [Hash]
+    # @option opts [Array] :methods A hash of method names and values
+    # @option opts [String] :class The class of the object being stubbed
+    # @option opts [String] :id The id of the object being stubbed
+    #
+    # @api semi-public
+    def initialize( opts )
+      meths = opts[:methods] || {}
+      temp_stub = TempStub.new( meths )
+      super( temp_stub )
+      @_sd_obj = temp_stub
+      self.parent = opts[:parent]
+      self.attachment_id = opts[:id]
+    end
+    
+    def method_missing( method, *args )
+      if load_attempt != true
+        load_delegate 
+        self.load_attempt = true
+        # resend! 
+        if (args.size == 1 && !args.first.nil?) 
+          __getobj__.send( method.to_sym, eval(args.map{|value| "'#{value}'"}.join(', ')) )
+        else
+          __getobj__.send( method.to_sym )
+        end
+      else
+        raise NoMethodError
+      end
+    end
+    
+      
+    protected 
+      attr_accessor :parent, :attachment_id, :load_attempt 
+      
       def load_delegate
-        __setobj__( delegate_class.constantize::Storage.attachment( delegate_id ) )
+        __setobj__( parent.class::Storage.attachment( parent.id, attachment_id ) )
       end   
     public    
   end  

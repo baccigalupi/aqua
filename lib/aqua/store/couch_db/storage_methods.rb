@@ -62,8 +62,24 @@ module Aqua
           def database=( db )
             db = Database.create( db ) if db.class == String
             @database = db
-          end  
+          end
           
+          # gets a document from the database based on id
+          # @param [String] id 
+          # @return [Hash] representing the CouchDB data
+          # @api public
+          def get( id )
+            new( CouchDB.get( "#{database.uri}/#{CGI.escape(id)}" ) )
+          end 
+          
+          # Retrieves an attachment when provided the document id and attachment id, or the combined id 
+          #
+          # @return [Tempfile]
+          #
+          # @api public
+          def attachment( document_id, attachment_id )
+            new( :id => document_id ).attachments.get!( attachment_id )
+          end 
         end     
         
         module InstanceMethods
