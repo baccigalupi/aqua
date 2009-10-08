@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{aqua}
-  s.version = "0.1.5"
+  s.version = "0.1.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kane Baccigalupi"]
-  s.date = %q{2009-08-31}
+  s.date = %q{2009-10-08}
   s.description = %q{Even with ORMs like ActiveRecord, DataMapper which ease the pain of relational data storage, considerable developer effort goes into wrangling Ruby objects into their databases. Document-oriented databases have made it possible to store nested data structures that easily map to Ruby objects. Aqua (http://github.com/baccigalupi/aqua) is a new Ruby library that aims to painlessly persists objects, allowing developers to focus more on object oriented code and less on storage. Currently Aqua is in pre-alpha testing, with the following big things left to implement: A data query DSL and implementation; Support of all objects in the Standard Library; Class and code storage to allow the sharing and persistence of classes with their data.}
   s.email = %q{baccigalupi@gmail.com}
   s.extra_rdoc_files = [
@@ -26,65 +26,6 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
-     "doc/Aqua.html",
-     "doc/Aqua/Config.html",
-     "doc/Aqua/Config/ClassMethods.html",
-     "doc/Aqua/From.html",
-     "doc/Aqua/ObjectNotFound.html",
-     "doc/Aqua/Pack.html",
-     "doc/Aqua/Pack/ClassMethods.html",
-     "doc/Aqua/Pack/InstanceMethods.html",
-     "doc/Aqua/Query.html",
-     "doc/Aqua/Query/ClassMethods.html",
-     "doc/Aqua/Query/InstanceMethods.html",
-     "doc/Aqua/Storage.html",
-     "doc/Aqua/Store.html",
-     "doc/Aqua/Store/CouchDB.html",
-     "doc/Aqua/Store/CouchDB/Attachments.html",
-     "doc/Aqua/Store/CouchDB/Conflict.html",
-     "doc/Aqua/Store/CouchDB/Database.html",
-     "doc/Aqua/Store/CouchDB/DesignDocument.html",
-     "doc/Aqua/Store/CouchDB/RequestFailed.html",
-     "doc/Aqua/Store/CouchDB/RequestTimeout.html",
-     "doc/Aqua/Store/CouchDB/ResourceNotFound.html",
-     "doc/Aqua/Store/CouchDB/Server.html",
-     "doc/Aqua/Store/CouchDB/ServerBrokeConnection.html",
-     "doc/Aqua/Store/CouchDB/StorageMethods.html",
-     "doc/Aqua/Store/CouchDB/StorageMethods/ClassMethods.html",
-     "doc/Aqua/Store/CouchDB/StorageMethods/InstanceMethods.html",
-     "doc/Aqua/Stub.html",
-     "doc/Aqua/Tank.html",
-     "doc/Aqua/TempStub.html",
-     "doc/Aqua/To.html",
-     "doc/Aqua/Unpack.html",
-     "doc/Aqua/Unpack/ClassMethods.html",
-     "doc/Aqua/Unpack/InstanceMethods.html",
-     "doc/Array.html",
-     "doc/Bignum.html",
-     "doc/Date.html",
-     "doc/FalseClass.html",
-     "doc/Fixnum.html",
-     "doc/Float.html",
-     "doc/Hash.html",
-     "doc/OpenStruct.html",
-     "doc/README.rdoc.html",
-     "doc/Range.html",
-     "doc/Rational.html",
-     "doc/RestAPI.html",
-     "doc/RestClientAdapter.html",
-     "doc/Set.html",
-     "doc/Time.html",
-     "doc/TrueClass.html",
-     "doc/all-files.html",
-     "doc/all-methods.html",
-     "doc/all-namespaces.html",
-     "doc/app.js",
-     "doc/custom.css",
-     "doc/index.html",
-     "doc/jquery.js",
-     "doc/style.css",
-     "doc/syntax_highlight.css",
-     "doc/top-level-namespace.html",
      "lib/aqua.rb",
      "lib/aqua/object/config.rb",
      "lib/aqua/object/extensions/ar_convert.rb",
@@ -135,8 +76,7 @@ Gem::Specification.new do |s|
      "spec/store/couchdb/server_spec.rb",
      "spec/store/couchdb/storage_methods_spec.rb",
      "utils/code_statistics.rb",
-     "utils/console",
-     "utils/custom.css"
+     "utils/console"
   ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/baccigalupi/aqua}
