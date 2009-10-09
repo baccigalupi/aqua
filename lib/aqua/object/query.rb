@@ -8,6 +8,8 @@ module Aqua::Query
   end 
   
   module ClassMethods
+    def query_index( *ivars )
+    end  
   end
   
   module InstanceMethods

@@ -19,7 +19,7 @@ module Aqua
           end
         end 
         
-        module ClassMethods
+        module ClassMethods 
           # Initializes a new storage document and saves it without raising any errors
           # 
           # @param [Hash, Mash]
@@ -79,7 +79,12 @@ module Aqua
           # @api public
           def attachment( document_id, attachment_id )
             new( :id => document_id ).attachments.get!( attachment_id )
-          end 
+          end
+          
+          # Creates basic map reduce view for a given field
+          def index_on( field, opts={} )
+            
+          end   
         end     
         
         module InstanceMethods

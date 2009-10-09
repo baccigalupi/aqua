@@ -9,7 +9,11 @@ describe Aqua::Config do
   describe 'storage class' do
     it 'should be establish on aquatic declaration' do 
       lambda{ User::Storage }.should_not raise_error 
-    end 
+    end
+    
+    it 'should store the parent class' do
+      User::Storage.parent_class.should == 'User'
+    end     
   end 
   
   it 'should set default configuration options on module load' do 

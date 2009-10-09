@@ -385,7 +385,6 @@ describe 'CouchDB::StorageMethods' do
     end
     
     it 'should have a class accessor for attachments' do 
-      pending
       @doc.delete! if @doc.exists?
       
       @doc.attachments.add(:my_file, @file)
@@ -397,9 +396,13 @@ describe 'CouchDB::StorageMethods' do
       data.should_not be_empty
       
       attachment = Document.attachment( @doc.id, 'my_file' ) 
-      #puts attachment.inspect
+      attachment.read.should == data
     end  
     
+  end  
+  
+  describe 'indexing/views' do
+    it 'should '
   end  
 
 end

@@ -5,7 +5,10 @@ module Aqua::Config
     # for class methods will loose database and other class specific storage options
     klass.class_eval "
       class Storage < Aqua::Storage
-      end  
+        def self.parent_class
+          '#{klass}'
+        end  
+      end
     "
     
     klass.class_eval do
