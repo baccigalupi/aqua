@@ -64,13 +64,32 @@ module Aqua
             @database = db
           end
           
-          # gets a document from the database based on id
+          # Gets a document from the database based on id
           # @param [String] id 
           # @return [Hash] representing the CouchDB data
           # @api public
           def get( id )
-            new( CouchDB.get( "#{database.uri}/#{CGI.escape(id)}" ) )
+            resource = begin # this is just in case the developer has already escaped the name
+              CouchDB.get( "#{database.uri}/#{CGI.escape(id)}" )
+            rescue
+              CouchDB.get( "#{database.uri}/#{id}" )  
+            end
+            new( resource )
           end 
+          
+          # Will find a document by id, or create it if it doesn't exist. Alias is :get!
+          # @param [String] id
+          # @return [Hash] representing the CouchDB resource
+          # @api public
+          def find_or_create( id )
+             begin
+               get( id )
+             rescue
+               create!( :id => id )
+             end    
+          end  
+          
+          alias :get! :find_or_create
           
           # Retrieves an attachment when provided the document id and attachment id, or the combined id 
           #
@@ -81,10 +100,20 @@ module Aqua
             new( :id => document_id ).attachments.get!( attachment_id )
           end
           
+          attr_accessor :parent_class
+          alias :design_name=  :parent_class=
+          alias :design_name   :parent_class 
+          
+          def design_document( reload=false )
+            @design_document = nil if reload 
+            @design_document ||= design_name ? DesignDocument.find_or_create( design_name ) : nil
+          end  
+          
           # Creates basic map reduce view for a given field
           def index_on( field, opts={} )
             
-          end   
+          end
+               
         end     
         
         module InstanceMethods
@@ -191,8 +220,10 @@ module Aqua
           # @return [Hash] representing the CouchDB data
           # @api public
           def retrieve
-            self.class.new( CouchDB.get( uri ) )
-          end
+            self.class.get( id )
+          end 
+          
+          alias :reload :retrieve
           
           # reloads self from CouchDB database
           # @return [Hash] representing CouchDB data

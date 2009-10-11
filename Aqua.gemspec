@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
      ".gitignore",
-     ".yardoc",
      "Aqua.gemspec",
      "LICENCE_COUCHREST",
      "LICENSE",

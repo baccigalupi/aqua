@@ -4,10 +4,10 @@ Aqua.set_storage_engine('CouchDB') # to initialize the Aqua::Store namespace
 require File.dirname(__FILE__) + '/fixtures_and_data/document_fixture' # Document ... a Mash with the collection of methods
 
 # Conveniences for typing with tests ... 
-CouchDB =     Aqua::Store::CouchDB unless defined?( CouchDB ) 
-Database =    CouchDB::Database unless defined?( Database )
-Server =      CouchDB::Server unless defined?( Server)
-Attachments = CouchDB::Attachments unless defined?( Attachments )
+CouchDB =     Aqua::Store::CouchDB    unless defined?( CouchDB ) 
+Database =    CouchDB::Database       unless defined?( Database )
+Server =      CouchDB::Server         unless defined?( Server)
+Attachments = CouchDB::Attachments    unless defined?( Attachments )
 
 describe 'CouchDB::StorageMethods' do
   before(:each) do
@@ -16,7 +16,8 @@ describe 'CouchDB::StorageMethods' do
       :rev => "shouldn't change yo!",
       :more => "my big stuff"
     }
-    @doc = Document.new( @params )
+    @doc = Document.new( @params ) 
+    @doc.class.database.delete_all
   end  
   
   describe 'initialization' do
@@ -148,10 +149,6 @@ describe 'CouchDB::StorageMethods' do
   end  
   
   describe 'save/create' do 
-    before(:each) do
-      @doc.delete if @doc.exists?  
-    end  
-    
     it 'saving should create a document in the database' do 
       @doc.save
       lambda{ Aqua::Store::CouchDB.get( @doc.uri ) }.should_not raise_error
@@ -213,8 +210,21 @@ describe 'CouchDB::StorageMethods' do
       @doc[:noodle] = 'spaghetti'
       @doc.reload
       @doc[:noodle].should be_nil
+    end
+    
+    it 'should create using find_or_create' do 
+      lambda{ Document.get( @params[:id] ) }.should raise_error
+      doc = Document.find_or_create( @params[:id] )
+      lambda{ Document.get( @params[:id] ) }.should_not raise_error
     end      
   end 
+  
+  describe 'getting' do
+    it 'should get a document from its id' do 
+      @doc.save
+      lambda{ Document.get( @doc.id ) }.should_not raise_error
+    end  
+  end  
   
   describe 'deleting' do
     before(:each) do
@@ -401,8 +411,29 @@ describe 'CouchDB::StorageMethods' do
     
   end  
   
+  describe 'design document' do
+    it 'should not have a design document if there is no design_name' do
+      Document.design_name.should be_nil
+      Document.design_document.should be_nil
+    end  
+     
+    it 'should create a design document if there is a design_name but the design document exists' do
+      Document.design_name = 'User'
+      lambda{ CouchDB::DesignDocument.get( 'User' ) }.should raise_error
+      Document.design_document.should_not be_nil
+      lambda{ CouchDB::DesignDocument.get( 'User') }.should_not raise_error 
+    end
+      
+    it 'should retrieve a design document if there is a design_name and the design document exists' do
+      CouchDB::DesignDocument.create!( :name => 'User' )
+      # ensures that the record exists, before the real test
+      lambda{ CouchDB::DesignDocument.get( 'User') }.should_not raise_error 
+      Document.design_document.should_not be_nil
+    end  
+  end  
+  
   describe 'indexing/views' do
-    it 'should '
+    
   end  
 
 end
