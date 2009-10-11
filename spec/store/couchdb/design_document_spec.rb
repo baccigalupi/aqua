@@ -109,12 +109,12 @@ describe CouchDB::DesignDocument do
       
       it 'should return a number of rows corresponding to all the documents in the query' do
         @docs = @design.query( :index )
-        @docs[:rows].size.should == 10
+        @docs.size.should == 10
       end
       
       it 'should return the documents themselves by default' do
         @docs = @design.query( :index )
-        @docs[:rows].first[:doc].keys.should include( 'index' )
+        @docs.first.keys.should include( 'index' )
       end     
     end  
   end    

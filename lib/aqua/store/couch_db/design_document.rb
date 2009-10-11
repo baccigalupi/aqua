@@ -123,14 +123,10 @@ module Aqua
         
         def query( view_name, opts={} )
           opts = Mash.new( opts ) unless opts.empty?
-          query_uri = base_query_uri( view_name ) + '?'
+          query_uri = "#{uri}/_view/#{CGI.escape(view_name.to_s)}?"
           query_uri += 'include_docs=true' unless opts[:select] && opts[:select] != 'all' 
           ResultSet.new( CouchDB.get( query_uri ) )
         end 
-        
-        def base_query_uri( view_name )
-          "#{uri}/_view/#{CGI.escape(view_name.to_s)}"
-        end            
         
       end
     end
