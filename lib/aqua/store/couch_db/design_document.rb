@@ -121,10 +121,31 @@ module Aqua
           end 
         public
         
+        # group=true Version 0.8.0 and forward
+        # group_level=int
+        # reduce=false Trunk only (0.9)
+        
         def query( view_name, opts={} )
           opts = Mash.new( opts ) unless opts.empty?
+          
+          params = []
+          params << 'include_docs=true' unless opts[:select] && opts[:select] != 'all' 
+          # TODO: this is according to couchdb really inefficent with large sets of data.
+          # A better way would involve, using start and end keys with limit. But this 
+          # is a really hard one to figure with jumping around to different pages
+          params << "skip=#{opts[:offset]}" if opts[:offset]
+          params << "limit=#{opts[:limit]}" if opts[:limit] 
+          if opts[:order].to_s == 'desc' || opts[:order].to_s == 'descending'
+            desc = true
+            params << "descending=true"
+          end 
+          if opts[:range] && opts[:range].size == 2
+            params << "startkey=#{opts[:range][desc == true ? 1 : 0 ]}"  
+            params << "endkey=#{opts[:range][desc == true ? 0 : 1]}"   
+          end   
+          
           query_uri = "#{uri}/_view/#{CGI.escape(view_name.to_s)}?"
-          query_uri += 'include_docs=true' unless opts[:select] && opts[:select] != 'all' 
+          query_uri << params.join('&')   
           ResultSet.new( CouchDB.get( query_uri ) )
         end 
         

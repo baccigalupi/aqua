@@ -15,9 +15,9 @@ class Docintalk < Document
   end  
 end  
 
-
 describe ResultSet do
   before(:each) do
+    ResultSet.document_class = nil # resets for all theses tests
     # These are sample returns from couchdb for a view query
     # the first is when the include_document=true is omitted
     # the next is when it is included

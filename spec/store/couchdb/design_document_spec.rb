@@ -7,6 +7,7 @@ CouchDB =   Aqua::Store::CouchDB unless defined?( CouchDB )
 Database =  CouchDB::Database unless defined?( Database )
 Server =    CouchDB::Server unless defined?( Server )
 Design =    CouchDB::DesignDocument unless defined?( Design )
+ResultSet =    CouchDB::ResultSet unless defined?( ResultSet ) 
 
 require File.dirname(__FILE__) + '/fixtures_and_data/document_fixture' # Document ... a Mash with the collection of methods
 
@@ -40,6 +41,10 @@ describe CouchDB::DesignDocument do
   end  
   
   describe 'views' do
+    before(:each) do
+      ResultSet.document_class = Document
+    end
+      
     it 'should be a Hash-like object' do 
       @design.views.should == Mash.new
     end
@@ -115,9 +120,37 @@ describe CouchDB::DesignDocument do
       it 'should return the documents themselves by default' do
         @docs = @design.query( :index )
         @docs.first.keys.should include( 'index' )
-      end     
+        @docs.first.class.should == Document
+      end
+      
+      it 'should limit query results' do
+        @docs = @design.query( :index, :limit => 2 )
+        @docs.size.should == 2
+      end
+      
+      it 'should offset query results' do
+        @docs = @design.query( :index, :limit => 2, :offset => 2)
+        @docs.size.should == 2
+        @docs.first[:index].should == 3
+      end
+      
+      it 'should put in descending order' do
+        @docs = @design.query( :index, :order => :desc )
+        @docs.first[:index].should == 10
+      end
+      
+      it 'should select a range' do
+        @docs = @design.query( :index, :range => [2,4])
+        @docs.size.should == 3
+        @docs.first[:index].should == 2
+      end
+      
+      it 'should select a range with descending order' do
+        @docs = @design.query( :index, :range => [2,4], :order => :descending )
+        @docs.size.should == 3
+        @docs.first[:index].should == 4
+        @docs[2][:index].should == 2 
+      end               
     end  
-  end    
-  
-  
+  end     
 end  
