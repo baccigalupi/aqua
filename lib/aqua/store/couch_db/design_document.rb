@@ -171,7 +171,7 @@ module Aqua
           query_uri << params.join('&')
           
           result = CouchDB.get( query_uri )
-          opts[:reduced] ? result['rows'].first['value'] : ResultSet.new( result, include_docs ? doc_class : nil )
+          opts[:reduced] ? result['rows'].first['value'] : ResultSet.new( result, doc_class )
         end 
         
       end

@@ -142,8 +142,26 @@ module Aqua
             raise ArgumentError, 'Index not found' unless views.include?( index.to_s )
             opts = Mash.new(opts)
             opts.merge!(:document_class => self) unless opts[:document_class]
+            opts.merge!(:reduced => design_document.views[index][:reduce] ? true : false )
             design_document.query( index, opts )
           end 
+          
+          def reduced_query( reduce_type, index, opts)
+            view =  "#{index}_#{reduce_type}" 
+            unless views.include?( view )
+              design_document(true).add!(
+                :name => view, 
+                :map => design_document.views[ index.to_s ][:map],
+                :reduce => opts[:reduce]
+              )
+            end  
+            query( view, opts.merge!( :select => "index only" ) )
+          end  
+          
+          # @api semi-private
+          def views
+            design_document.views.keys
+          end
           
           # @api public
           def count( index, opts={} )
@@ -154,23 +172,57 @@ module Aqua
               }" unless opts[:reduce]
             reduced_query(:count, index, opts)
           end
-         
-          def reduced_query( reduce_type, index, opts)
-            view =  "#{index}_#{reduce_type}" 
-            unless views.include?( view )
-              design_document(true).add!(
-                :name => view, 
-                :map => design_document.views[ index.to_s ][:map],
-                :reduce => opts[:reduce]
-              )
-            end  
-            query( view, opts.merge!( :select => "index only", :reduced => true ) )
-          end  
           
-          # @api semi-private
-          def views
-            design_document.views.keys
-          end    
+          # @api public
+          def sum( index, opts={} )
+            opts = Mash.new(opts)
+            opts[:reduce] = "
+              function (keys, values, rereduce) {
+                var key_values = []
+                keys.forEach( function(key) {
+                  key_values[key_values.length] = key[0]
+                });
+                return sum( key_values );
+              }" unless opts[:reduce]
+            reduced_query(:sum, index, opts)
+          end
+          
+          def average( index, opts={} )
+            sum(index, opts) / count(index, opts).to_f
+          end 
+          
+          alias :avg :average
+          
+          def min( index, opts={} )
+            opts = Mash.new(opts)
+            opts[:reduce] = "
+              function (keys, values, rereduce) {
+                var key_values = []
+                keys.forEach( function(key) {
+                  key_values[key_values.length] = key[0]
+                });
+                return Math.min.apply( Math, key_values ); ;
+              }" unless opts[:reduce]
+            reduced_query(:min, index, opts)
+          end
+          
+          alias :minimum :min
+          
+          def max( index, opts={} )
+            opts = Mash.new(opts)
+            opts[:reduce] = "
+              function (keys, values, rereduce) {
+                var key_values = []
+                keys.forEach( function(key) {
+                  key_values[key_values.length] = key[0]
+                });
+                return Math.max.apply( Math, key_values ); ;
+              }" unless opts[:reduce]
+            reduced_query(:max, index, opts)
+          end 
+          
+          alias :maximum :max
+               
              
         end     
         

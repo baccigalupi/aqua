@@ -462,7 +462,7 @@ describe 'CouchDB::StorageMethods' do
     end
     
     describe 'queries' do
-      # count, sum, average/avg, minimum/mis, and maximum/max 
+      # average/avg, minimum/mis, and maximum/max 
       
       before(:each) do
         Document.index_on(:my_field)
@@ -482,15 +482,30 @@ describe 'CouchDB::StorageMethods' do
         docs.each{ |r| r.class.should == Fixnum }
       end
       
-      it 'should generate a count view for an index the first time it is called' do
+      it 'should generate a calculated/reduced view for an index the first time it is called' do
         Document.count(:my_field) 
         Document.design_document.views.should include( :my_field_count )
       end
       
       it 'should count an index' do 
         Document.count(:my_field).should == 5
-      end  
-          
+      end 
+      
+      it 'should sum an index' do
+        Document.sum(:my_field).should == 75
+      end
+      
+      it 'should average an index' do 
+        Document.average(:my_field).should == 15
+      end 
+      
+      it 'should get the minimum of an index' do 
+        Document.min(:my_field).should == 5
+      end
+      
+      it 'should get the maximum of an index' do 
+        Document.max(:my_field).should == 25
+      end        
     
     end       
   end  
