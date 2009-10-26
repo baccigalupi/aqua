@@ -49,7 +49,7 @@ describe CouchDB::DesignDocument do
       @design.views.should == Mash.new
     end
     
-    describe '<<' do
+    describe '<<, add, add!' do
       describe 'string as argument' do
         it 'should add a view with the right name' do
           @design << 'my_attribute'
@@ -80,6 +80,16 @@ describe CouchDB::DesignDocument do
           @design.views[:my_attribute][:map].should match(/emit/)
         end
         
+        it 'should autogenerate a generic map with class constraints' do
+          @design << {:name => 'my_docs', :class_constraint => Document}
+          @design.views[:my_docs][:map].should match(/doc\['type'\] == 'Document'/)
+        end
+        
+        it 'should autogenerate a generic map and insert preformed class constraints' do
+          @design << {:name => 'user', :class_constraint => "doc['class'] == 'User'" }
+          @design.views[:user][:map].should match(/doc\['class'\] == 'User'/)
+        end  
+        
         it 'should not autogenerate a reduce function' do
           @design << {:name => 'my_attribute'}
           @design.views[:my_attribute][:reduce].should be_nil
@@ -96,7 +106,19 @@ describe CouchDB::DesignDocument do
           @design.views[:my_attribute][:map].should match(/emit/) 
           @design.views[:my_attribute][:reduce].should == 'I exist!'
         end      
-      end    
+      end
+      
+      it 'add should act like <<' do
+        @design.add :name => 'my_attribute', :map => 'not the generic'
+        @design.views[:my_attribute][:map].should == 'not the generic'
+      end
+      
+      it 'add! should save after adding the view' do
+        @design.add! :name => 'my_attribute', :map => 'not the generic'
+        lambda{ Design.get( @design.name ) }.should_not raise_error
+        design = Design.get( @design.name )
+        design.views.keys.should include( 'my_attribute' )
+      end        
     end 
   
     describe 'query' do

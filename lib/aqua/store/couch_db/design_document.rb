@@ -31,8 +31,16 @@ module Aqua
         def initialize( hash={} )
           hash = Mash.new( hash ) unless hash.empty?
           self.id = hash.delete(:name) if hash[:name]
-          document_initialize( hash )
-        end      
+          document_initialize( hash )  # TODO: can't this just be a call to super?
+        end 
+        
+        def do_rev( hash )
+          # TODO: This is a temp hack to deal with loading the right revision number so a design doc
+          # can be updated from the document. Without this hack, the rev is nil, and there is a conflict.
+        
+          hash.delete(:rev)   # This is omited to aleviate confusion
+          # hash.delete(:_rev)  # CouchDB determines _rev attribute
+        end     
         
         # couchdb database url for the design document
         # @return [String] representing CouchDB uri for document 
@@ -55,8 +63,9 @@ module Aqua
         # @param [String] Id/Name of design document
         # @return [Aqua::Store::CouchDB::DesignDocument]
         # @api public
-        def self.get( name ) 
-          CouchDB.get( "#{database.uri}/_design/#{CGI.escape(name)}" )
+        def self.get( name )
+          design = CouchDB.get( "#{database.uri}/_design/#{CGI.escape(name)}" )
+          new( design )
         end
         
         # VIEWS --------------------
@@ -100,22 +109,35 @@ module Aqua
           reduce =  opts[:reduce]
           views # to initialize self[:views]
           self[:views][view_name] = { 
-            :map => map || build_map( view_name ), 
+            :map => map || build_map( view_name, opts[:class_constraint] ), 
           }
           self[:views][view_name][:reduce] = reduce if reduce
           self[:views][view_name]
         end
         
+        alias :add :<<
+        
+        def add!( arg ) 
+          self << arg 
+          save!
+        end  
+        
         private
           # Builds a generic map assuming that the view_name is the name of a document attribute.
           # @param [String, Symbol] Name of document attribute
+          # @param [Class, String] Optional constraint on to limit view to a given class
           # @return [String] Javascript map function
           #
           # @api private
-          def build_map( view_name )
+          def build_map( view_name, class_constraint=nil )
+            class_constraint = if class_constraint.class == Class
+              " && doc['type'] == '#{class_constraint}'"
+            elsif class_constraint.class == String
+              " && #{class_constraint}"
+            end    
             "function(doc) {
-              if( doc['#{view_name}'] ){
-                emit( doc['#{view_name}'], null );
+              if( doc['#{view_name}'] #{class_constraint}){
+                emit( doc['#{view_name}'], 1 );
               }
             }"
           end 
@@ -126,10 +148,11 @@ module Aqua
         # reduce=false Trunk only (0.9)
         
         def query( view_name, opts={} )
-          opts = Mash.new( opts ) unless opts.empty?
+          opts = Mash.new( opts ) unless opts.empty? 
+          doc_class = opts[:document_class] 
           
           params = []
-          params << 'include_docs=true' unless opts[:select] && opts[:select] != 'all' 
+          params << 'include_docs=true' unless (opts[:select] && opts[:select] != 'all')
           # TODO: this is according to couchdb really inefficent with large sets of data.
           # A better way would involve, using start and end keys with limit. But this 
           # is a really hard one to figure with jumping around to different pages
@@ -145,8 +168,10 @@ module Aqua
           end   
           
           query_uri = "#{uri}/_view/#{CGI.escape(view_name.to_s)}?"
-          query_uri << params.join('&')   
-          ResultSet.new( CouchDB.get( query_uri ) )
+          query_uri << params.join('&')
+          
+          result = CouchDB.get( query_uri )
+          opts[:reduced] ? result['rows'].first['value'] : ResultSet.new( result, include_docs ? doc_class : nil )
         end 
         
       end

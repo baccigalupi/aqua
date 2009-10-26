@@ -73,8 +73,8 @@ module Aqua::Unpack
       # 
       # @api private
       def _get_store
-        # this is kind of klunky, should refactor
-        self._store = self.class::Storage.new(:id => self.id).retrieve
+        # todo: this is kind of klunky, should refactor
+        self._store = self.class::Storage.new(:id => self.id).retrieve 
       end
       
       # Unpacks an object from hash representation of data and metadata

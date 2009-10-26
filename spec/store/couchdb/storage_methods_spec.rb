@@ -432,8 +432,67 @@ describe 'CouchDB::StorageMethods' do
     end  
   end  
   
-  describe 'indexing/views' do
+  describe 'indexing & queries' do
+    Document.class_eval { attr_accessor( :my_field ) }
     
+    it 'should have a class method "indexes" that stores map names related to the class' do
+      Document.indexes.should == []
+    end
+    
+    describe 'index_on' do
+      before(:each) do
+        Document.index_on(:my_field)
+      end
+        
+      it 'should add text and symbol entries to indexes' do
+        Document.indexes.size.should == 2
+        Document.indexes.should include( :my_field )
+        Document.indexes.should include( 'my_field' )
+      end 
+      
+      it 'should not duplicate an index name' do
+        # previous tests have already added it to the array 
+        Document.indexes.size.should == 2 
+      end 
+      
+      it 'should add a view to the design document' do
+        design = Document.design_document(true)
+        design.views.should include( :my_field )
+      end  
+    end
+    
+    describe 'queries' do
+      # count, sum, average/avg, minimum/mis, and maximum/max 
+      
+      before(:each) do
+        Document.index_on(:my_field)
+        (1..5).each do |number|
+          Document.create!( :my_field => number * 5 )
+        end  
+      end 
+       
+      it 'should query full documents for an index' do
+        docs = Document.query(:my_field) 
+        docs.each{ |r| r.class.should == Document }
+        docs.size.should == 5
+      end
+      
+      it 'should query only the index value for an index' do 
+        docs = Document.query(:my_field, :select => 'index only')
+        docs.each{ |r| r.class.should == Fixnum }
+      end
+      
+      it 'should generate a count view for an index the first time it is called' do
+        Document.count(:my_field) 
+        Document.design_document.views.should include( :my_field_count )
+      end
+      
+      it 'should count an index' do 
+        Document.count(:my_field).should == 5
+      end  
+          
+    
+    end       
   end  
 
 end

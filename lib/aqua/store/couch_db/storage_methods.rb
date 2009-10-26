@@ -82,11 +82,11 @@ module Aqua
           # @return [Hash] representing the CouchDB resource
           # @api public
           def find_or_create( id )
-             begin
-               get( id )
-             rescue
-               create!( :id => id )
-             end    
+            begin
+              get( id )
+            rescue
+              create!( :id => id )
+            end    
           end  
           
           alias :get! :find_or_create
@@ -100,20 +100,78 @@ module Aqua
             new( :id => document_id ).attachments.get!( attachment_id )
           end
           
+          # Accessor for maintaining connection to aquatic class
+          # @api private
           attr_accessor :parent_class
           alias :design_name=  :parent_class=
           alias :design_name   :parent_class 
           
+          # Finds or creates design document based on aqua parent class name
+          # @api semi-private 
           def design_document( reload=false )
             @design_document = nil if reload 
             @design_document ||= design_name ? DesignDocument.find_or_create( design_name ) : nil
           end  
           
-          # Creates basic map reduce view for a given field
+          # Stores stores a map name for a given index, allowing the same map 
+          # to be used for various reduce functions. This means only one index is created.
+          # @param [String] field being indexed, or the sub field
+          # @param [Hash, Mash] Hash of functions used to create views
+          # @option opts [String] :map Javascript/CouchDB map function
+          # @option opts [String] :reduce Javascript/CouchDB reduce function
+          # 
+          # @api public 
           def index_on( field, opts={} )
-            
+            opts = Mash.new( opts )
+            design_document(true).add!( opts.merge!(:name => field) )
+            unless indexes.include?( field )
+              indexes << field.to_sym  
+              indexes << field.to_s 
+            end  
+            self     
           end
-               
+          
+          # A list of index names that can be used to build other reduce functions.
+          # @api semi-private
+          def indexes
+            @indexes ||= []
+          end
+          
+          # @api public
+          def query( index, opts={} )
+            raise ArgumentError, 'Index not found' unless views.include?( index.to_s )
+            opts = Mash.new(opts)
+            opts.merge!(:document_class => self) unless opts[:document_class]
+            design_document.query( index, opts )
+          end 
+          
+          # @api public
+          def count( index, opts={} )
+            opts = Mash.new(opts)
+            opts[:reduce] = "
+              function (key, values, rereduce) {
+                  return sum(values);
+              }" unless opts[:reduce]
+            reduced_query(:count, index, opts)
+          end
+         
+          def reduced_query( reduce_type, index, opts)
+            view =  "#{index}_#{reduce_type}" 
+            unless views.include?( view )
+              design_document(true).add!(
+                :name => view, 
+                :map => design_document.views[ index.to_s ][:map],
+                :reduce => opts[:reduce]
+              )
+            end  
+            query( view, opts.merge!( :select => "index only", :reduced => true ) )
+          end  
+          
+          # @api semi-private
+          def views
+            design_document.views.keys
+          end    
+             
         end     
         
         module InstanceMethods
@@ -127,15 +185,19 @@ module Aqua
             hash = Mash.new( hash ) unless hash.empty?
             self.id = hash.delete(:id) if hash[:id]
           
-            # ignore these keys
-            hash.delete(:rev)   # This is omited to aleviate confusion
-            hash.delete(:_rev)  # CouchDB determines _rev attribute
+            do_rev( hash )
             hash.delete(:_id)   # this is set via by the id=(value) method 
-            # TODO: have to deal with attachments as well
-          
+            
             # feed the rest of the hash to the super 
             super( hash )      
-          end 
+          end
+          
+          # Temporary hack to allow design document refresh from within a doc.
+          # @todo The get method has to handle rev better!!!
+          def do_rev( hash )
+            hash.delete(:rev)   # This is omited to aleviate confusion
+            hash.delete(:_rev)  # CouchDB determines _rev attribute
+          end   
         
           # Saves an Aqua::Storage instance to CouchDB as a document. Save can be deferred for bulk saving.
           #
