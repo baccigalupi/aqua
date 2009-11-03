@@ -157,7 +157,8 @@ module Aqua
           # A better way would involve, using start and end keys with limit. But this 
           # is a really hard one to figure with jumping around to different pages
           params << "skip=#{opts[:offset]}" if opts[:offset]
-          params << "limit=#{opts[:limit]}" if opts[:limit] 
+          params << "limit=#{opts[:limit]}" if opts[:limit]
+          params << "key=#{opts[:equals]}" if opts[:equals] 
           if opts[:order].to_s == 'desc' || opts[:order].to_s == 'descending'
             desc = true
             params << "descending=true"

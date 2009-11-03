@@ -137,8 +137,7 @@ unless defined?(HashWithIndifferentAccess)
         end
       end
   end
-
-  Mash = HashWithIndifferentAccess unless defined?( Mash ) # because Mash is easier to write, thanks Merb!
-
 end
+
+Mash = HashWithIndifferentAccess unless defined?( Mash ) # because Mash is easier to write, thanks Merb!
         

@@ -172,7 +172,13 @@ describe CouchDB::DesignDocument do
         @docs.size.should == 3
         @docs.first[:index].should == 4
         @docs[2][:index].should == 2 
-      end               
+      end
+      
+      it 'should select by exact key' do 
+        @docs = @design.query( :index, :equals => 3 )
+        @docs.size.should == 1
+        @docs.first[:index].should == 3
+      end                 
     end  
   end     
 end  

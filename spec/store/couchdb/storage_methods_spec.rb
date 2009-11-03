@@ -462,12 +462,18 @@ describe 'CouchDB::StorageMethods' do
     end
     
     describe 'queries' do
-      # average/avg, minimum/mis, and maximum/max 
-      
       before(:each) do
+        Document.parent_class = 'Document'
         Document.index_on(:my_field)
+        Document.index_on_ivar( :my_ivar )
         (1..5).each do |number|
-          Document.create!( :my_field => number * 5 )
+          Document.create!( 
+            :my_field => number * 5, 
+            :ivar => {
+              '@my_ivar' => number + 5
+            },
+            :class => 'Document' 
+          )
         end  
       end 
        
@@ -476,6 +482,12 @@ describe 'CouchDB::StorageMethods' do
         docs.each{ |r| r.class.should == Document }
         docs.size.should == 5
       end
+      
+      it 'should query ivar indexes correctly' do 
+        docs = Document.query(:my_ivar)
+        docs.each{ |r| r.class.should == Document }
+        docs.size.should == 5
+      end  
       
       it 'should query only the index value for an index' do 
         docs = Document.query(:my_field, :select => 'index only')

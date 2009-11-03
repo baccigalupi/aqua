@@ -15,13 +15,35 @@ describe Aqua::Query do
       :log => @log,
       :password => 'my secret!' 
     ) 
-    @user.commit!
+    @user.commit! 
+    
+    @user_2 = User.new( 
+      :username => 'B',
+      :name => ['Burny', 'Tierney'],
+      :dob => Date.parse('12/28/1921'),
+      :created_at => Time.now + 3600,
+      :log => Log.new,
+      :password => 'my secret!'
+    )
+    @user_2.commit!
+    
   end
   
-  describe 'query_index' do 
-    it 'should be a class method' do
-      User.should respond_to(:query_index)
-    end   
-  end   
+  it 'should be have a class method for #index_on' do
+    User.should respond_to(:index_on)
+  end
+  
+  it 'should create indexes on the storage class' do 
+    User.index_on(:created_at)  
+    User::Storage.indexes.should include('created_at')
+  end  
+  
+  it 'should query on a time' do
+    User.index_on(:created_at)
+    users = User.query( :created_at, :equals => Time.now )
+    users.size.should == 1
+    users.first.should == @user
+  end  
+   
 end  
    

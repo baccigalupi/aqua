@@ -18,7 +18,7 @@ module Aqua
           self.total    = response['total_rows']
           self.offset   = response['offset']
           self.rows     = response['rows']
-          results = if rows.first['doc']
+          results = if rows && rows.first && rows.first['doc']
             if document_class
               rows.collect{ |h| document_class.new( h['doc'] ) }
             else

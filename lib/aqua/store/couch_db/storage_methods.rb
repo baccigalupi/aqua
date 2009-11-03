@@ -131,6 +131,25 @@ module Aqua
             self     
           end
           
+          # This is an aqua specific indexer whereas index_on is a more generic CouchDB indexer. 
+          # This method seeks out the designated ivar in an Aqua structured document. Future iterations
+          # should go deeper into the ivar to reduce the overall size of the index, and make for more 
+          # usable searches.
+          # 
+          # @api private
+          def index_on_ivar( field ) 
+            index_on( field,
+              :map => "
+                function(doc) {
+                  if( doc['class'] == '#{parent_class}' &&
+                      doc['ivars'] && doc['ivars']['@#{field}']    ){
+                    emit( doc['ivars']['@#{field}'], 1 );
+                  }
+                }
+              "
+            )
+          end  
+          
           # A list of index names that can be used to build other reduce functions.
           # @api semi-private
           def indexes
