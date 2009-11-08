@@ -1,15 +1,18 @@
-# These are class methods that don't need to be added to each class, but can be used from the
-# module directly. They are responsible for packing objects ...
+# Packing of objects needs to save an object as well as query it. Therefore this packer module gives a lot
+# of class methods and mirrored instance methods that pack various types of objects. The instance methods
+# aggregate all of the attachments and externals that need to be mapped back to the base object after they 
+# are saved. The class methods return an array with the packaging in the first element and the attachment
+# and externals in subsequent elements
 module Aqua
   class Packer 
     attr_accessor :base
     
     def externals
-      @externals ||= []
+      @externals ||= {}
     end
     
     def attachments
-      @attachments ||= []
+      @attachments ||= {}
     end    
     
     def initialize( base_object )
@@ -23,9 +26,9 @@ module Aqua
       arr[0]
     end  
     
-    def self.pack_ivars( obj )
+    def self.pack_ivars( obj, path='' )
       hash = {}
-      externals = []
+      externals = {}
       attachments = []
       
       vars = obj.respond_to?(:_storable_attributes) ? obj._storable_attributes : obj.instance_variables
@@ -34,32 +37,30 @@ module Aqua
         unless ivar.nil?
           arr = pack_object( ivar )
           hash[ivar_name] = arr[0]
-          externals       += arr[1]
-          attachments     += arr[2] 
+          externals.merge!( arr[1] ) unless arr[1].empty?
+          attachments    += arr[2] 
         end         
       end
        
       [hash, externals, attachments]
     end 
     
-    def pack_ivars( obj )
+    def pack_ivars( obj, path='' )
       pack { self.class.pack_ivars( obj ) }
     end
     
-    def self.pack_object( obj )
+    def self.pack_object( obj, path='' )
       klass = obj.class
-      if klass == String
-        [obj, [], []]
-      elsif obj.respond_to?(:to_aqua) # requires initialization not just ivar assignment
-        obj.to_aqua
-      elsif obj.aquatic? && obj != self # if object is aquatic follow instructions in class
-        obj._embed_me == true ? obj._pack : pack_to_stub( obj ) 
+      if obj.respond_to?(:to_aqua) # probably requires special initialization not just ivar assignment
+        obj.to_aqua( path )
+      elsif obj.aquatic? && obj != self # if object is aquatic follow instructions for its class
+        obj._embed_me == true ? obj._pack : pack_to_stub( obj, path ) 
       else # other object without initializations
         pack_vanilla( obj )
       end     
     end
     
-    def pack_object( obj )
+    def pack_object( obj, path='' )
       pack { self.class.pack_object( obj ) }
     end
     
@@ -70,13 +71,13 @@ module Aqua
     # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
     #
     # @api private  
-    def self.pack_vanilla( obj ) 
+    def self.pack_vanilla( obj, path='' ) 
       arr = pack_ivars( obj )
       [{ 'class' => obj.class.to_s,
         'ivars' => 0 }, arr[1], arr[2]]  
     end 
     
-    def pack_vanilla( obj )
+    def pack_vanilla( obj, path='' )
       pack { self.class.pack_vanilla( obj ) }
     end
     
@@ -87,12 +88,12 @@ module Aqua
     # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
     #
     # @api private    
-    def self.pack_to_stub( obj )
-      externals = [obj]
+    def self.pack_to_stub( obj, path='' )
+      externals = {obj => path}
       attachments = []
       stub = { 
         'class' => obj.class.to_s, 
-        'id' => obj.id 
+        'id' => obj.id || '' 
       } 
       
       # deal with cached methods
@@ -102,14 +103,14 @@ module Aqua
           meth = stub_methods.to_s
           arr = pack_object( obj.send( meth ) )
           stub['methods'][meth] = arr[0]
-          externals += arr[1]
+          externals.merge!( arr[1] ) unless arr[1].empty?
           attachments += arr[2]
         else # is an array of values
           stub_methods.each do |meth|
             meth = meth.to_s
             arr = pack_object( obj.send( meth ) )
             stub['methods'][meth] = arr[0]
-            externals += arr[1]
+            externals.merge!( arr[1] ) unless arr[1].empty?
             attachments += arr[2]
           end  
         end    
@@ -119,16 +120,16 @@ module Aqua
         'class' => 'Aqua::Stub', 
         'init' => stub
       }, externals, attachments]
-    end 
+    end
     
-    def pack_to_stub( obj )
+    def pack_to_stub( obj, path='' )
       pack { self.class.pack_to_stub( obj ) }
     end  
     
-    def pack_singletons
-      # TODO: figure out 1.8 and 1.9 compatibility issues. 
-      # Also learn the library usage, without any docs :(
-    end
+    # def pack_singletons
+    #   # TODO: figure out 1.8 and 1.9 compatibility issues. 
+    #   # Also learn the library usage, without any docs :(
+    # end
                  
   end 
 end     
