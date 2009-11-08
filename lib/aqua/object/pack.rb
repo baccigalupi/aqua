@@ -65,8 +65,8 @@ module Aqua
         end 
       end # InstanceMethods     
     end   
-  
-    module ClassMethods 
+    
+    module ClassMethods  
     end # ClassMethods
   
     module InstanceMethods
@@ -91,12 +91,18 @@ module Aqua
         self.__pack = Storage.new
         self.__pack.id = @id if @id
         self.__pack[:_rev] = _rev if _rev 
-        self.__pack[:keys] = []
-        self.__pack[:stubs] = [] 
-        self.__pack.merge!( _pack_object( self ) )
-        _pack_singletons
+        self.__pack.merge!( _packer.pack_object( self ) )
         __pack
-      end
+      end 
+      
+      # Packer object responsible for packing the object and keeping track of externally
+      # stored records and also attachments
+      # @return [Packer]
+      # 
+      # @api private
+      def _packer
+        @packer ||= Packer.new( self )
+      end  
     
       # Details from configuration options for the objects class about embedability. 
       # @return [true, false, Hash] If true then it should be embedded in the object at hand. 
@@ -148,18 +154,6 @@ module Aqua
         end
         return_hash
       end
-    
-      # Handles the case of an hash-like object with keys that are objects  
-      #
-      # @param Object to pack
-      # @return [Integer] Index of the object in the keys array, used by the hash packer to name the key
-      #
-      # @api private
-      def _build_object_key( obj )
-        index = self.__pack[:keys].length
-        self.__pack[:keys] << _pack_object( obj )
-        index # return key
-      end 
       
       # Adds an attachment to the __pack document. Before save the attachments are encoded into the doc  
       #
@@ -214,53 +208,7 @@ module Aqua
         end    
        
         # Object packing methods ------------
-      
-        # Packs the an object requiring no initialization.  
-        #
-        # @param Object to pack
-        # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
-        #
-        # @api private 
-        def _pack_vanilla( obj ) 
-          {
-            'class' => obj.class.to_s,
-            'ivars' => _pack_ivars( obj )
-          }
-        end
-      
-        # Packs the stub for an externally saved object.  
-        #
-        # @param Object to pack
-        # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
-        #
-        # @api private    
-        def _build_stub( obj )
-          index = self.__pack[:stubs].length 
-          stub = { :class => obj.class.to_s, :id => obj } 
-          # deal with cached methods
-          if obj._embed_me && obj._embed_me.keys && stub_methods = obj._embed_me[:stub]
-            stub[:methods] = {}
-            if stub_methods.class == Symbol || stub_methods.class == String
-              stub_method = stub_methods.to_sym 
-              stub[:methods][stub_method] = obj.send( stub_method )
-            else # is an array of values
-              stub_methods.each do |meth|
-                stub_method = meth.to_sym
-                stub[:methods][stub_method] = obj.send( stub_method )
-              end  
-            end    
-          end
-          # add the stub  
-          self.__pack[:stubs] << stub
-          # return a hash  
-          {'class' => 'Aqua::Stub', 'init' => "/STUB_#{index}"}
-        end 
-      
-        def _pack_singletons
-          # TODO: figure out 1.8 and 1.9 compatibility issues. 
-          # Also learn the library usage, without any docs :(
-        end    
-      
+        
         # Saves all self and nested object requiring independent saves
         # 
         # @return [Object, false] Returns false on failure and self on success.
@@ -302,5 +250,7 @@ module Aqua
       public  
     end # InstanceMethods     
   end # Pack
+  
+
 end # Aqua 
   

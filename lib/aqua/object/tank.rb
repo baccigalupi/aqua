@@ -1,5 +1,6 @@
 dir = File.dirname(__FILE__)
 require dir + '/pack'
+require dir + '/packer'
 require dir + '/query'
 require dir + '/unpack'
 require dir + '/config'

@@ -22,8 +22,9 @@ describe Aqua::Pack do
       @user.grab_bag = value
       @user._pack[:ivars][:@grab_bag]
     end 
-  end
+  end 
   
+    
   describe 'packing classes' do 
     it 'should pack class variables'
     it 'should pack class level instance variables'
@@ -42,7 +43,7 @@ describe Aqua::Pack do
     end
       
     describe 'packing' do
-      it 'should pack a stubbed object representation under __pack[:stubs]' do 
+      it 'should pack a stubbed object representation inline in the object' do 
         @pack[:stubs].size.should == 1
         other_user_pack = @pack[:stubs].first 
         other_user_pack[:class].should == "User"
