@@ -6,6 +6,11 @@ CouchDB = Aqua::Store::CouchDB unless defined?( CouchDB )
 Packer = Aqua::Packer unless defined?( Packer )
 
 describe Packer do
+  before(:each) do
+    @user = User.new(:username => 'Kane')
+    @user_init = {"class"=>"Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>"" }}
+  end  
+  
   describe 'instances' do
     it 'should be itialized with the base object' do   
       pending
@@ -68,11 +73,17 @@ describe Packer do
       {},[]]
     end
     
+    it 'Ranges' do
+      pack( 1..3 ).should == [
+       { "class" => 'Range', 'init' => '1..3' }, 
+      {},[]]
+    end
+    
     it 'stubs' do
       user = User.new(:username => 'Kane') 
       p = pack( user )
       p.should == [
-       {"class" => "Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>''}}, 
+       @user_init, 
       {user => ''},[]]  
     end  
       
@@ -94,7 +105,7 @@ describe Packer do
         {
           'class' => 'Array', 
           'init' => [
-            {"class"=>"Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>"" }}, 
+            @user_init, 
             {"class"=>"Fixnum", "init"=>"1"}
            ]
         },
@@ -113,7 +124,7 @@ describe Packer do
               'init' => [ 'layer 2',
                 {
                   'class' => 'Array',
-                  'init' => [ 'layer 3', {"class"=>"Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>"" }} ]
+                  'init' => [ 'layer 3', @user_init ]
                 }
               ]
             }
@@ -148,7 +159,7 @@ describe Packer do
       user = User.new(:username => 'Kane')
       pack({'user' => user}).should == [
         {'class' => 'Hash', 'init' => {
-          'user' => {"class"=>"Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>"" }}
+          'user' => @user_init
         }}, 
         {user => "['user']"}, []
       ]
@@ -169,21 +180,34 @@ describe Packer do
       pack({ user => 'user'}).should == [
         { 'class' => 'Hash', 'init' => {
           '/_OBJECT_0' => 'user', 
-          '/_OBJECT_KEYS' => [{"class"=>"Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>"" }}]
+          '/_OBJECT_KEYS' => [@user_init]
         }},
         { user => "['/_OBJECT_KEYS'][0]" }, []
       ]
     end
       
-    it 'structs'
-    it 'ranges'
-    it 'sets'
+    it 'open structs' do
+      # open structs store keys as symbols internally, as such there is the object keys below ...
+      user = User.new(:username => 'Kane') 
+      struct = OpenStruct.new( :user => user ) 
+      pack( struct ).should == [
+        { 'class' => 'OpenStruct', 
+          'init' => { 
+            '/_OBJECT_0' => @user_init,
+            '/_OBJECT_KEYS' => [{"class"=>"Symbol", "init"=>"user"}]
+           }
+        },
+        { user => "['/_OBJECT_0']" }, []
+      ]
+    end  
     
     it 'files'
     it 'arrays with files'
     it 'arrays with deeply nested files'
     it 'hashes with files'
     it 'hashes with file keys'
+    
+    it 'sets'
     
   end   
 end   
