@@ -167,17 +167,24 @@ class Hash
     attachments = []
     self.each do |raw_key, value|
       key_class = raw_key.class
-      if key_class == Symbol
-        key = ":#{raw_key.to_s}"
-      elsif key_class == String
+      if key_class == String
         key = raw_key
-      else # key is an object
-        key = Packer.build_object_key( raw_key ) 
+      else # key is an object 
         index = next_object_index(return_hash)  
-        return_hash["/_OBJECT_KEYS"][index] = key
         key = "/_OBJECT_#{index}"
-      end     
-      return_hash[key] = Aqua::Packer.pack_object( value ) 
+        arr = Aqua::Packer.pack_object( raw_key, path+"['/_OBJECT_KEYS'][#{index}]")
+        if arr[0]
+          return_hash["/_OBJECT_KEYS"][index] = arr[0]
+          externals.merge!(arr[1]) unless arr[1].empty?
+          attachments += arr[2]
+        end  
+      end
+      arr = Aqua::Packer.pack_object( value, path+"['#{key}']" )
+      if arr[0]
+        return_hash[key] = arr[0]
+        externals.merge!(arr[1]) unless arr[1].empty?
+        attachments += arr[2]
+      end  
     end
     [return_hash, externals, attachments]  
   end

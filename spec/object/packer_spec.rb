@@ -124,13 +124,66 @@ describe Packer do
       ]
     end   
     
-    it 'arrays with attachments'
+    it 'array derivatives' do 
+      array_derivative = ArrayUdder.new
+      array_derivative[0] = 'zero index'
+      array_derivative.udder # initializes an ivar
+      pack( array_derivative ).should == [
+        {
+          'class' => "ArrayUdder", 
+          'init' => ['zero index'], 
+          "ivars"=>{"@udder"=>"Squeeze out some array milk"}
+        },{},[]
+      ]
+    end  
+    
       
-    it 'array derivatives'
-    it 'hashes'
-    it 'hashes with object keys'
+    it 'hashes' do 
+      pack({'1' => 'one'}).should == [
+        {'class' => 'Hash', 'init' => {'1' => 'one'}},{},[]
+      ]
+    end
+      
+    it 'hashes with externals' do 
+      user = User.new(:username => 'Kane')
+      pack({'user' => user}).should == [
+        {'class' => 'Hash', 'init' => {
+          'user' => {"class"=>"Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>"" }}
+        }}, 
+        {user => "['user']"}, []
+      ]
+    end
+      
+    it 'hashes with object keys' do 
+      pack({1 => 'one'}).should == [
+        {'class' => 'Hash', 'init' => { 
+          '/_OBJECT_0' => 'one',
+          '/_OBJECT_KEYS' => [{"class"=>"Fixnum", "init"=>"1"}]
+        } },
+        {}, []
+      ]
+    end
+      
+    it 'hashes with externals as object keys' do 
+      user = User.new(:username => 'Kane')
+      pack({ user => 'user'}).should == [
+        { 'class' => 'Hash', 'init' => {
+          '/_OBJECT_0' => 'user', 
+          '/_OBJECT_KEYS' => [{"class"=>"Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>"" }}]
+        }},
+        { user => "['/_OBJECT_KEYS'][0]" }, []
+      ]
+    end
+      
     it 'structs'
     it 'ranges'
     it 'sets'
+    
+    it 'files'
+    it 'arrays with files'
+    it 'arrays with deeply nested files'
+    it 'hashes with files'
+    it 'hashes with file keys'
+    
   end   
 end   
