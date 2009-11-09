@@ -20,24 +20,15 @@ module Aqua
     
     module InstanceMethods 
       def to_aqua( path = '' )
-        hash = { 'class' => to_aqua_class }
-        externals = {}
-        attachments = []
+        rat = Rat.new( { 'class' => to_aqua_class } ) 
         
-        if init = to_aqua_init( path )
-          hash.merge!( 'init' => init[0] )
-          externals.merge!(init[1]) unless init[1].empty?
-          attachments += init[2]
-        end
-             
-        ivar_arr = _pack_instance_vars( path )
-        if ivar_arr && ivar_arr.first.size > 0
-          hash.merge!( ivar_arr[0] ) 
-          externals.merge!( ivar_arr[1] ) unless ivar_arr[1].empty?
-          attachments += ivar_arr[2]
-        end
+        init_rat = to_aqua_init( path )
+        rat.hord(init_rat, 'init')  
+        
+        ivar_rat = _pack_instance_vars( path )
+        rat.eat( ivar_rat ) if ivar_rat && ivar_rat.pack['ivars'] && !ivar_rat.pack['ivars'].empty?
           
-        [hash, externals, attachments]
+        rat
       end
       
       def to_aqua_class
@@ -45,12 +36,13 @@ module Aqua
       end  
       
       def _pack_instance_vars( path )
-        arr = Packer.pack_ivars( self ) 
-        arr && arr.first.size > 0 ? [{ 'ivars' => arr[0] }, arr[1], arr[2]] : [{}, [], []]
+        rat = Rat.new
+        ivar_rat = Packer.pack_ivars( self )
+        ivar_rat.pack.empty? ? rat : rat.hord( ivar_rat, 'ivars' ) 
       end  
   
-      def to_aqua_init( path ) 
-        [self.to_s, {}, []]
+      def to_aqua_init( path )
+        Rat.new( self.to_s ) 
       end 
     end # InstanceMethods
     
@@ -70,7 +62,7 @@ end
 
 class String
   def to_aqua( path='' )
-    [ self, {} , [] ]
+    Rat.new( self )
   end 
 end 
 
@@ -80,7 +72,7 @@ class TrueClass
   end
   
   def to_aqua( path='')
-    [true,{},[]]
+    Rat.new( true )
   end 
 end
 
@@ -90,7 +82,7 @@ class FalseClass
   end
   
   def to_aqua( path='' )
-    [false,{},[]]
+    Rat.new( false )
   end
 end   
 
@@ -148,7 +140,7 @@ end
 
 class Rational
   def to_aqua_init( path='') 
-    [self.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2), {}, []]
+    Rat.new( self.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2) )
   end 
   
   def self.aqua_init
@@ -162,36 +154,34 @@ end
 
 class Hash
   def to_aqua_init( path='')
-    return_hash = {}
-    externals = {}
-    attachments = []
+    rat = Rat.new
     self.each do |raw_key, value|
       key_class = raw_key.class
       if key_class == String
         key = raw_key
       else # key is an object 
-        index = next_object_index(return_hash)  
-        key = "/_OBJECT_#{index}"
-        arr = Aqua::Packer.pack_object( raw_key, path+"['/_OBJECT_KEYS'][#{index}]")
-        if arr[0]
-          return_hash["/_OBJECT_KEYS"][index] = arr[0]
-          externals.merge!(arr[1]) unless arr[1].empty?
-          attachments += arr[2]
-        end  
+        index = next_object_index( rat.pack )  
+        key = self.class.aqua_object_key_index( index )
+        key_rat = Aqua::Packer.pack_object( raw_key, path+"['#{self.class.aqua_key_register}'][#{index}]")
+        rat.hord( key_rat, [self.class.aqua_key_register, index] )
       end
-      arr = Aqua::Packer.pack_object( value, path+"['#{key}']" )
-      if arr[0]
-        return_hash[key] = arr[0]
-        externals.merge!(arr[1]) unless arr[1].empty?
-        attachments += arr[2]
-      end  
+      obj_rat = Aqua::Packer.pack_object( value, path+"['#{key}']" )
+      rat.hord( obj_rat, key )
     end
-    [return_hash, externals, attachments]  
+    rat 
   end
   
+  def self.aqua_key_register
+    "/_OBJECT_KEYS".freeze
+  end
+  
+  def self.aqua_object_key_index( index ) 
+    "/_OBJECT_#{index}"
+  end    
+  
   def next_object_index( hash )
-    hash["/_OBJECT_KEYS"] ||= []
-    hash["/_OBJECT_KEYS"].size
+    hash[self.class.aqua_key_register] ||= []
+    hash[self.class.aqua_key_register].size
   end  
   
   def self.aqua_init( init )
@@ -201,19 +191,13 @@ end
 
 class Array
   def to_aqua_init( path = '' )
-    return_arr = []
-    externals = {}
-    attachments = []
+    rat = Rat.new([])
     self.each_with_index do |obj, index|
       local_path = path + "[#{index}]" 
-      pack_arr = Aqua::Packer.pack_object( obj, local_path )
-      if pack_arr
-        return_arr  << pack_arr[0]
-        externals.merge!( pack_arr[1] ) unless pack_arr[1].empty?
-        attachments += pack_arr[2]
-      end  
+      obj_rat = Aqua::Packer.pack_object( obj, local_path )
+      rat.eat( obj_rat )  
     end
-    [return_arr, externals, attachments]   
+    rat   
   end
   
   def self.aqua_init( init )
@@ -224,14 +208,33 @@ end
 class OpenStruct
   hide_attributes :table
   
-  def to_aqua_init
-    [instance_variable_get("@table").to_aqua_init, {}, []]
+  def to_aqua_init( path='' ) 
+    instance_variable_get("@table").to_aqua_init( path )
   end  
 end 
 
 module Aqua
   module FileInitializations 
     def to_aqua( base_object )
+      # hash = { 'class' => to_aqua_class }
+      # externals = {}
+      # attachments = []
+      # 
+      # if init = to_aqua_init( path )
+      #   hash.merge!( 'init' => init[0] )
+      #   externals.merge!(init[1]) unless init[1].empty?
+      #   attachments += init[2]
+      # end
+      #      
+      # ivar_arr = _pack_instance_vars( path )
+      # if ivar_arr && ivar_arr.first.size > 0
+      #   hash.merge!( ivar_arr[0] ) 
+      #   externals.merge!( ivar_arr[1] ) unless ivar_arr[1].empty?
+      #   attachments += ivar_arr[2]
+      # end
+      #   
+      # [hash, externals, attachments]   
+      
       hash = { 
         'class' => to_aqua_class, 
         'init' => to_aqua_init,

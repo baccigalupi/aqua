@@ -20,29 +20,23 @@ module Aqua
     end 
     
     def pack
-      arr = yield 
-      self.externals += arr[1]
-      self.attachments += arr[2]
-      arr[0]
+      rat = yield 
+      self.externals += rat.externals
+      self.attachments += rat.attachments
+      rat.pack
     end  
     
     def self.pack_ivars( obj, path='' )
-      hash = {}
-      externals = {}
-      attachments = []
-      
+      rat = Rat.new
       vars = obj.respond_to?(:_storable_attributes) ? obj._storable_attributes : obj.instance_variables
       vars.each do |ivar_name|
-        ivar = obj.instance_variable_get( ivar_name )
-        unless ivar.nil?
-          arr = pack_object( ivar )
-          hash[ivar_name] = arr[0]
-          externals.merge!( arr[1] ) unless arr[1].empty?
-          attachments    += arr[2] 
+        ivar = obj.instance_variable_get( ivar_name ) 
+        if ivar 
+          ivar_rat = pack_object( ivar )
+          rat.hord( ivar_rat, ivar_name ) 
         end         
       end
-       
-      [hash, externals, attachments]
+      rat
     end 
     
     def pack_ivars( obj, path='' )
@@ -71,10 +65,11 @@ module Aqua
     # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
     #
     # @api private  
-    def self.pack_vanilla( obj, path='' ) 
-      arr = pack_ivars( obj )
-      [{ 'class' => obj.class.to_s,
-        'ivars' => 0 }, arr[1], arr[2]]  
+    def self.pack_vanilla( obj, path='' )
+      rat = Rat.new( { 'class' => obj.class.to_s } ) 
+      ivar_rat = pack_ivars( obj )
+      rat.hord( ivar_rat, 'ivars' ) unless ivar_rat.pack.empty?
+      rat
     end 
     
     def pack_vanilla( obj, path='' )
@@ -89,37 +84,24 @@ module Aqua
     #
     # @api private    
     def self.pack_to_stub( obj, path='' )
-      externals = {obj => path}
-      attachments = []
-      stub = { 
-        'class' => obj.class.to_s, 
-        'id' => obj.id || '' 
-      } 
-      
+      rat = Rat.new( {'class' => 'Aqua::Stub'})
+      stub_rat = Rat.new({'class' => obj.class.to_s, 'id' => obj.id || '' }, {obj => path}, [])  
       # deal with cached methods
       if obj._embed_me && obj._embed_me.keys && stub_methods = obj._embed_me[:stub]
-        stub['methods'] = {}
+        stub_rat.pack['methods'] = {}
         if stub_methods.class == Symbol || stub_methods.class == String
           meth = stub_methods.to_s
-          arr = pack_object( obj.send( meth ) )
-          stub['methods'][meth] = arr[0]
-          externals.merge!( arr[1] ) unless arr[1].empty?
-          attachments += arr[2]
+          method_rat = pack_object( obj.send( meth ) ) 
+          stub_rat.hord( method_rat, ['methods', "#{meth}"])
         else # is an array of values
           stub_methods.each do |meth|
             meth = meth.to_s
-            arr = pack_object( obj.send( meth ) )
-            stub['methods'][meth] = arr[0]
-            externals.merge!( arr[1] ) unless arr[1].empty?
-            attachments += arr[2]
+            method_rat = pack_object( obj.send( meth ) )
+            stub_rat.hord( method_rat, ['methods', "#{meth}"])
           end  
         end    
       end
-      # return hash  
-      [{
-        'class' => 'Aqua::Stub', 
-        'init' => stub
-      }, externals, attachments]
+      rat.hord( stub_rat, 'init' )
     end
     
     def pack_to_stub( obj, path='' )
@@ -132,4 +114,61 @@ module Aqua
     # end
                  
   end 
+  
+  class Rat 
+    attr_accessor :pack, :externals, :attachments
+    def initialize( pack={}, externals={}, attachments=[] )
+      self.pack = pack
+      self.externals = externals
+      self.attachments = attachments
+    end
+    
+    # merges the two rats
+    def eat( other_rat )
+      if self.pack.respond_to?(:keys) 
+        self.pack.merge!( other_rat.pack )
+      else
+        self.pack << other_rat.pack  # this is a special case for array init rats
+      end    
+      self.externals.merge!( other_rat.externals )
+      self.attachments += attachments
+      self
+    end
+    
+    # outputs and resets the accessor
+    def barf( accessor )
+      case accessor
+      when :pack, 'pack'
+        meal = self.pack
+        self.pack = {}
+      when :externals, 'externals'  
+        meal = self.externals
+        self.externals = {}  
+      else
+        meal = self.attachments
+        self.attachments = []
+      end    
+      meal
+    end
+    
+    def hord( other_rat, index)
+      if [String, Symbol].include?( index.class ) 
+        self.pack[index] = other_rat.barf(:pack) 
+      else # for nested hording
+        eval_string = index.inject("self.pack") do |result, element|
+          element = "'#{element}'" if element.class == String
+          result += "[#{element}]" 
+        end 
+        value = other_rat.barf(:pack)
+        instance_eval "#{eval_string} = #{value.inspect}"
+      end      
+      self.eat( other_rat ) 
+      self
+    end
+    
+    def ==( other_rat ) 
+      self.pack == other_rat.pack && self.externals == other_rat.externals && self.attachments == other_rat.attachments
+    end    
+          
+  end   
 end     
