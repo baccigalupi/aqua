@@ -85,7 +85,7 @@ module Aqua
     # @api private    
     def self.pack_to_stub( obj, path='' )
       rat = Rat.new( {'class' => 'Aqua::Stub'})
-      stub_rat = Rat.new({'class' => obj.class.to_s, 'id' => obj.id || '' }, {obj => path}, [])  
+      stub_rat = Rat.new({'class' => obj.class.to_s, 'id' => obj.id || '' }, {obj => path} )  
       # deal with cached methods
       if obj._embed_me && obj._embed_me.keys && stub_methods = obj._embed_me[:stub]
         stub_rat.pack['methods'] = {}
@@ -131,7 +131,7 @@ module Aqua
         self.pack << other_rat.pack  # this is a special case for array init rats
       end    
       self.externals.merge!( other_rat.externals )
-      self.attachments += attachments
+      self.attachments += other_rat.attachments 
       self
     end
     

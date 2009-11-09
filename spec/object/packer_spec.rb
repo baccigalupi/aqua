@@ -1,5 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require_fixtures
+require File.dirname(__FILE__) + "/../../lib/aqua/support/set"
 
 Aqua.set_storage_engine('CouchDB') # to initialize CouchDB
 CouchDB = Aqua::Store::CouchDB unless defined?( CouchDB )
@@ -10,6 +11,18 @@ describe Packer do
   before(:each) do
     @user = User.new(:username => 'Kane')
     @user_init = {"class"=>"Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>"" }}
+    @file = File.new(File.dirname(__FILE__) + '/../store/couchdb/fixtures_and_data/image_attach.png')
+    @file_pack = { 
+      'class' => 'Aqua::FileStub',
+      'init' => 'image_attach.png', 
+      "methods"=>{
+        "content_type" => 'image/png', 
+        "content_length" => {"class"=>"Fixnum", "init"=>"26551"}
+      }
+    } 
+    @tempfile = Tempfile.new('temp.txt')
+    @tempfile.write('I am a tempfile!')
+    @tempfile.rewind          
   end  
   
   describe 'instances' do
@@ -185,13 +198,66 @@ describe Packer do
       )
     end  
     
-    it 'files'
-    it 'arrays with files'
-    it 'arrays with deeply nested files'
-    it 'hashes with files'
-    it 'hashes with file keys'
+    it 'files' do
+      pack( @file ).should == Rat.new( @file_pack , {}, [ @file ] )
+    end
+      
+    it 'arrays with files' do 
+      pack( [@file, 1] ).should == Rat.new({
+        'class' => 'Array', 
+        'init' => [
+          @file_pack, 
+          {"class"=>"Fixnum", "init"=>"1"}
+         ]
+       }, {}, [@file]
+     ) 
+    end
+      
+    it 'arrays with deeply nested files' do  
+      nested_pack = pack( ['layer 1', ['layer 2', ['layer 3', @file ] ] ] )
+      nested_pack.should == Rat.new(
+        {
+          'class' => 'Array', 
+          'init' => [ 'layer 1',
+            {
+              'class' => 'Array',
+              'init' => [ 'layer 2',
+                {
+                  'class' => 'Array',
+                  'init' => [ 'layer 3', @file_pack ]
+                }
+              ]
+            }
+          ] 
+        },
+        {}, [@file]
+      )                  
+    end
+      
+    it 'hashes with files' do   
+      pack({'attachment' => @file}).should == Rat.new(
+        {'class' => 'Hash', 'init' => {
+          'attachment' => @file_pack
+        }}, 
+        {}, [@file] 
+      ) 
+    end
+      
+    it 'hashes with file keys' do 
+      pack({ @file => 'attachment'}).should == Rat.new(
+        { 'class' => 'Hash', 'init' => {
+          '/_OBJECT_0' => 'attachment', 
+          '/_OBJECT_KEYS' => [@file_pack]
+        }},
+        {}, [@file]
+      )  
+    end  
     
-    it 'sets'
+    it 'sets' do 
+      pack(Set.new(['a', 'b'])).should == Rat.new(
+        { 'class' => 'Set', 'init' =>{'class'=> 'Array', 'init' =>['a', 'b']} }
+      )
+    end  
     
   end   
 end   

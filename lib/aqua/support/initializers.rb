@@ -215,38 +215,37 @@ end
 
 module Aqua
   module FileInitializations 
-    def to_aqua( base_object )
-      # hash = { 'class' => to_aqua_class }
-      # externals = {}
-      # attachments = []
-      # 
-      # if init = to_aqua_init( path )
-      #   hash.merge!( 'init' => init[0] )
-      #   externals.merge!(init[1]) unless init[1].empty?
-      #   attachments += init[2]
-      # end
-      #      
-      # ivar_arr = _pack_instance_vars( path )
-      # if ivar_arr && ivar_arr.first.size > 0
-      #   hash.merge!( ivar_arr[0] ) 
-      #   externals.merge!( ivar_arr[1] ) unless ivar_arr[1].empty?
-      #   attachments += ivar_arr[2]
-      # end
-      #   
-      # [hash, externals, attachments]   
-      
-      hash = { 
-        'class' => to_aqua_class, 
-        'init' => to_aqua_init,
-        'methods' => {
-          'content_type' => MIME::Types.type_for( path ).first,
-          'content_length' => stat.size
-        } 
-      }
-      ivars = _pack_instance_vars( base_object )
-      hash.merge!( ivars ) if ivars
-      hash
-    end  
+    def to_aqua( path='' )
+      rat = Rat.new(
+        { 
+          'class' => to_aqua_class,
+          'init' => filename, 
+          'methods' => {
+            'content_type' => content_type,
+            'content_length' => content_length
+          } 
+        }, {}, [self]
+      )
+        
+      ivar_rat = _pack_instance_vars( path )
+      rat.eat( ivar_rat ) if ivar_rat && ivar_rat.pack['ivars'] && !ivar_rat.pack['ivars'].empty?
+          
+      rat 
+    end
+    
+    def content_length 
+      if len = stat.size
+        rat = Aqua::Packer.pack_object( len )
+        rat.pack
+      else
+        ''
+      end  
+    end 
+    
+    def content_type 
+      mime = MIME::Types.type_for( self.path )
+      mime && mime.first ? mime.first.to_s : ''
+    end     
     
     def to_aqua_class
       'Aqua::FileStub'

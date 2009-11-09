@@ -2,22 +2,10 @@
 require 'set'
 
 class Set 
-  include Aqua::Initializers  
+  include Aqua::Initializers 
+  hide_attributes :hash 
   
-  def to_aqua( base_object )
-    hash = { 
-      'class' => self.class.to_s, 
-      'init' => to_aqua_init( base_object ) 
-    }
-    if (instance_variables - ['@hash']).size > 0 
-      hash.merge!({ 'ivars' => base_object._pack_ivars( self ) })
-    end
-    hash
-  end   
-
-  def to_aqua_init( base_object )
-    # keys returns an array
-    # to_aqua_init will ensure that each of the objects is unpacked to aqua 
-    instance_variable_get("@hash").keys.to_aqua_init( base_object )
+  def to_aqua_init( path='' )
+    Aqua::Packer.pack_object( instance_variable_get("@hash").keys )
   end    
 end  
