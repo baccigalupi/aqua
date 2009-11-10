@@ -22,18 +22,46 @@ describe Aqua::Pack do
       @user.grab_bag = value
       @user._pack[:ivars][:@grab_bag]
     end 
-  end 
+  end
+  
+  describe 'packer' do
+    # the packer packs the object
+    # then the packer passes back the attachments and the externals back to the pack/storage document
+  end   
+  
+  describe 'hiding attributes' do
+    it 'should add a class method for designating hidden instance variables' do
+      User.should respond_to( :hide_attributes )
+    end
+    
+    it 'class method should hide instance variables designated by the user as hidden' do
+      @user.visible_attr.should_not include('@password')
+      @user.class._hidden_attributes.should include('@password')
+    end 
+      
+    it 'should hide the @__pack variable' do
+      @user.visible_attr.should_not include('@__pack') 
+      @user.class._hidden_attributes.should include('@__pack')
+    end    
+  
+    it 'should hide the @_store variable' do 
+      @user.visible_attr.should_not include('@_store')
+      @user.class._hidden_attributes.should include('@_store')
+    end
+    
+    it 'should not pack hidden variables' do
+      @pack = @user._pack
+      @pack[:ivars].keys.should_not include("@password")
+    end  
+  end
+  
+  describe "instance nesting" do
+    it 'should save an embedded object internally'
+    it 'should stub an external object'
+    it 'should update the external object id after save'
+  end    
   
     
-  describe 'packing classes' do 
-    it 'should pack class variables'
-    it 'should pack class level instance variables'
-    it 'should pack class definition'
-    it 'should save all the class details to the design document'
-    it 'should package views/finds in the class and save them to the design document\'s view attribute'
-    it 'should be saved into the design document' 
-  end 
-  
   describe 'external saves and stubs' do
     before(:each) do
       User::Storage.database.delete_all
@@ -44,7 +72,7 @@ describe Aqua::Pack do
       
     describe 'packing' do
       it 'should pack a stubbed object representation inline in the object' do 
-        @pack[:stubs].size.should == 1
+        @pack.size.should == 1
         other_user_pack = @pack[:stubs].first 
         other_user_pack[:class].should == "User"
         other_user_pack[:id].should == @graeme
@@ -128,31 +156,6 @@ describe Aqua::Pack do
     
   end     
   
-  describe 'hiding attributes' do
-    it 'should add a class method for designating hidden instance variables' do
-      User.should respond_to( :hide_attributes )
-    end
-    
-    it 'class method should hide instance variables designated by the user as hidden' do
-      @user.visible_attr.should_not include('@password')
-      @user.class._hidden_attributes.should include('@password')
-    end 
-      
-    it 'should hide the @__pack variable' do
-      @user.visible_attr.should_not include('@__pack') 
-      @user.class._hidden_attributes.should include('@__pack')
-    end    
-  
-    it 'should hide the @_store variable' do 
-      @user.visible_attr.should_not include('@_store')
-      @user.class._hidden_attributes.should include('@_store')
-    end
-    
-    it 'should not pack hidden variables' do
-      @pack = @user._pack
-      @pack[:ivars].keys.should_not include("@password")
-    end  
-  end    
   
   describe 'packing up object instances:' do
     before(:each) do
@@ -604,5 +607,15 @@ describe Aqua::Pack do
       lambda{ @user.commit! }.should_not raise_error
     end        
   end  
-   
+  
+  
+  describe 'packing classes' do 
+    it 'should pack class variables'
+    it 'should pack class level instance variables'
+    it 'should pack class definition'
+    it 'should save all the class details to the design document'
+    it 'should package views/finds in the class and save them to the design document\'s view attribute'
+    it 'should be saved into the design document' 
+  end 
+ 
 end  

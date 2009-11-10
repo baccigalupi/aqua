@@ -91,9 +91,16 @@ module Aqua
         self.__pack = Storage.new
         self.__pack.id = @id if @id
         self.__pack[:_rev] = _rev if _rev 
-        self.__pack.merge!( _packer.pack_object( self ) )
+        self.__pack.merge!( _packer.pack_object( self ) ) 
+        _pack_attachments
         __pack
-      end 
+      end
+      
+      def _pack_attachments 
+        _packer.attachments.each do |file|
+          self.__pack.attachments.add( file.filename, file )
+        end  
+      end   
       
       # Packer object responsible for packing the object and keeping track of externally
       # stored records and also attachments
@@ -114,58 +121,7 @@ module Aqua
       def _embed_me 
         self.class._aqua_opts[:embed]
       end 
-    
-      # Packs an object into data and meta data. Works recursively sending out to array, hash, etc.  
-      # object packers, which send their values back to _pack_object
-      #
-      # @param Object to pack
-      # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
-      #
-      # @api private
-      def _pack_object( obj ) 
-        klass = obj.class
-        if klass == String
-          obj
-        elsif obj.respond_to?(:to_aqua) # Types requiring initialization
-          obj.to_aqua( self )
-        elsif obj.aquatic? && obj != self
-          if obj._embed_me == true
-            obj._pack
-          else
-            _build_stub( obj ) 
-          end   
-        else # other object without initializations
-          _pack_vanilla( obj )
-        end     
-      end
-     
-      # Packs the ivars for a given object.  
-      #
-      # @param Object to pack
-      # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
-      #
-      # @api private
-      def _pack_ivars( obj )
-        return_hash = {}
-        vars = obj.respond_to?(:_storable_attributes) ? obj._storable_attributes : obj.instance_variables
-        vars.each do |ivar_name|
-          ivar = obj.instance_variable_get( ivar_name )
-          return_hash[ivar_name] = _pack_object( ivar ) unless ivar.nil?       
-        end
-        return_hash
-      end
       
-      # Adds an attachment to the __pack document. Before save the attachments are encoded into the doc  
-      #
-      # @param [String] filename used as the key/index
-      # @param [File, Tempfile] file to be attached
-      #
-      # @api semi-public
-      def _pack_file( filename, file )
-        __pack.attachments.add( filename, file )
-      end     
-           
-    
       attr_accessor :_warnings 
        
       # Private/protected methods are all prefaced by an underscore to prevent
@@ -207,8 +163,6 @@ module Aqua
           end    
         end    
        
-        # Object packing methods ------------
-        
         # Saves all self and nested object requiring independent saves
         # 
         # @return [Object, false] Returns false on failure and self on success.
@@ -224,17 +178,13 @@ module Aqua
         #
         # @api private
         def _commit_externals 
-          __pack[:stubs].each_with_index do |obj_hash, index|
-            obj = obj_hash[:id]
+          _packer.externals.each_with_index do |obj, path|
             if obj.commit
-              obj_hash[:id] = obj.id
+              __pack.update_external( path, obj.id )
             else
-              if obj.id
-                self._warnings << "Unable to save latest version of #{obj.inspect}, stubbed at index #{index}"
-                obj_hash[:id] = obj.id if obj.id 
-              else  
-                self._warnings << "Unable to save #{obj.inspect}, stubbed at index #{index}" 
-              end  
+              self._warnings << ( obj.id ? 
+                 "Unable to save latest version of #{obj.inspect}, stubbed at index #{index}" :
+                 "Unable to save #{obj.inspect}, stubbed at index #{index}" )
             end    
           end  
         end 
@@ -245,6 +195,7 @@ module Aqua
         def _clear_accessors
           self.__pack = nil
           self._store = nil
+          self._packer = nil
         end
               
       public  

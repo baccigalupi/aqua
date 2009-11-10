@@ -85,12 +85,6 @@ describe Packer do
     it 'Ranges' do
       pack( 1..3 ).should == Rat.new( { "class" => 'Range', 'init' => '1..3' } )
     end
-    
-    it 'stubs' do
-      user = User.new(:username => 'Kane') 
-      p = pack( user )
-      p.should == Rat.new( @user_init, {user => ''} ) 
-    end  
       
     it 'arrays of string' do 
       pack( ['one', 'two'] ).should == Rat.new( {"class" => 'Array', 'init' => ['one', 'two'] } ) 
@@ -251,13 +245,34 @@ describe Packer do
         }},
         {}, [@file]
       )  
+    end 
+    
+    it 'hash derivatives' do 
+      hashish = CannedHash.new( 1 => 'one' )
+      hashish.yum # sets instance variable
+      pack(hashish).should == Rat.new(
+        {'class' => 'CannedHash', 'init' => { 
+          '/_OBJECT_0' => 'one',
+          '/_OBJECT_KEYS' => [{"class"=>"Fixnum", "init"=>"1"}]
+        }, 'ivars' => {'@yum' => 'Corned Beef!'} }
+      )
     end  
     
     it 'sets' do 
       pack(Set.new(['a', 'b'])).should == Rat.new(
         { 'class' => 'Set', 'init' =>{'class'=> 'Array', 'init' =>['a', 'b']} }
       )
+    end 
+    
+    it 'aquatic embedded objects' do 
+      log = Log.new(:message => "Hi!")
+      pack( log ).should == Rat.new(
+        {'class' => 'Log', 'ivars' => {'@message' => 'Hi!'}}
+      )
     end  
     
+    it 'aquatic base objects in non-stub form' do 
+      pack( @user ).pack['class'].should == 'User' 
+    end  
   end   
 end   

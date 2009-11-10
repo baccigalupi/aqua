@@ -62,7 +62,7 @@ end
 
 class String
   def to_aqua( path='' )
-    Rat.new( self )
+    Aqua::Rat.new( self )
   end 
 end 
 
@@ -72,7 +72,7 @@ class TrueClass
   end
   
   def to_aqua( path='')
-    Rat.new( true )
+    Aqua::Rat.new( true )
   end 
 end
 
@@ -82,7 +82,7 @@ class FalseClass
   end
   
   def to_aqua( path='' )
-    Rat.new( false )
+    Aqua::Rat.new( false )
   end
 end   
 
@@ -140,7 +140,7 @@ end
 
 class Rational
   def to_aqua_init( path='') 
-    Rat.new( self.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2) )
+    Aqua::Rat.new( self.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2) )
   end 
   
   def self.aqua_init
@@ -154,7 +154,7 @@ end
 
 class Hash
   def to_aqua_init( path='')
-    rat = Rat.new
+    rat = Aqua::Rat.new
     self.each do |raw_key, value|
       key_class = raw_key.class
       if key_class == String
@@ -191,7 +191,7 @@ end
 
 class Array
   def to_aqua_init( path = '' )
-    rat = Rat.new([])
+    rat = Aqua::Rat.new([])
     self.each_with_index do |obj, index|
       local_path = path + "[#{index}]" 
       obj_rat = Aqua::Packer.pack_object( obj, local_path )
@@ -216,7 +216,7 @@ end
 module Aqua
   module FileInitializations 
     def to_aqua( path='' )
-      rat = Rat.new(
+      rat = Aqua::Rat.new(
         { 
           'class' => to_aqua_class,
           'init' => filename, 

@@ -7,12 +7,14 @@ module Aqua
   class Packer 
     attr_accessor :base
     
+    attr_writer :externals, :attachments 
+    
     def externals
       @externals ||= {}
     end
     
     def attachments
-      @attachments ||= {}
+      @attachments ||= []
     end    
     
     def initialize( base_object )
@@ -21,18 +23,25 @@ module Aqua
     
     def pack
       rat = yield 
-      self.externals += rat.externals
+      self.externals.merge!( rat.externals )
       self.attachments += rat.attachments
       rat.pack
     end  
     
+    # Packs the ivars for a given object.  
+    #
+    # @param Object to pack 
+    # @param [String] path to this particular object within the parent object
+    # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+    #
+    # @api private
     def self.pack_ivars( obj, path='' )
       rat = Rat.new
       vars = obj.respond_to?(:_storable_attributes) ? obj._storable_attributes : obj.instance_variables
       vars.each do |ivar_name|
         ivar = obj.instance_variable_get( ivar_name ) 
         if ivar 
-          ivar_rat = pack_object( ivar )
+          ivar_rat = pack_object( ivar, path << "#{ivar_name}" )
           rat.hord( ivar_rat, ivar_name ) 
         end         
       end
@@ -43,14 +52,22 @@ module Aqua
       pack { self.class.pack_ivars( obj ) }
     end
     
+    # Packs an object into data and meta data. Works recursively sending out to array, hash, etc.  
+    # object packers, which send their values back to _pack_object
+    #
+    # @param Object to pack 
+    # @param [String] path, so that unsaved externals can find and set their id after creation
+    # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+    #
+    # @api private  
     def self.pack_object( obj, path='' )
       klass = obj.class
       if obj.respond_to?(:to_aqua) # probably requires special initialization not just ivar assignment
         obj.to_aqua( path )
-      elsif obj.aquatic? && obj != self # if object is aquatic follow instructions for its class
-        obj._embed_me == true ? obj._pack : pack_to_stub( obj, path ) 
+      elsif obj.aquatic? && obj._embed_me && path != ''
+        pack_to_stub( obj, path )
       else # other object without initializations
-        pack_vanilla( obj )
+        pack_vanilla( obj, path )
       end     
     end
     
@@ -67,7 +84,7 @@ module Aqua
     # @api private  
     def self.pack_vanilla( obj, path='' )
       rat = Rat.new( { 'class' => obj.class.to_s } ) 
-      ivar_rat = pack_ivars( obj )
+      ivar_rat = pack_ivars( obj, path )
       rat.hord( ivar_rat, 'ivars' ) unless ivar_rat.pack.empty?
       rat
     end 
@@ -87,7 +104,7 @@ module Aqua
       rat = Rat.new( {'class' => 'Aqua::Stub'})
       stub_rat = Rat.new({'class' => obj.class.to_s, 'id' => obj.id || '' }, {obj => path} )  
       # deal with cached methods
-      if obj._embed_me && obj._embed_me.keys && stub_methods = obj._embed_me[:stub]
+      if obj._embed_me && obj._embed_me.respond_to?(:keys) && stub_methods = obj._embed_me[:stub]
         stub_rat.pack['methods'] = {}
         if stub_methods.class == Symbol || stub_methods.class == String
           meth = stub_methods.to_s
@@ -117,7 +134,7 @@ module Aqua
   
   class Rat 
     attr_accessor :pack, :externals, :attachments
-    def initialize( pack={}, externals={}, attachments=[] )
+    def initialize( pack=Mash.new, externals=Mash.new, attachments=[] )
       self.pack = pack
       self.externals = externals
       self.attachments = attachments
