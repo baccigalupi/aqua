@@ -9,6 +9,7 @@ Rat = Aqua::Rat unless defined?( Rat )
 
 describe Packer do
   before(:each) do
+    User.configure_aqua( :embed => {:stub =>  :username } )
     @user = User.new(:username => 'Kane')
     @user_init = {"class"=>"Aqua::Stub", "init"=>{ "methods"=>{"username"=>"Kane"}, "class"=>"User", "id"=>"" }}
     @file = File.new(File.dirname(__FILE__) + '/../store/couchdb/fixtures_and_data/image_attach.png')
@@ -93,7 +94,7 @@ describe Packer do
     it 'mixed arrays' do
       pack( [1, :two] ).should == 
         Rat.new({"class" => 'Array', 'init' => [{"class"=>"Fixnum", "init"=>"1"}, {"class"=>"Symbol", "init"=>"two"} ]})
-    end  
+    end
     
     it 'arrays with externals' do 
       user = User.new(:username => 'Kane')
@@ -106,6 +107,29 @@ describe Packer do
            ]
         }, { user => '[0]'} )                  
     end 
+    
+    it 'externals with an array of stubbed methods' do
+      User.configure_aqua( :embed => {:stub =>  [:username, :name] } )
+      user = User.new(
+        :username => 'Kane',
+        :name => ['Kane', 'Baccigalupi']
+      )
+      pack( [user] ).should == Rat.new(
+        {
+           "class" => 'Array',
+           "init" => [ 
+             "class"=>"Aqua::Stub", 
+             "init"=>{ 
+               "methods"=>{"username"=>"Kane", 'name'=>{"class"=>"Array", "init"=>["Kane", "Baccigalupi"]}}, 
+               "class"=>"User", "id"=>""
+             } 
+           ]
+        },
+        { user => '[0]'}
+      ) 
+      User.configure_aqua( :embed => {:stub =>  :username } ) 
+    end      
+    
     
     it 'arrays with deeply nested externals' do
       user = User.new(:username => 'Kane')
@@ -273,6 +297,10 @@ describe Packer do
     
     it 'aquatic base objects in non-stub form' do 
       pack( @user ).pack['class'].should == 'User' 
-    end  
+    end 
+    
+    it 'nil'
+    
+    it 'tempfiles' 
   end   
 end   
