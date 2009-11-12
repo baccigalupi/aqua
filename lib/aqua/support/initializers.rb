@@ -74,7 +74,13 @@ class TrueClass
   def to_aqua( path='')
     Aqua::Rat.new( true )
   end 
-end
+end  
+
+class NilClass
+  def self.aqua_init( init )
+    nil
+  end
+end  
 
 class FalseClass
   def self.aqua_init( init )

@@ -41,13 +41,19 @@ module Aqua
       vars = obj.respond_to?(:_storable_attributes) ? obj._storable_attributes : obj.instance_variables
       vars.each do |ivar_name| 
         ivar = obj.instance_variable_get( ivar_name ) 
-        if ivar 
-          ivar_rat = pack_object( ivar, path << "[#{ivar_name}]" )
-          rat.hord( ivar_rat, ivar_name ) 
+        ivar_path = path + "['#{ivar_name}']" 
+        if ivar
+          if ivar == obj # self referential TODO: this will only work direct descendants :(
+            ivar_rat = pack_to_stub( ivar, ivar_path )
+            rat.hord( ivar_rat, ivar_name ) 
+          else   
+            ivar_rat = pack_object( ivar, ivar_path )
+            rat.hord( ivar_rat, ivar_name )
+          end
         end         
       end
       rat
-    end 
+    end
     
     def pack_ivars( obj, path='' )
       pack { self.class.pack_ivars( obj ) }
@@ -102,14 +108,15 @@ module Aqua
     # Packs the stub for an externally saved object.  
     #
     # @param Object to pack
+    # @param [String] path to this part of the object
     # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
     #
     # @api private    
     def self.pack_to_stub( obj, path='' )
-      rat = Rat.new( {'class' => 'Aqua::Stub'})
+      rat = Rat.new( {'class' => 'Aqua::Stub'} ) 
       stub_rat = Rat.new({'class' => obj.class.to_s, 'id' => obj.id || '' }, {obj => path} )
       # deal with cached methods
-      if stub_methods = obj._stubbed_methods
+      unless (stub_methods = obj._stubbed_methods).empty?
         stub_rat.pack['methods'] = {}
         stub_methods.each do |meth|
           meth = meth.to_s

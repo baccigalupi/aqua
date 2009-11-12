@@ -194,7 +194,8 @@ module Aqua
             else
               self._warnings << ( obj.id ? 
                  "Unable to save latest version of #{obj.inspect}, stubbed at index #{index}" :
-                 "Unable to save #{obj.inspect}, stubbed at index #{index}" )
+                 "Unable to save #{obj.inspect}, stubbed at index #{index}" 
+              )
             end    
           end  
         end 

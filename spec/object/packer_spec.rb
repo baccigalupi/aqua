@@ -321,7 +321,68 @@ describe Packer do
     
     it 'aquatic base objects in non-stub form' do 
       pack( @user ).pack['class'].should == 'User' 
+    end
+    
+    it 'embedded objects in an ivar' do 
+      @user.log = Log.new(:message => 'Hi!')
+      pack( @user ).should == Rat.new(
+        {'class' => 'User', 'ivars' => {
+          '@log' => {'class' => 'Log', 'ivars' => {'@message' => 'Hi!'}},
+          '@username' => 'Kane'
+        }}
+      )
     end 
+    
+    it 'externals in an ivar' do 
+      otter = User.new(:username => 'Otter')
+      @user.other_user = otter
+      pack( @user ).should == Rat.new(
+        {'class' => 'User', 'ivars' => {
+          '@other_user' => {'class' => 'Aqua::Stub', 'init' => {'class' => 'User', 'methods' => {'username' => 'Otter'}, 'id' => ''}},
+          '@username' => 'Kane'
+        }}, {otter => "['ivars']['@other_user']"}
+      )
+    end
+    
+    it 'self-referential externals' do
+      @user.other_user = @user
+      pack( @user ).should == Rat.new(
+        {'class' => 'User', 'ivars' => {
+          '@other_user' => {'class' => 'Aqua::Stub', 'init' => {'class' => 'User', 'methods' => {'username' => 'Kane'}, 'id' => ''}},
+          '@username' => 'Kane'
+        }}, {@user => "['ivars']['@other_user']"}
+      )                     
+    end
+    
+    it 'self-referential embedded' do 
+      log = Log.new
+      log.message = log
+      pack( log ).should == Rat.new(
+        {'class' => 'Log', 'ivars' => {
+          '@message' => {'class' => 'Aqua::Stub', 'init' => {'class' => 'Log', 'id' => ''}}
+        }}, {log => "['ivars']['@message']" }
+      )
+    end
+    
+    it 'deeply nested self-referential embedded' do
+    # create two class methods for packing ivars, one self referential
+    # depend on the instance method to determine if the object passed in is the base object
+    # query will have to search for either relf-referential or normal form
+    # unpacking should recognize self-referential form  
+      log = Log.new
+      log.message = ['one', log]
+      pack( log ).should == Rat.new(  
+        {'class' => 'Log', 'ivars' => {
+          '@message' => {
+            'class' => 'Array',
+            'init' => ['one', {
+              'class' => 'Aqua::Stub', 
+              'init' => {'class' => 'Log', 'id' => ''}
+            }]
+          }
+        }}, {log => "['ivars']['@message']" } 
+      )
+    end      
     
     it 'nil' do 
       pack( nil ).pack.should == {'class' => 'NilClass', 'init' => '' }
