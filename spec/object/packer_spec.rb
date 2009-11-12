@@ -105,7 +105,8 @@ describe Packer do
             @user_init, 
             {"class"=>"Fixnum", "init"=>"1"}
            ]
-        }, { user => '[0]'} )                  
+        }, { user => '[0]'} 
+      )                  
     end 
     
     it 'externals with an array of stubbed methods' do
@@ -219,6 +220,20 @@ describe Packer do
     it 'files' do
       pack( @file ).should == Rat.new( @file_pack , {}, [ @file ] )
     end
+    
+    it 'tempfiles' do 
+      pack( @tempfile ).should == Rat.new( 
+        { 
+          'class' => 'Aqua::FileStub',
+          'init' => 'temp.txt', 
+          "methods"=>{
+            "content_type" => '',  # not sure what's up with the mime determination
+            "content_length" => {"class"=>"Fixnum", "init"=>"16"}
+          }
+        }, 
+        {}, [@tempfile]
+      )
+    end  
       
     it 'arrays with files' do 
       pack( [@file, 1] ).should == Rat.new({
@@ -229,7 +244,7 @@ describe Packer do
          ]
        }, {}, [@file]
      ) 
-    end
+    end 
       
     it 'arrays with deeply nested files' do  
       nested_pack = pack( ['layer 1', ['layer 2', ['layer 3', @file ] ] ] )
@@ -288,19 +303,28 @@ describe Packer do
       )
     end 
     
-    it 'aquatic embedded objects' do 
+    it 'embedable objects' do 
       log = Log.new(:message => "Hi!")
       pack( log ).should == Rat.new(
         {'class' => 'Log', 'ivars' => {'@message' => 'Hi!'}}
       )
-    end  
+    end
+    
+    it 'an array with an embeddable object' do 
+      log = Log.new(:message => "Hi!") 
+      pack( [log] ).should == Rat.new(
+        {'class' => 'Array', 'init' => [
+          {'class' => 'Log', 'ivars' => {'@message' => 'Hi!'}}
+        ]}
+      )
+    end    
     
     it 'aquatic base objects in non-stub form' do 
       pack( @user ).pack['class'].should == 'User' 
     end 
     
-    it 'nil'
-    
-    it 'tempfiles' 
+    it 'nil' do 
+      pack( nil ).pack.should == {'class' => 'NilClass', 'init' => '' }
+    end  
   end   
 end   

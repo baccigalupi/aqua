@@ -56,7 +56,7 @@ module Aqua
          
 end  
 
-[ TrueClass, FalseClass, Symbol, Time, Date, Fixnum, Bignum, Float, Rational, Hash, Array, OpenStruct, Range, File, Tempfile, String].each do |klass|
+[ TrueClass, FalseClass, Symbol, Time, Date, Fixnum, Bignum, Float, Rational, Hash, Array, OpenStruct, Range, File, Tempfile, String, NilClass].each do |klass|
   klass.class_eval { include Aqua::Initializers }
 end 
 

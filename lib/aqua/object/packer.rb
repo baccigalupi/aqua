@@ -36,12 +36,13 @@ module Aqua
     #
     # @api private
     def self.pack_ivars( obj, path='' )
+      path = "#{path}['ivars']"
       rat = Rat.new
       vars = obj.respond_to?(:_storable_attributes) ? obj._storable_attributes : obj.instance_variables
-      vars.each do |ivar_name|
+      vars.each do |ivar_name| 
         ivar = obj.instance_variable_get( ivar_name ) 
         if ivar 
-          ivar_rat = pack_object( ivar, path << "#{ivar_name}" )
+          ivar_rat = pack_object( ivar, path << "[#{ivar_name}]" )
           rat.hord( ivar_rat, ivar_name ) 
         end         
       end
@@ -64,11 +65,15 @@ module Aqua
       klass = obj.class
       if obj.respond_to?(:to_aqua) # probably requires special initialization not just ivar assignment
         obj.to_aqua( path )
-      elsif obj.aquatic? && obj._embed_me && path != ''
-        pack_to_stub( obj, path )
-      else # other object without initializations
-        pack_vanilla( obj, path )
-      end     
+      elsif obj.aquatic? 
+        if obj._embedded? || path == ''
+          pack_vanilla( obj, path )
+        else
+          pack_to_stub( obj, path)
+        end
+      else
+        pack_vaniall( obj, path )
+      end    
     end
     
     def pack_object( obj, path='' )
@@ -102,20 +107,14 @@ module Aqua
     # @api private    
     def self.pack_to_stub( obj, path='' )
       rat = Rat.new( {'class' => 'Aqua::Stub'})
-      stub_rat = Rat.new({'class' => obj.class.to_s, 'id' => obj.id || '' }, {obj => path} )  
+      stub_rat = Rat.new({'class' => obj.class.to_s, 'id' => obj.id || '' }, {obj => path} )
       # deal with cached methods
-      if obj._embed_me && obj._embed_me.respond_to?(:keys) && stub_methods = obj._embed_me[:stub]
+      if stub_methods = obj._stubbed_methods
         stub_rat.pack['methods'] = {}
-        if stub_methods.class == Symbol || stub_methods.class == String
-          meth = stub_methods.to_s
-          method_rat = pack_object( obj.send( meth ) ) 
+        stub_methods.each do |meth|
+          meth = meth.to_s
+          method_rat = pack_object( obj.send( meth ) )
           stub_rat.hord( method_rat, ['methods', "#{meth}"])
-        else # is an array of values
-          stub_methods.each do |meth|
-            meth = meth.to_s
-            method_rat = pack_object( obj.send( meth ) )
-            stub_rat.hord( method_rat, ['methods', "#{meth}"])
-          end  
         end    
       end
       rat.hord( stub_rat, 'init' )

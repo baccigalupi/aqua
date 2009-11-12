@@ -5,10 +5,12 @@ Aqua.set_storage_engine('CouchDB') # to initialize CouchDB
 CouchDB = Aqua::Store::CouchDB unless defined?( CouchDB )
 
 describe Aqua::Pack do
-  before(:each) do
+  
+  def build_user_ivars 
     @time = Time.now
     @date = Date.parse('12/23/1969')
-    @log = Log.new( :message => "Hello World! This is a log entry", :created_at => Time.now )
+    @message = "Hello World! This is a log entry"
+    @log = Log.new( :message => @message, :created_at => @time )
     @user = User.new(
       :username => 'kane',
       :name => ['Kane', 'Baccigalupi'],
@@ -17,19 +19,25 @@ describe Aqua::Pack do
       :log => @log,
       :password => 'my secret!' 
     )
-    
-    def pack_grab_bag( value )
-      @user.grab_bag = value
-      @user._pack[:ivars][:@grab_bag]
-    end 
-  end
+    @pack = @user._pack
+  end  
   
+  def pack_grab_bag( value )
+    @user.grab_bag = value
+    @user._pack[:ivars][:@grab_bag]
+  end  
+    
+
   describe 'packer' do
     # the packer packs the object
     # then the packer passes back the attachments and the externals back to the pack/storage document
   end   
   
   describe 'hiding attributes' do
+    before(:each) do
+      build_user_ivars
+    end  
+      
     it 'should add a class method for designating hidden instance variables' do
       User.should respond_to( :hide_attributes )
     end
@@ -50,15 +58,61 @@ describe Aqua::Pack do
     end
     
     it 'should not pack hidden variables' do
-      @pack = @user._pack
-      @pack[:ivars].keys.should_not include("@password")
+      pack = @user._pack
+      pack[:ivars].keys.should_not include("@password")
     end  
   end
+  
+  describe 'embed/stub reporting' do
+    before(:each) do 
+      build_user_ivars
+    end
+       
+    describe '_embedded?' do
+      it 'should be true for embedded objects' do 
+        @log._embedded?.should == true
+      end  
+      it 'should be false for stubbed object with methods' do
+        @user._embedded?.should == false
+      end
+        
+      it 'should be false without stubbed methods, where :embed configuration is false' do
+        p = Persistent.new
+        p._embedded?.should == false 
+      end 
+    end
+    
+    describe '_stubbed_methods' do 
+      it 'should be an empty for embedded objects (with no possible stubbed methods)' do
+        @log._stubbed_methods.should == []
+      end
+      
+      it 'should be an array the stub string or symbol method passed into configuration' do
+        @user._stubbed_methods.should == [:username]
+      end    
+      
+      it 'should be the array of the stub methods passed into configuration' do 
+        User.configure_aqua :embed => { :stub => [:username, :name] }
+        @user._stubbed_methods.should == [:username, :name]
+        User.configure_aqua :embed => { :stub => :username } # resetting user model
+      end   
+    end
+         
+  end 
    
   # Most of the serious packing tests are in packer_spec
-  describe "nesting" do 
-    describe 'embedded aquatics' do
-      it 'should pack an embedded object internally' 
+  describe "nesting" do
+    before(:each) do 
+      build_user_ivars
+    end  
+     
+    describe 'embedded aquatics' do 
+      it 'should pack an embedded object internally' do 
+        @pack[:ivars]['@log'].should == {
+          'class' => 'Log',
+          'ivars' => {'@message' => @message, '@created_at' => Aqua::Packer.pack_object( @time ).pack }
+        }
+      end  
     end
     describe 'externals' do
       it 'should stub an external object'
@@ -71,22 +125,30 @@ describe Aqua::Pack do
     end 
   end 
   
-  describe 'ids and revs' do 
+  describe 'pack ids and revs' do 
     before(:each) do
-      @pack = @user._pack
+      build_user_ivars
     end  
     
-    it 'should pack the _rev if it is present' do
+    it 'should have a _rev if it is present in the base object' do
       @user.instance_variable_set("@_rev", '1-2222222')
       pack = @user._pack 
       pack[:_rev].should == '1-2222222'
     end
     
-    it 'should not have a _rev of nil if not _rev is provided' 
+    it 'should not have a _rev of nil if _rev is not provided in the base'  do 
+      @pack[:_rev].should == nil
+    end  
     
-    it 'should generate an id if the id is not provided'
+    it 'should initially have an id of nil' do 
+      @pack[:_rev].should == nil
+    end  
     
-    it 'should pack the id provided'   
+    it 'should pack the id if it exists in the base' do 
+      @user.id = 'my_id'
+      pack = @user._pack
+      pack[:_id].should == 'my_id'
+    end     
   end     
   
   

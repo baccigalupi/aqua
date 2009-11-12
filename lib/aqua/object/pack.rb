@@ -15,7 +15,7 @@ module Aqua
           attr_accessor :id
         end
       
-        hide_attributes :_store, :__pack, :id, :_rev 
+        hide_attributes :_store, :__pack, :id, :_rev, :_packer 
       end  
     end
   
@@ -108,7 +108,7 @@ module Aqua
       # 
       # @api private
       def _packer
-        @packer ||= Packer.new( self )
+        @_packer ||= Packer.new( self )
       end  
     
       # Details from configuration options for the objects class about embedability. 
@@ -118,8 +118,18 @@ module Aqua
       #   with a few cached methods as defined in the array.
       # 
       # @api private
-      def _embed_me 
-        self.class._aqua_opts[:embed]
+      def _stubbed_methods 
+        meths = !_embedded? && self.class._aqua_opts[:embed] && self.class._aqua_opts[:embed][:stub]
+        meths ? [meths].flatten : []
+      end 
+      
+      # Details from configuration options for the objects class about embedability. 
+      # @return [true, false] If true then it should be embedded in the base object. 
+      #   If false, then it should be saved externally. 
+      # 
+      # @api private
+      def _embedded? 
+        self.class._aqua_opts[:embed] == true
       end 
       
       attr_accessor :_warnings 
