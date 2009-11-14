@@ -206,7 +206,7 @@ module Aqua
         def _clear_accessors
           self.__pack = nil
           self._store = nil
-          self._packer = nil
+          @_packer = nil
         end
               
       public  

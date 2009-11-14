@@ -153,59 +153,51 @@ describe Aqua::Pack do
   
   
   describe 'commit' do 
-    before(:each) do 
+    before(:each) do
+      build_user_ivars 
       User::Storage.database.delete_all
     end
       
     it 'commit! should not raise errors on successful save' do  
-      pending
       lambda{ @user.commit! }.should_not raise_error
     end 
     
     it 'commit! should raise error on failure' do
-      pending
       CouchDB.should_receive(:put).at_least(:once).and_return( CouchDB::Conflict )
       lambda{ @user.commit! }.should raise_error
     end  
     
     it 'commit! should assign an id back to the object' do
-      pending
       @user.commit!
       @user.id.should_not be_nil
       @user.id.should_not == @user.object_id
     end
     
     it 'commit! should assign the _rev to the parent object' do
-      pending
       @user.commit!
       @user.instance_variable_get('@_rev').should_not be_nil
     end    
     
     it 'commit! should save the record to CouchDB' do  
-      pending
       @user.commit!  
       lambda{ CouchDB.get( "http://127.0.0.1:5984/aqua/#{@user.id}") }.should_not raise_error
     end
     
     it 'commit should save the record and return self' do 
-      pending
       @user.commit.should == @user
     end
     
     it 'commit should not raise an error on falure' do 
-      pending
       CouchDB.should_receive(:put).at_least(:once).and_return( CouchDB::Conflict )
       lambda{ @user.commit }.should_not raise_error
     end 
     
     it 'commit should return false on failure' do
-      pending
       CouchDB.should_receive(:put).at_least(:once).and_return( CouchDB::Conflict )
       @user.commit.should == false
     end
     
     it 'should be able to update and commit again' do
-      pending 
       @user.commit!
       @user.grab_bag = {'1' => '2'}
       lambda{ @user.commit! }.should_not raise_error
