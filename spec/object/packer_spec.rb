@@ -354,7 +354,7 @@ describe Packer do
       )                     
     end
     
-    it 'self-referential embedded' do 
+    it 'self-referential embedded at first-generation' do 
       log = Log.new
       log.message = log
       pack( log ).should == Rat.new(
@@ -365,6 +365,7 @@ describe Packer do
     end
     
     it 'deeply nested self-referential embedded' do
+      pending( )
     # create two class methods for packing ivars, one self referential
     # depend on the instance method to determine if the object passed in is the base object
     # query will have to search for either relf-referential or normal form
@@ -377,15 +378,21 @@ describe Packer do
             'class' => 'Array',
             'init' => ['one', {
               'class' => 'Aqua::Stub', 
-              'init' => {'class' => 'Log', 'id' => ''}
+              'init' => {'class' => 'Log', 'id' => 'self'}
             }]
           }
-        }}, {log => "['ivars']['@message']" } 
+        }} 
       )
     end      
     
     it 'nil' do 
       pack( nil ).pack.should == {'class' => 'NilClass', 'init' => '' }
-    end  
+    end
+    
+    describe 'classes' do 
+      it 'should pack class variables'
+      it 'should pack class level instance variables'
+      it 'should pack class definition'
+    end    
   end   
 end   

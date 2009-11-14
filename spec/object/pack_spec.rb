@@ -10,15 +10,17 @@ describe Aqua::Pack do
     @time = Time.now
     @date = Date.parse('12/23/1969')
     @message = "Hello World! This is a log entry"
-    @log = Log.new( :message => @message, :created_at => @time )
+    @log = Log.new( :message => @message, :created_at => @time ) # embedded object
+    @other_user = User.new( :username => 'strictnine' ) # stubbed objects
     @user = User.new(
       :username => 'kane',
       :name => ['Kane', 'Baccigalupi'],
       :dob => @date,
       :created_at => @time,
       :log => @log,
-      :password => 'my secret!' 
-    )
+      :password => 'my secret!',
+      :other_user => @other_user 
+    ) 
     @pack = @user._pack
   end  
   
@@ -101,6 +103,7 @@ describe Aqua::Pack do
   end 
    
   # Most of the serious packing tests are in packer_spec
+  # This is just to test/double-check that everything is working right withing an aquatic object
   describe "nesting" do
     before(:each) do 
       build_user_ivars
@@ -113,11 +116,30 @@ describe Aqua::Pack do
           'ivars' => {'@message' => @message, '@created_at' => Aqua::Packer.pack_object( @time ).pack }
         }
       end  
-    end
-    describe 'externals' do
-      it 'should stub an external object'
-      it 'should commit the external when saving the base object' 
-      it 'should update the stubbed object id after the external is saved' 
+    end 
+    
+    describe 'externals' do 
+      
+      it 'should stub an external object' do 
+        @pack[:ivars]['@other_user'].should == {
+          'class' => 'Aqua::Stub',
+          'init' => {'methods' => {'username' => 'strictnine' }, "class"=>"User", "id"=>""}
+        }
+      end
+        
+      it 'should commit the external when saving the base object' do
+        @user.commit!
+        @other_user.id.should_not be_nil
+        @other_user.id.should_not == @other_user.object_id
+      end  
+      
+      it 'should update the stubbed object id correctly' do
+        @user.instance_eval "_commit_externals" 
+        @other_user.id.should_not be_nil
+        pack = @user._pack
+        pack[:ivars]['@other_user']['init']['id'].should == @other_user.id
+      end   
+      
       describe 'transactions' do
         it 'should rollback all externals if an one external fails to commit'
         it 'should rollback all externals if the base object fails to commit'
@@ -150,7 +172,6 @@ describe Aqua::Pack do
       pack[:_id].should == 'my_id'
     end     
   end     
-  
   
   describe 'commit' do 
     before(:each) do
@@ -197,21 +218,15 @@ describe Aqua::Pack do
       @user.commit.should == false
     end
     
-    it 'should be able to update and commit again' do
+    it 'should be able to update and commit again without conflict' do
       @user.commit!
       @user.grab_bag = {'1' => '2'}
       lambda{ @user.commit! }.should_not raise_error
     end        
   end  
   
-  
-  describe 'packing classes' do 
-    it 'should pack class variables'
-    it 'should pack class level instance variables'
-    it 'should pack class definition'
-    it 'should save all the class details to the design document'
-    it 'should package views/finds in the class and save them to the design document\'s view attribute'
-    it 'should be saved into the design document' 
+  describe 'classes' do
+    it 'should have a separate database' 
   end 
  
 end  

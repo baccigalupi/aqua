@@ -78,7 +78,7 @@ module Aqua
           pack_to_stub( obj, path)
         end
       else
-        pack_vaniall( obj, path )
+        pack_vanilla( obj, path )
       end    
     end
     

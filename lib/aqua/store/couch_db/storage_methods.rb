@@ -560,18 +560,6 @@ module Aqua
           def attachments
             @attachments ||= Attachments.new( self )
           end
-          
-          # When external objects are saved to the base object, ids need to be updated after save
-          # This is the method used to locate the original id and updated it
-          # 
-          # @param [String] path to external
-          # @param [String] id to save
-          # 
-          # @api private
-          def update_external( path, new_id ) 
-            instance_eval "self#{path}['id'] = '#{new_id}'"
-          end    
-            
         end # InstanceMethods           
         
       end # StoreMethods

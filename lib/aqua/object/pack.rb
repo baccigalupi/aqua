@@ -166,7 +166,7 @@ module Aqua
           if result
             self.id =   __pack.id
             self._rev = __pack.rev
-            _clear_accessors
+            _clear_aqua_accessors
             self
           else
             result
@@ -188,22 +188,35 @@ module Aqua
         #
         # @api private
         def _commit_externals 
-          _packer.externals.each_with_index do |obj, path|
+          _packer.externals.each do |obj, path|
             if obj.commit
-              __pack.update_external( path, obj.id )
+              _update_external_id( path, obj.id )
             else
               self._warnings << ( obj.id ? 
-                 "Unable to save latest version of #{obj.inspect}, stubbed at index #{index}" :
-                 "Unable to save #{obj.inspect}, stubbed at index #{index}" 
+                 "Unable to save latest version of #{obj.inspect}, stubbed at #{path}" :
+                 "Unable to save #{obj.inspect}, stubbed at #{path}" 
               )
             end    
           end  
         end 
+        
+        # When external objects are saved to the base object, ids need to be updated after save
+        # This is the method used to locate the original id and updated it
+        # 
+        # @param [String] path to external
+        # @param [String] id to save
+        # 
+        # @api private
+        def _update_external_id( path, new_id )
+          puts  
+          __pack.instance_eval "self#{path}['id'] = '#{new_id}'"
+        end    
+
       
         # clears the __pack and _store accessors to save on memory after each pack and unpack
         # 
         # @api private
-        def _clear_accessors
+        def _clear_aqua_accessors
           self.__pack = nil
           self._store = nil
           @_packer = nil
