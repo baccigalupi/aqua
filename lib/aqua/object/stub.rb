@@ -1,35 +1,7 @@
-# NOTES: I just checked and Delegator does all its delegation through method missing, so 
-# it probably makes sense to make this all one class, with method_missing doing the work.
-# It might be faster, but harder, to pass a reference to the parent object and the way that
-# the stub is accessed as a way to replace self with the actual object instead of stubbing.
-# Not sure how that would work, but I am looking for something like self = something_else,
-# which isn't kosher. 
-
-module Aqua 
-  class TempStub
-    def initialize( method_hash ) 
-      method_hash.each do |method_name, value|
-        self.class.class_eval("
-          def #{method_name}
-            #{value.inspect}
-          end  
-        ")  
-      end  
-    end   
-  end
-  
-  module StubDelegate 
-    def __getobj__
-      @_sd_obj          # return object we are delegating to
-    end
-
-    def __setobj__(obj)
-      @_sd_obj = obj    # change delegation object
-    end  
-  end  
-    
-  class Stub < Delegator 
-    include StubDelegate
+module Aqua
+  class Stub
+    attr_accessor :delegate, :delegate_class, :delegate_id, 
+      :parent_object, :path_from_parent
     
     # Builds a new stub object which returns cached/stubbed methods until such a time as a non-cached method 
     # is requested.
@@ -39,84 +11,58 @@ module Aqua
     # @option opts [String] :class The class of the object being stubbed
     # @option opts [String] :id The id of the object being stubbed
     #
+    # @todo pass in information about parent, and path to the stub such that method missing replaces stub
+    #         with actual object being stubbed and delegated to.
     # @api semi-public
-    def initialize( opts )
-      meths = opts[:methods] || {}
-      temp_stub = TempStub.new( meths )
-      super( temp_stub )
-      @_sd_obj = temp_stub
-      self.delegate_class = opts[:class]
-      self.delegate_id = opts[:id]
-    end
-    
-    def method_missing( method, *args )
-      if __getobj__.class.to_s != delegate_class.to_s
-        load_delegate
-        # resend! 
-        if (args.size == 1 && !args.first.nil?) 
-          __getobj__.send( method.to_sym, eval(args.map{|value| "'#{value}'"}.join(', ')) )
-        else
-          __getobj__.send( method.to_sym )
-        end    
-      else
-        raise NoMethodError
-      end
-    end
-    
+    def initialize(opts, parent_opts={})
+      stub_methods( opts[:methods] || {} )
       
+      self.delegate_class     = opts[:class]
+      self.delegate_id        = opts[:id]
+      self.parent_object      = parent_opts[:parent]
+      self.path_from_parent   = parent_opts[:path] 
+    end
+             
     protected 
-      attr_accessor :delegate_class, :delegate_id
       
-      def load_delegate
-        __setobj__( delegate_class.constantize.load( delegate_id ) )
+      def stub_methods( stubbed_methods ) 
+        stubbed_methods.each do |method_name, value|
+          self.class.class_eval("
+            def #{method_name}
+              #{value.inspect}
+            end  
+          ")
+        end
+      end
+               
+      def method_missing( method, *args, &block )
+        load_delegate if delegate.nil?
+        delegate.send( method, *args, &block )
+      end
+      
+      def load_delegate 
+        self.delegate = delegate_class.constantize.load( delegate_id )
       end   
-    public
-        
-  end  
+  end
 
-  class FileStub < Delegator 
-    include StubDelegate
-    
-    # Builds a new stub object which returns cached/stubbed methods until such a time as a non-cached method 
-    # is requested.
-    #
-    # @param [Hash]
-    # @option opts [Array] :methods A hash of method names and values
-    # @option opts [String] :class The class of the object being stubbed
-    # @option opts [String] :id The id of the object being stubbed
-    #
-    # @api semi-public
+  class FileStub < Stub 
+    attr_accessor :base_object, :attachment_id 
+      
     def initialize( opts )
-      meths = opts[:methods] || {}
-      temp_stub = TempStub.new( meths )
-      super( temp_stub )
-      @_sd_obj = temp_stub
-      self.parent = opts[:parent]
+      super( opts )
+      self.base_object = opts[:parent]
       self.attachment_id = opts[:id]
     end
     
-    def method_missing( method, *args )
-      if load_attempt != true
-        load_delegate 
-        self.load_attempt = true
-        # resend! 
-        if (args.size == 1 && !args.first.nil?) 
-          __getobj__.send( method.to_sym, eval(args.map{|value| "'#{value}'"}.join(', ')) )
-        else
-          __getobj__.send( method.to_sym )
-        end
-      else
-        raise NoMethodError
-      end
+    # This is what is actually called in the Aqua unpack process
+    def self.aqua_init( init, path='' )
+      new( init )
     end
-    
       
     protected 
-      attr_accessor :parent, :attachment_id, :load_attempt 
-      
       def load_delegate
-        __setobj__( parent.class::Storage.attachment( parent.id, attachment_id ) )
+        self.delegate = base_object.class::Storage.attachment( parent.id, attachment_id )
       end   
-    public    
-  end  
+  end            
+  
 end  

@@ -18,22 +18,23 @@ describe Aqua::Stub do
   end  
     
   describe 'initialization' do
-    it 'should initialize delegate with a TempStub' do
-      delegate = @stub.instance_eval( "__getobj__" )
-      delegate.class.should == Aqua::TempStub
-    end
-    
-    it 'should initialize the delegate_id' do
+    it 'should initialize the delegate id' do
       @stub.instance_eval('delegate_id').should == 'my_great_id'
     end
       
-    it 'should initialize the delegate_class' do  
+    it 'should initialize the delegate class' do  
       @stub.instance_eval('delegate_class').should == 'Gerbilmiester'
-    end   
+    end
+    
+    # This stuff is just scoped out for future use. I would like to have a stub know where it exists
+    # in its parent object and be able to replace itself instead of loading a delegate. 
+    it 'should have a parent object'
+    it 'should have a path from parent to self'   
   end
   
   describe 'delegation' do 
-    it 'should return correct values for initialized methods' do 
+    it 'should return correct values for initialized methods' do
+      Gerbilmiester.should_not_receive(:load) 
       @stub.gerbil.should == true
       @stub.bacon.should == 'chunky'
     end

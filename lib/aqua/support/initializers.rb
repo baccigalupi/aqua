@@ -47,9 +47,6 @@ module Aqua
     end # InstanceMethods
     
     module ClassMethods 
-      def aqua_init( init ) 
-        new( init )
-      end    
     end # ClassMethods   
     
   end # Initializers
@@ -61,39 +58,43 @@ end
 end 
 
 class String
+  def from_aqua( path='')
+    self
+  end  
+  
   def to_aqua( path='' )
     Aqua::Rat.new( self )
   end 
 end 
 
-class TrueClass
-  def self.aqua_init( init )
+class TrueClass 
+  def from_aqua( path='')
     true
-  end
+  end  
   
   def to_aqua( path='')
     Aqua::Rat.new( true )
   end 
 end  
 
-class NilClass
-  def self.aqua_init( init )
-    nil
-  end
-end  
-
 class FalseClass
-  def self.aqua_init( init )
+  def from_aqua( path='')
     false
-  end
+  end  
   
   def to_aqua( path='' )
     Aqua::Rat.new( false )
   end
 end   
 
+class NilClass
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
+    nil
+  end
+end  
+
 class Symbol 
-  def self.aqua_init( init )
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
     init.to_sym
   end
   
@@ -105,7 +106,7 @@ end
 class Date
   hide_attributes :sg, :of, :ajd
   
-  def self.aqua_init( init )
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
     parse( init )
   end 
   
@@ -115,41 +116,35 @@ class Date
 end 
 
 class Time 
-  def self.aqua_init( init )
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
     parse( init )
   end
 end
 
 class Fixnum
-  def self.aqua_init( init )
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
     init.to_i
   end
 end
 
 class Bignum
-  def self.aqua_init( init )
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
     init.to_i
   end
 end  
    
 class Float
-  def self.aqua_init( init )
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
     init.to_f
   end
 end 
-
-class Range
-  def self.aqua_init( init ) 
-    eval( init )
-  end
-end     
 
 class Rational
   def to_aqua_init( path='') 
     Aqua::Rat.new( self.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2) )
   end 
   
-  def self.aqua_init
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
     Rational( init[0].to_i, init[1].to_i )
   end
   
@@ -158,42 +153,11 @@ class Rational
   end       
 end
 
-class Hash
-  def to_aqua_init( path='')
-    rat = Aqua::Rat.new
-    self.each do |raw_key, value|
-      key_class = raw_key.class
-      if key_class == String
-        key = raw_key
-      else # key is an object 
-        index = next_object_index( rat.pack )  
-        key = self.class.aqua_object_key_index( index )
-        key_rat = Aqua::Packer.pack_object( raw_key, path+"['#{self.class.aqua_key_register}'][#{index}]")
-        rat.hord( key_rat, [self.class.aqua_key_register, index] )
-      end
-      obj_rat = Aqua::Packer.pack_object( value, path+"['#{key}']" )
-      rat.hord( obj_rat, key )
-    end
-    rat 
+class Range
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new ) 
+    eval( init )
   end
-  
-  def self.aqua_key_register
-    "/_OBJECT_KEYS".freeze
-  end
-  
-  def self.aqua_object_key_index( index ) 
-    "/_OBJECT_#{index}"
-  end    
-  
-  def next_object_index( hash )
-    hash[self.class.aqua_key_register] ||= []
-    hash[self.class.aqua_key_register].size
-  end  
-  
-  def self.aqua_init( init )
-    new.replace( init )
-  end 
-end
+end     
 
 class Array
   def to_aqua_init( path = '' )
@@ -206,8 +170,66 @@ class Array
     rat   
   end
   
-  def self.aqua_init( init )
-    new.replace( init )
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new ) 
+    # todo: make opts opts.path follow the path through the base object
+    array_init = init.map{ |obj| Aqua::Unpacker.unpack_object(obj, opts) } 
+    # new is neccessary to make sure array derivatives maintain their class
+    # without having to override aqua_init! 
+    self == Array ? array_init : new( array_init ) 
+  end 
+end
+
+
+class Hash
+  def to_aqua_init( path='')
+    rat = Aqua::Rat.new
+    self.each do |raw_key, value|
+      key_class = raw_key.class
+      if key_class == String
+        key = raw_key
+      else # key is an object 
+        index = aqua_next_object_index( rat.pack )  
+        key = self.class.aqua_object_key_index( index )
+        key_rat = Aqua::Packer.pack_object( raw_key, path+"['#{self.class.aqua_key_register}'][#{index}]")
+        rat.hord( key_rat, [self.class.aqua_key_register, index] )
+      end
+      obj_rat = Aqua::Packer.pack_object( value, path+"['#{key}']" )
+      rat.hord( obj_rat, key )
+    end
+    rat 
+  end
+  
+  def self.aqua_key_register
+    "#{aqua_key_register_prefix}KEYS".freeze
+  end
+  
+  def self.aqua_key_register_prefix
+    "/_OBJECT_"
+  end  
+  
+  def self.aqua_object_key_index( index ) 
+    "#{aqua_key_register_prefix}#{index}"
+  end    
+  
+  def aqua_next_object_index( hash )
+    hash[self.class.aqua_key_register] ||= []
+    hash[self.class.aqua_key_register].size
+  end  
+  
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new )
+    unpacked = {}
+    init.each do |key, value|
+      unless key == aqua_key_register
+        if key.match(/^#{aqua_key_register_prefix}(\d*)$/)
+          index = $1.to_i
+          key = Aqua::Unpacker.unpack_object( init[aqua_key_register][index], opts )
+        end 
+        opts.path += "[#{key}]" 
+        value = Aqua::Unpacker.unpack_object( value, opts )
+        unpacked[ key ] = value 
+      end  
+    end
+    self == Hash ? unpacked : new( unpacked )  
   end 
 end
 
@@ -216,12 +238,17 @@ class OpenStruct
   
   def to_aqua_init( path='' ) 
     instance_variable_get("@table").to_aqua_init( path )
-  end  
+  end
+  
+  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new )
+    init = Hash.aqua_init( init, opts )
+    new( init )
+  end
 end 
 
 module Aqua
   module FileInitializations 
-    def to_aqua( path='' )
+    def to_aqua( opts=Aqua::Unpacker::Opts.new )
       rat = Aqua::Rat.new(
         { 
           'class' => to_aqua_class,
