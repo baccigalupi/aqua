@@ -132,7 +132,7 @@ module Aqua
         self.class._aqua_opts[:embed] == true
       end 
       
-      attr_accessor :_warnings 
+      attr_accessor :_warnings, :_rev 
        
       # Private/protected methods are all prefaced by an underscore to prevent
       # clogging the object instance space. Some of the public ones above are too!
@@ -147,7 +147,7 @@ module Aqua
         # do without this accessor, but it would mean that an extra get request would have to be
         # made with each PUT request so that the latest _rev could be obtained. 
         #
-        attr_accessor :_store, :__pack, :_rev
+        attr_accessor :_store, :__pack
       
       private
       
@@ -208,8 +208,7 @@ module Aqua
         # 
         # @api private
         def _update_external_id( path, new_id )
-          puts  
-          __pack.instance_eval "self#{path}['id'] = '#{new_id}'"
+          __pack.instance_eval "self#{path}['init']['id'] = '#{new_id}'"
         end    
 
       

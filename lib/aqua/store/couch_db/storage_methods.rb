@@ -74,7 +74,7 @@ module Aqua
             rescue
               CouchDB.get( "#{database.uri}/#{id}" )  
             end
-            new( resource )
+            new( resource ) 
           end 
           
           # Will find a document by id, or create it if it doesn't exist. Alias is :get!
@@ -254,10 +254,11 @@ module Aqua
           # @api public
           def initialize( hash={} )
             hash = Mash.new( hash ) unless hash.empty?
-            self.id = hash.delete(:id) if hash[:id]
+            
+            hashed_id = hash.delete(:id) || hash.delete(:_id)
+            self.id = hashed_id if hashed_id
           
             do_rev( hash )
-            hash.delete(:_id)   # this is set via by the id=(value) method 
             
             # feed the rest of the hash to the super 
             super( hash )      
@@ -265,9 +266,10 @@ module Aqua
           
           # Temporary hack to allow design document refresh from within a doc.
           # @todo The get method has to handle rev better!!!
-          def do_rev( hash )
-            hash.delete(:rev)   # This is omited to aleviate confusion
-            hash.delete(:_rev)  # CouchDB determines _rev attribute
+          def do_rev( hash, override=false )
+            hash.delete(:rev)   # This is omited to aleviate confusion 
+            # CouchDB determines _rev attribute on saving, but when #new is loading json passed from the 
+            # database rev needs to be added to the class. So, the :_rev param is not being deleted anymore
           end   
         
           # Saves an Aqua::Storage instance to CouchDB as a document. Save can be deferred for bulk saving.

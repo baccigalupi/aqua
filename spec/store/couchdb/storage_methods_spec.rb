@@ -221,9 +221,30 @@ describe 'CouchDB::StorageMethods' do
   
   describe 'getting' do
     it 'should get a document from its id' do 
-      @doc.save
+      @doc.save!
       lambda{ Document.get( @doc.id ) }.should_not raise_error
-    end  
+    end 
+    
+    it 'returned document should have an id' do
+      @doc.save!
+      document = Document.get( @doc.id )
+      document.id.should == @doc.id
+    end
+    
+    it 'returned document should have an id even if not explicitly set' do
+      doc = Document.new(:this => 'that')
+      doc.save!
+      retrieved = Document.get( doc.id )
+      retrieved.id.should_not be_nil
+      retrieved.id.should_not be_empty
+    end 
+    
+    it 'returned document should have a rev' do
+      @doc.save!
+      document = Document.get( @doc.id )
+      document.rev.should_not be_nil
+    end     
+    
   end  
   
   describe 'deleting' do
@@ -469,7 +490,7 @@ describe 'CouchDB::StorageMethods' do
         (1..5).each do |number|
           Document.create!( 
             :my_field => number * 5, 
-            :ivar => {
+            :ivars => {
               '@my_ivar' => number + 5
             },
             :class => 'Document' 

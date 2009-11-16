@@ -99,7 +99,10 @@ describe Aqua::Pack do
       end  
     end 
     
-    describe 'externals' do 
+    describe 'externals' do
+      before(:each) do
+        User::Storage.database.delete_all
+      end   
       
       it 'should stub an external object' do 
         @pack[:ivars]['@other_user'].should == {
@@ -112,14 +115,25 @@ describe Aqua::Pack do
         @user.commit!
         @other_user.id.should_not be_nil
         @other_user.id.should_not == @other_user.object_id
-      end  
+      end 
+      
+      it 'should commit external objects' do 
+        @user.should_receive(:_commit_externals)
+        @user.commit!
+      end   
       
       it 'should update the stubbed object id correctly' do
         @user.instance_eval "_commit_externals" 
-        @other_user.id.should_not be_nil
-        pack = @user._pack
+        @other_user.id.should_not be_empty
+        pack = @user._pack  
         pack[:ivars]['@other_user']['init']['id'].should == @other_user.id
-      end   
+      end 
+      
+      it 'should save the document with the correct external ids' do 
+        @user.commit! 
+        document = User._get_store( @user.id ) 
+        document[:ivars]['@other_user']['init']['id'].should_not be_empty
+      end  
       
       describe 'transactions' do
         it 'should rollback all externals if an one external fails to commit'

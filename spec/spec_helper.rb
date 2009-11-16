@@ -16,7 +16,7 @@ def build_user_ivars
   @date = Date.parse('12/23/1969')
   @message = "Hello World! This is a log entry"
   @log = Log.new( :message => @message, :created_at => @time ) # embedded object
-  @other_user = User.new( :username => 'strictnine' ) # stubbed objects
+  @other_user = User.new( :username => 'strictnine', :name => ['What', 'Ever'] ) # stubbed objects
   @user = User.new(
     :username => 'kane',
     :name => ['Kane', 'Baccigalupi'],
@@ -25,7 +25,7 @@ def build_user_ivars
     :log => @log,
     :password => 'my secret!',
     :other_user => @other_user 
-  ) 
+  )
   @pack = @user._pack  
 end  
 

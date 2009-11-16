@@ -222,7 +222,7 @@ module Aqua
     end  
     
     def self.get_class( class_str )
-      classes[class_str] ||= class_str.constantize
+      classes[class_str] ||= class_str.constantize  if class_str
     end 
     
     def unpack_object( doc, opts=Opts.new ) 
@@ -232,7 +232,7 @@ module Aqua
     
     def self.unpack_object( doc, opts=Opts.new )
       if doc.respond_to?(:from_aqua)
-        doc.from_aqua
+        doc.from_aqua # these are basic types, like nil, strings, true/false, or symbols
       else
         # create the class 
         klass = get_class( doc['class'] )
@@ -240,7 +240,14 @@ module Aqua
           klass.aqua_init( init, opts )
         else
           klass.new   
-        end 
+        end
+
+        # mixin the id and rev
+        if obj.aquatic? && !obj._embedded?
+          obj.id = doc.id if doc.id
+          obj._rev = doc.rev if doc.rev
+        end   
+        
         # add the ivars  
         if ivars = doc['ivars']
           ivars.each do |ivar_name, ivar_hash|

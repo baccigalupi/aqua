@@ -38,10 +38,18 @@ module Aqua
           ")
         end
       end
+      
+      def missing_delegate_error
+        raise ObjectNotFound, "Object of class '#{delegate_class}' and id '#{delegate_id}' not found"
+      end  
                
       def method_missing( method, *args, &block )
         load_delegate if delegate.nil?
-        delegate.send( method, *args, &block )
+        if delegate
+          delegate.send( method, *args, &block )
+        else
+          missing_delegate_error
+        end    
       end
       
       def load_delegate 
@@ -64,7 +72,11 @@ module Aqua
       super
     end
       
-    protected 
+    protected  
+      def missing_delegate_error 
+        raise ObjectNotFound, "Attachment '#{attachment_id}' for '#{base_object.inspect}' not found. Base object id = '#{base_object.id}'"
+      end  
+      
       def load_delegate
         self.delegate = base_object.class::Storage.attachment( base_object.id, attachment_id )
       end   
