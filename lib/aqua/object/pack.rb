@@ -15,7 +15,7 @@ module Aqua
           attr_accessor :id
         end
       
-        hide_attributes :_store, :__pack, :id, :_rev, :_packer 
+        hide_attributes :_store, :__pack, :id, :_rev, :_translator 
       end  
     end
   
@@ -91,24 +91,24 @@ module Aqua
         self.__pack = Storage.new
         self.__pack.id = @id if @id
         self.__pack[:_rev] = _rev if _rev 
-        self.__pack.merge!( _packer.pack_object( self ) ) 
+        self.__pack.merge!( _translator.pack_object( self ) ) 
         _pack_attachments
         __pack
       end
       
       def _pack_attachments 
-        _packer.attachments.each do |file|
+        _translator.attachments.each do |file|
           self.__pack.attachments.add( file.filename, file )
         end  
       end   
       
-      # Packer object responsible for packing the object and keeping track of externally
+      # Translator object responsible for packing the object and keeping track of externally
       # stored records and also attachments
-      # @return [Packer]
+      # @return [Translator]
       # 
       # @api private
-      def _packer
-        @_packer ||= Packer.new( self )
+      def _translator
+        @_translator ||= Translator.new( self )
       end  
     
       # Details from configuration options for the objects class about embedability. 
@@ -188,7 +188,7 @@ module Aqua
         #
         # @api private
         def _commit_externals 
-          _packer.externals.each do |obj, path|
+          _translator.externals.each do |obj, path|
             if obj.commit
               _update_external_id( path, obj.id )
             else
@@ -219,7 +219,7 @@ module Aqua
         def _clear_aqua_accessors
           self.__pack = nil
           self._store = nil
-          @_packer = nil
+          @_translator = nil
         end
               
       public  

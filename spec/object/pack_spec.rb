@@ -11,9 +11,9 @@ describe Aqua::Pack do
     @user._pack[:ivars][:@grab_bag]
   end  
 
-  describe 'packer' do
-    # the packer packs the object
-    # then the packer passes back the attachments and the externals back to the pack/storage document
+  describe 'translator' do
+    # the translator packs the object
+    # then the translator passes back the attachments and the externals back to the pack/storage document
   end   
   
   describe 'hiding attributes' do
@@ -94,7 +94,7 @@ describe Aqua::Pack do
       it 'should pack an embedded object internally' do 
         @pack[:ivars]['@log'].should == {
           'class' => 'Log',
-          'ivars' => {'@message' => @message, '@created_at' => Aqua::Packer.pack_object( @time ).pack }
+          'ivars' => {'@message' => @message, '@created_at' => Aqua::Translator.pack_object( @time ).pack }
         }
       end  
     end 

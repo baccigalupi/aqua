@@ -4,7 +4,7 @@ require_fixtures
 Aqua.set_storage_engine('CouchDB') # to initialize CouchDB
 CouchDB = Aqua::Store::CouchDB unless defined?( CouchDB )
 Unpacker = Aqua::Unpacker unless defined?( Unpacker ) 
-Packer = Aqua::Packer unless defined?( Packer ) 
+Translator = Aqua::Translator unless defined?( Translator ) 
 
 describe Unpacker do
   before(:each) do 
@@ -26,7 +26,7 @@ describe Unpacker do
   
   describe 'class methods should unpack' do 
     def round_trip( obj, debug=false ) 
-      @pack = Packer.pack_object(obj).pack
+      @pack = Translator.pack_object(obj).pack
       if debug
         puts obj.inspect 
         puts @pack.inspect
@@ -139,7 +139,7 @@ describe Unpacker do
 
   describe 'unpacking aquatic objects' do
     before(:each) do 
-      @pack = Packer.pack_object( @user ).pack
+      @pack = Translator.pack_object( @user ).pack
     end
     
     it 'embedable objects' do 
@@ -196,7 +196,7 @@ describe Unpacker do
       @attachment.file = @file 
       @attachment.tempfile = @tempfile
       
-      @pack = Packer.pack_object( @attachment ).pack 
+      @pack = Translator.pack_object( @attachment ).pack 
       @opts = Unpacker::Opts.new
       @opts.base_object = @attachment
     end  

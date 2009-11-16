@@ -6,6 +6,6 @@ class Set
   hide_attributes :hash 
   
   def to_aqua_init( path='' )
-    Aqua::Packer.pack_object( instance_variable_get("@hash").keys )
+    Aqua::Translator.pack_object( instance_variable_get("@hash").keys )
   end    
 end  

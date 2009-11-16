@@ -1,26 +1,42 @@
-# Packing of objects needs to save an object as well as query it. Therefore this packer module gives a lot
-# of class methods and mirrored instance methods that pack various types of objects. The instance methods
-# aggregate all of the attachments and externals that need to be mapped back to the base object after they 
-# are saved. The class methods return an array with the packaging in the first element and the attachment
-# and externals in subsequent elements
 module Aqua
+  # Packing of objects needs to save an object as well as query it. Therefore this packer module gives a lot
+  # of class methods and mirrored instance methods that pack various types of objects. The instance methods
+  # aggregate all of the attachments and externals that need to be mapped back to the base object after they 
+  # are saved. The class methods return an array with the packaging in the first element and the attachment
+  # and externals in subsequent elements
   class Translator 
-    attr_accessor :base
+    attr_accessor :base_object
     
     attr_writer :externals, :attachments 
     
+    # Hash-like object that gathers all the externally saved aquatic objects. Pattern for storage is
+    #   external_object => 'pack_path_to_object'
+    # where the string 'pack_path_to_object' gets instance evaled in order to update the id in the pack
+    # after a new external is saved
+    # @api private
     def externals
       @externals ||= {}
     end
     
+    # An array of attachments that have to be stored by the base object
+    # @api private
     def attachments
       @attachments ||= []
     end    
     
+    # Although most of what the translator does happens via class level methods, instantiation happens 
+    # to maintain a reference to the base object when packing/saving externals and attachments. It is 
+    # also needed in the unpack process to locate attachments.
+    #
+    # @param [Aquatic Object]
+    #
+    # @api private
     def initialize( base_object )
-      self.base = base_object
+      self.base_object = base_object
     end 
     
+    # This is a wrapper method that takes the a class method and aggregates externals and attachments
+    # @api private
     def pack
       rat = yield 
       self.externals.merge!( rat.externals )
@@ -55,6 +71,7 @@ module Aqua
       rat
     end
     
+    # The instance version is wrapped by the #pack method. It otherwise performs the class method 
     def pack_ivars( obj, path='' )
       pack { self.class.pack_ivars( obj ) }
     end
@@ -82,6 +99,7 @@ module Aqua
       end    
     end
     
+    # The instance version is wrapped by the #pack method. It otherwise performs the class method 
     def pack_object( obj, path='' )
       pack { self.class.pack_object( obj ) }
     end
@@ -100,6 +118,7 @@ module Aqua
       rat
     end 
     
+    # The instance version is wrapped by the #pack method. It otherwise performs the class method 
     def pack_vanilla( obj, path='' )
       pack { self.class.pack_vanilla( obj ) }
     end
@@ -127,6 +146,7 @@ module Aqua
       rat.hord( stub_rat, 'init' )
     end
     
+    # The instance version is wrapped by the #pack method. It otherwise performs the class method 
     def pack_to_stub( obj, path='' )
       pack { self.class.pack_to_stub( obj ) }
     end  
@@ -137,61 +157,64 @@ module Aqua
     # end
                  
   end 
-  
-  class Rat 
-    attr_accessor :pack, :externals, :attachments
-    def initialize( pack=Mash.new, externals=Mash.new, attachments=[] )
-      self.pack = pack
-      self.externals = externals
-      self.attachments = attachments
-    end
+
+      # Rat class is used by the translators packing side and aggregates methods for merging
+    # packed representation, externals and attachments
+    class Rat 
+      attr_accessor :pack, :externals, :attachments
+      def initialize( pack=Mash.new, externals=Mash.new, attachments=[] )
+        self.pack = pack
+        self.externals = externals
+        self.attachments = attachments
+      end
     
-    # merges the two rats
-    def eat( other_rat )
-      if self.pack.respond_to?(:keys) 
-        self.pack.merge!( other_rat.pack )
-      else
-        self.pack << other_rat.pack  # this is a special case for array init rats
+      # merges the two rats
+      def eat( other_rat )
+        if self.pack.respond_to?(:keys) 
+          self.pack.merge!( other_rat.pack )
+        else
+          self.pack << other_rat.pack  # this is a special case for array init rats
+        end    
+        self.externals.merge!( other_rat.externals )
+        self.attachments += other_rat.attachments 
+        self
+      end
+    
+      # outputs and resets the accessor
+      def barf( accessor )
+        case accessor
+        when :pack, 'pack'
+          meal = self.pack
+          self.pack = {}
+        when :externals, 'externals'  
+          meal = self.externals
+          self.externals = {}  
+        else
+          meal = self.attachments
+          self.attachments = []
+        end    
+        meal
+      end
+    
+      def hord( other_rat, index)
+        if [String, Symbol].include?( index.class ) 
+          self.pack[index] = other_rat.barf(:pack) 
+        else # for nested hording
+          eval_string = index.inject("self.pack") do |result, element|
+            element = "'#{element}'" if element.class == String
+            result += "[#{element}]" 
+          end 
+          value = other_rat.barf(:pack)
+          instance_eval "#{eval_string} = #{value.inspect}"
+        end      
+        self.eat( other_rat ) 
+        self
+      end
+    
+      def ==( other_rat ) 
+        self.pack == other_rat.pack && self.externals == other_rat.externals && self.attachments == other_rat.attachments
       end    
-      self.externals.merge!( other_rat.externals )
-      self.attachments += other_rat.attachments 
-      self
-    end
-    
-    # outputs and resets the accessor
-    def barf( accessor )
-      case accessor
-      when :pack, 'pack'
-        meal = self.pack
-        self.pack = {}
-      when :externals, 'externals'  
-        meal = self.externals
-        self.externals = {}  
-      else
-        meal = self.attachments
-        self.attachments = []
-      end    
-      meal
-    end
-    
-    def hord( other_rat, index)
-      if [String, Symbol].include?( index.class ) 
-        self.pack[index] = other_rat.barf(:pack) 
-      else # for nested hording
-        eval_string = index.inject("self.pack") do |result, element|
-          element = "'#{element}'" if element.class == String
-          result += "[#{element}]" 
-        end 
-        value = other_rat.barf(:pack)
-        instance_eval "#{eval_string} = #{value.inspect}"
-      end      
-      self.eat( other_rat ) 
-      self
-    end
-    
-    def ==( other_rat ) 
-      self.pack == other_rat.pack && self.externals == other_rat.externals && self.attachments == other_rat.attachments
-    end    
           
-  end   
-end     
+    end  
+
+end    

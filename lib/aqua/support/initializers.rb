@@ -37,7 +37,7 @@ module Aqua
       
       def _pack_instance_vars( path )
         rat = Rat.new
-        ivar_rat = Packer.pack_ivars( self )
+        ivar_rat = Translator.pack_ivars( self )
         ivar_rat.pack.empty? ? rat : rat.hord( ivar_rat, 'ivars' ) 
       end  
   
@@ -164,7 +164,7 @@ class Array
     rat = Aqua::Rat.new([])
     self.each_with_index do |obj, index|
       local_path = path + "[#{index}]" 
-      obj_rat = Aqua::Packer.pack_object( obj, local_path )
+      obj_rat = Aqua::Translator.pack_object( obj, local_path )
       rat.eat( obj_rat )  
     end
     rat   
@@ -190,10 +190,10 @@ class Hash
       else # key is an object 
         index = aqua_next_object_index( rat.pack )  
         key = self.class.aqua_object_key_index( index )
-        key_rat = Aqua::Packer.pack_object( raw_key, path+"['#{self.class.aqua_key_register}'][#{index}]")
+        key_rat = Aqua::Translator.pack_object( raw_key, path+"['#{self.class.aqua_key_register}'][#{index}]")
         rat.hord( key_rat, [self.class.aqua_key_register, index] )
       end
-      obj_rat = Aqua::Packer.pack_object( value, path+"['#{key}']" )
+      obj_rat = Aqua::Translator.pack_object( value, path+"['#{key}']" )
       rat.hord( obj_rat, key )
     end
     rat 
@@ -270,7 +270,7 @@ module Aqua
     
     def content_length 
       if len = stat.size
-        rat = Aqua::Packer.pack_object( len )
+        rat = Aqua::Translator.pack_object( len )
         rat.pack
       else
         ''
