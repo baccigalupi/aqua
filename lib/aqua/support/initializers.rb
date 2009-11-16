@@ -88,13 +88,13 @@ class FalseClass
 end   
 
 class NilClass
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new     )
     nil
   end
 end  
 
 class Symbol 
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new     )
     init.to_sym
   end
   
@@ -106,7 +106,7 @@ end
 class Date
   hide_attributes :sg, :of, :ajd
   
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new     )
     parse( init )
   end 
   
@@ -116,25 +116,25 @@ class Date
 end 
 
 class Time 
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new     )
     parse( init )
   end
 end
 
 class Fixnum
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new     )
     init.to_i
   end
 end
 
 class Bignum
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new     )
     init.to_i
   end
 end  
    
 class Float
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new     )
     init.to_f
   end
 end 
@@ -144,7 +144,7 @@ class Rational
     Aqua::Translator::Rat.new( self.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2) )
   end 
   
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new     )
     Rational( init[0].to_i, init[1].to_i )
   end
   
@@ -154,7 +154,7 @@ class Rational
 end
 
 class Range
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new ) 
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new ) 
     eval( init )
   end
 end     
@@ -170,9 +170,9 @@ class Array
     rat   
   end
   
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new ) 
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new ) 
     # todo: make opts opts.path follow the path through the base object
-    array_init = init.map{ |obj| Aqua::Unpacker.unpack_object(obj, opts) } 
+    array_init = init.map{ |obj| Aqua::Translator.unpack_object(obj, opts) } 
     # new is neccessary to make sure array derivatives maintain their class
     # without having to override aqua_init! 
     self == Array ? array_init : new( array_init ) 
@@ -216,16 +216,16 @@ class Hash
     hash[self.class.aqua_key_register].size
   end  
   
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new )
     unpacked = {}
     init.each do |key, value|
       unless key == aqua_key_register
         if key.match(/^#{aqua_key_register_prefix}(\d*)$/)
           index = $1.to_i
-          key = Aqua::Unpacker.unpack_object( init[aqua_key_register][index], opts )
+          key = Aqua::Translator.unpack_object( init[aqua_key_register][index], opts )
         end 
         opts.path += "[#{key}]" 
-        value = Aqua::Unpacker.unpack_object( value, opts )
+        value = Aqua::Translator.unpack_object( value, opts )
         unpacked[ key ] = value 
       end  
     end
@@ -240,7 +240,7 @@ class OpenStruct
     instance_variable_get("@table").to_aqua_init( path )
   end
   
-  def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new )
+  def self.aqua_init( init, opts=Aqua::Translator::Opts.new )
     init = Hash.aqua_init( init, opts )
     new( init )
   end
@@ -248,7 +248,7 @@ end
 
 module Aqua
   module FileInitializations 
-    def to_aqua( opts=Aqua::Unpacker::Opts.new )
+    def to_aqua( opts=Aqua::Translator::Opts.new )
       rat = Aqua::Translator::Rat.new(
         { 
           'class' => to_aqua_class,

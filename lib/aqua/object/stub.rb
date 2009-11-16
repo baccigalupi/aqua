@@ -23,7 +23,7 @@ module Aqua
       self.path_from_parent   = opts[:path] 
     end 
     
-    def self.aqua_init( init, opts=Unpacker::Opts.new )
+    def self.aqua_init( init, opts=Translator::Opts.new )
       new( init )
     end 
              

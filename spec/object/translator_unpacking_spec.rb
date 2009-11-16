@@ -3,24 +3,24 @@ require_fixtures
 
 Aqua.set_storage_engine('CouchDB') # to initialize CouchDB
 CouchDB = Aqua::Store::CouchDB unless defined?( CouchDB )
-Unpacker = Aqua::Unpacker unless defined?( Unpacker ) 
+Translator = Aqua::Translator unless defined?( Translator ) 
 Translator = Aqua::Translator unless defined?( Translator ) 
 
-describe Unpacker do
+describe Translator, 'unpacking' do
   before(:each) do 
     build_user_ivars
-    Unpacker.instance_eval "@classes = {}"
+    Translator.instance_eval "@classes = {}"
   end
     
   describe 'finding a documents class' do 
     it 'should return a class' do 
-      Unpacker.get_class( 'User' ).should == User
+      Translator.get_class( 'User' ).should == User
     end
       
     it 'should cache the mapping of class name to class' do 
-      Unpacker.classes.should == {}
-      Unpacker.get_class( 'User' )
-      Unpacker.classes.should == {'User' => User}
+      Translator.classes.should == {}
+      Translator.get_class( 'User' )
+      Translator.classes.should == {'User' => User}
     end  
   end
   
@@ -31,7 +31,7 @@ describe Unpacker do
         puts obj.inspect 
         puts @pack.inspect
       end  
-      @result = Unpacker.unpack_object(@pack)
+      @result = Translator.unpack_object(@pack)
     end
       
     it 'string' do
@@ -143,7 +143,7 @@ describe Unpacker do
     end
     
     it 'embedable objects' do 
-      log = Unpacker.unpack_object( @pack['ivars']['@log'] ) 
+      log = Translator.unpack_object( @pack['ivars']['@log'] ) 
       log.class.should == Log
       log.instance_variables.each do |ivar_name|
         log.instance_variable_get(ivar_name).to_s.should == 
@@ -155,7 +155,7 @@ describe Unpacker do
       before(:each) do  
         @sub_pack = @pack['ivars']['@other_user']
         @sub_pack['init']['id'] = 'other_user_id' 
-        @returned_user = Unpacker.unpack_object( @sub_pack ) 
+        @returned_user = Translator.unpack_object( @sub_pack ) 
       end
         
       it 'should reconstitute as an Aqua::Stub object' do 
@@ -197,13 +197,13 @@ describe Unpacker do
       @attachment.tempfile = @tempfile
       
       @pack = Translator.pack_object( @attachment ).pack 
-      @opts = Unpacker::Opts.new
+      @opts = Translator::Opts.new
       @opts.base_object = @attachment
     end  
     
     describe 'files' do
       before(:each) do
-        @stub = Unpacker.unpack_object( @pack['ivars']['@file'], @opts )
+        @stub = Translator.unpack_object( @pack['ivars']['@file'], @opts )
       end  
       
       it 'should be reconstituted as Aqua::FileStub objects' do 
@@ -227,7 +227,7 @@ describe Unpacker do
     
     describe "tempfiles" do
       before(:each) do
-        @stub = Unpacker.unpack_object( @pack['ivars']['@tempfile'], @opts )
+        @stub = Translator.unpack_object( @pack['ivars']['@tempfile'], @opts )
       end  
       
       it 'should be reconstituted as Aqua::FileStub objects' do 

@@ -1,9 +1,7 @@
 dir = File.dirname(__FILE__)
 require dir + '/pack'
 require dir + '/translator'
-#require dir + '/packer'
 require dir + '/query'
-require dir + '/unpacker'
 require dir + '/unpack'
 require dir + '/config'
 require dir + '/stub'
