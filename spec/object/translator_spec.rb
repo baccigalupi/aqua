@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + "/../../lib/aqua/support/set"
 Aqua.set_storage_engine('CouchDB') # to initialize CouchDB
 CouchDB = Aqua::Store::CouchDB unless defined?( CouchDB )
 Translator = Aqua::Translator unless defined?( Translator )
-Rat = Aqua::Rat unless defined?( Rat )
+Rat = Aqua::Translator::Rat unless defined?( Rat )
 
 describe Translator do
   describe 'packing' do

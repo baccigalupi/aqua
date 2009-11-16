@@ -7,6 +7,8 @@ module Aqua
   class Translator 
     attr_accessor :base_object
     
+    # PACKING ---------------------------------------------------------------------------------------
+    # ===============================================================================================
     attr_writer :externals, :attachments 
     
     # Hash-like object that gathers all the externally saved aquatic objects. Pattern for storage is
@@ -104,7 +106,6 @@ module Aqua
       pack { self.class.pack_object( obj ) }
     end
     
-    
     # Packs the an object requiring no initialization.  
     #
     # @param Object to pack
@@ -156,9 +157,7 @@ module Aqua
     #   # Also learn the library usage, without any docs :(
     # end
                  
-  end 
-
-      # Rat class is used by the translators packing side and aggregates methods for merging
+    # Rat class is used by the translators packing side and aggregates methods for merging
     # packed representation, externals and attachments
     class Rat 
       attr_accessor :pack, :externals, :attachments
@@ -214,7 +213,12 @@ module Aqua
       def ==( other_rat ) 
         self.pack == other_rat.pack && self.externals == other_rat.externals && self.attachments == other_rat.attachments
       end    
-          
-    end  
-
+    end
+    
+    # PACKING ---------------------------------------------------------------------------------------
+    # ===============================================================================================
+    
+      
+  end 
+  
 end    

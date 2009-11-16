@@ -20,7 +20,7 @@ module Aqua
     
     module InstanceMethods 
       def to_aqua( path = '' )
-        rat = Rat.new( { 'class' => to_aqua_class } ) 
+        rat = Aqua::Translator::Rat.new( { 'class' => to_aqua_class } ) 
         
         init_rat = to_aqua_init( path )
         rat.hord(init_rat, 'init')  
@@ -36,13 +36,13 @@ module Aqua
       end  
       
       def _pack_instance_vars( path )
-        rat = Rat.new
+        rat = Aqua::Translator::Rat.new
         ivar_rat = Translator.pack_ivars( self )
         ivar_rat.pack.empty? ? rat : rat.hord( ivar_rat, 'ivars' ) 
       end  
   
       def to_aqua_init( path )
-        Rat.new( self.to_s ) 
+        Aqua::Translator::Rat.new( self.to_s ) 
       end 
     end # InstanceMethods
     
@@ -63,7 +63,7 @@ class String
   end  
   
   def to_aqua( path='' )
-    Aqua::Rat.new( self )
+    Aqua::Translator::Rat.new( self )
   end 
 end 
 
@@ -73,7 +73,7 @@ class TrueClass
   end  
   
   def to_aqua( path='')
-    Aqua::Rat.new( true )
+    Aqua::Translator::Rat.new( true )
   end 
 end  
 
@@ -83,7 +83,7 @@ class FalseClass
   end  
   
   def to_aqua( path='' )
-    Aqua::Rat.new( false )
+    Aqua::Translator::Rat.new( false )
   end
 end   
 
@@ -141,7 +141,7 @@ end
 
 class Rational
   def to_aqua_init( path='') 
-    Aqua::Rat.new( self.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2) )
+    Aqua::Translator::Rat.new( self.to_s.match(/(\d*)\/(\d*)/).to_a.slice(1,2) )
   end 
   
   def self.aqua_init( init, opts=Aqua::Unpacker::Opts.new     )
@@ -161,7 +161,7 @@ end
 
 class Array
   def to_aqua_init( path = '' )
-    rat = Aqua::Rat.new([])
+    rat = Aqua::Translator::Rat.new([])
     self.each_with_index do |obj, index|
       local_path = path + "[#{index}]" 
       obj_rat = Aqua::Translator.pack_object( obj, local_path )
@@ -182,7 +182,7 @@ end
 
 class Hash
   def to_aqua_init( path='')
-    rat = Aqua::Rat.new
+    rat = Aqua::Translator::Rat.new
     self.each do |raw_key, value|
       key_class = raw_key.class
       if key_class == String
@@ -249,7 +249,7 @@ end
 module Aqua
   module FileInitializations 
     def to_aqua( opts=Aqua::Unpacker::Opts.new )
-      rat = Aqua::Rat.new(
+      rat = Aqua::Translator::Rat.new(
         { 
           'class' => to_aqua_class,
           'init' => {
