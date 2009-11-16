@@ -252,11 +252,13 @@ module Aqua
       rat = Aqua::Rat.new(
         { 
           'class' => to_aqua_class,
-          'init' => filename, 
-          'methods' => {
-            'content_type' => content_type,
-            'content_length' => content_length
-          } 
+          'init' => {
+            'id' => filename,
+            'methods' => {
+              'content_type' => content_type,
+              'content_length' => content_length 
+            }
+          }  
         }, {}, [self]
       )
         
@@ -287,12 +289,7 @@ module Aqua
     def filename
       path.match(/([^\/]*)\z/).to_s
     end
-    
-    def to_aqua_init
-      name = filename
-      base_object._pack_file(name, self)
-      "/FILE_#{name}"      
-    end  
+      
   end # FileInitializations
 end # Aqua
    

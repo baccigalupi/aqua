@@ -14,14 +14,18 @@ module Aqua
     # @todo pass in information about parent, and path to the stub such that method missing replaces stub
     #         with actual object being stubbed and delegated to.
     # @api semi-public
-    def initialize(opts, parent_opts={})
+    def initialize(opts)
       stub_methods( opts[:methods] || {} )
       
       self.delegate_class     = opts[:class]
       self.delegate_id        = opts[:id]
-      self.parent_object      = parent_opts[:parent]
-      self.path_from_parent   = parent_opts[:path] 
-    end
+      self.parent_object      = opts[:parent]
+      self.path_from_parent   = opts[:path] 
+    end 
+    
+    def self.aqua_init( init, opts=Unpacker::Opts.new )
+      new( init )
+    end 
              
     protected 
       
@@ -50,18 +54,19 @@ module Aqua
       
     def initialize( opts )
       super( opts )
-      self.base_object = opts[:parent]
+      self.base_object = opts[:base_object]
       self.attachment_id = opts[:id]
     end
     
     # This is what is actually called in the Aqua unpack process
-    def self.aqua_init( init, path='' )
-      new( init )
+    def self.aqua_init( init, opts )
+      init['base_object'] = opts.base_object
+      super
     end
       
     protected 
       def load_delegate
-        self.delegate = base_object.class::Storage.attachment( parent.id, attachment_id )
+        self.delegate = base_object.class::Storage.attachment( base_object.id, attachment_id )
       end   
   end            
   

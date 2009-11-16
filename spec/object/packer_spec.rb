@@ -15,11 +15,13 @@ describe Packer do
     @file = File.new(File.dirname(__FILE__) + '/../store/couchdb/fixtures_and_data/image_attach.png')
     @file_pack = { 
       'class' => 'Aqua::FileStub',
-      'init' => 'image_attach.png', 
-      "methods"=>{
-        "content_type" => 'image/png', 
-        "content_length" => {"class"=>"Fixnum", "init"=>"26551"}
-      }
+      'init' => {
+        'id' => 'image_attach.png', 
+        "methods"=>{
+          "content_type" => 'image/png', 
+          "content_length" => {"class"=>"Fixnum", "init"=>"26551"}
+        }
+      }  
     } 
     @tempfile = Tempfile.new('temp.txt')
     @tempfile.write('I am a tempfile!')
@@ -225,11 +227,13 @@ describe Packer do
       pack( @tempfile ).should == Rat.new( 
         { 
           'class' => 'Aqua::FileStub',
-          'init' => 'temp.txt', 
-          "methods"=>{
-            "content_type" => '',  # not sure what's up with the mime determination
-            "content_length" => {"class"=>"Fixnum", "init"=>"16"}
-          }
+          'init' => {
+            'id' => 'temp.txt', 
+            "methods"=>{
+              "content_type" => '',  # not sure what's up with the mime determination
+              "content_length" => {"class"=>"Fixnum", "init"=>"16"}
+            }
+          }   
         }, 
         {}, [@tempfile]
       )
