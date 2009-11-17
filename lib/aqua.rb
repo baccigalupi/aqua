@@ -1,8 +1,8 @@
 # DEPENDENCIES -------------------------------------
 # require gems
 require 'rubygems' 
-require 'ruby2ruby'
 require 'mime/types'
+
 # Pick your json poison. Just make sure that in adds the JSON constant
 unless defined?(JSON)
   begin
@@ -11,10 +11,9 @@ unless defined?(JSON)
     raise LoadError, "JSON constant not found. Please install a JSON library"
   end  
 end
-# There is also a dependency on the http_client of your choosing. Currently only ...
-# require 'rest_client'
-# It is required when a libarary is configured. If the library is not configured then it will 
-# automatically load the default: rest_client
+
+# This is temporary until someone comes along creating another http_client library adapter. 
+require 'rest_client'
 
 # standard libraries
 require 'cgi'

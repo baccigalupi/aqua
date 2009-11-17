@@ -114,12 +114,34 @@ describe Aqua::Unpack do
             @attachment.read.should == @file.read
           end  
         end
-          
       end   
     end     
   end
   
   describe 'reloading' do
+    before(:each) do
+      # dup the @user and change everything! but don't save
+      @changed_user = @user.dup
+      @changed_user.username = 'not kane'
+      @changed_user.name = []
+      @changed_user.dob = Date.parse('1/1/2001')
+      @changed_user.created_at = Time.parse('1/1/2001')
+      @changed_user.log = Log.new(:message => 'some other message')
+      @changed_user.other_user = @user
+    end 
+    
+    it 'should have the same object id'
+    
+    it 'should refresh its data back to database state' do 
+      pending( 'not yet implemented, duh!' )
+      @changed_user.reload
+      @changed_user.username.should == @user.username
+      @changed_user.name.should == @user.name
+      @changed_user.dob.should == @user.dob
+      @changed_user.created_at.to_s.should == @user.created_at.to_s
+      @changed_user.log.should == @user.log
+      @changed_user.other_user.should == @user.other_user
+    end   
   end
 
 end  

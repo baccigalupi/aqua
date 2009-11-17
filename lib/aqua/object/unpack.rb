@@ -71,28 +71,10 @@ module Aqua::Unpack
       #
       # @api private
       def _reload
-        _get_store
-        _unpack
+        doc = self.class._get_store( id )
+        _translator.replace_object( self )
         self
       end
-      
-      # Retrieves objects storage from its engine.
-      # @return [Storage]
-      # 
-      # @api private
-      def _get_store
-        self._store = self.class._get_store( id )
-      end
-      
-      # Unpacks an object from hash representation of data and metadata
-      # @return [Storage]
-      # @todo Refactor to move more of this into individual classes
-      #
-      # @api private
-      def _unpack
-        _translator.unpack_object( self )    
-      end 
-            
     public  
   end
 
