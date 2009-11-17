@@ -4,7 +4,7 @@ module Aqua::Unpack
     klass.class_eval do
       extend ClassMethods
       include InstanceMethods
-    end  
+    end
   end 
   
   module ClassMethods
@@ -15,7 +15,7 @@ module Aqua::Unpack
     # @api public 
     def load( id ) 
       doc = _get_store( id )
-      translator = Aqua::Translator.new( new )
+      translator = Aqua::Translator.new( new, id )
       translator.unpack_object( doc ) 
     end
     
@@ -28,7 +28,6 @@ module Aqua::Unpack
       raise ArgumentError, "#{self} with id of #{doc_id} was not found" unless doc
       doc 
     end  
-      
   end
   
   module InstanceMethods

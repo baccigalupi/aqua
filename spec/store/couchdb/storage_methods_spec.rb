@@ -16,7 +16,9 @@ describe 'CouchDB::StorageMethods' do
       :rev => "shouldn't change yo!",
       :more => "my big stuff"
     }
-    @doc = Document.new( @params ) 
+    @doc = Document.new( @params )
+    # the line below is neccessary in the full suite, but not when the file is run on it's own ??
+    CouchDB.put( 'http://127.0.0.1:5984/aqua' ) unless @doc.class.database.exists?
     @doc.class.database.delete_all
   end  
   

@@ -58,27 +58,29 @@ module Aqua
   end
 
   class FileStub < Stub 
-    attr_accessor :base_object, :attachment_id 
+    attr_accessor :base_class, :base_id, :attachment_id 
       
     def initialize( opts )
-      super( opts )
-      self.base_object = opts[:base_object]
+      super( opts ) 
+      self.base_class = opts[:base_object].class
+      self.base_id =    opts[:base_id]
       self.attachment_id = opts[:id]
     end
     
     # This is what is actually called in the Aqua unpack process
     def self.aqua_init( init, opts )
       init['base_object'] = opts.base_object
+      init['base_id'] = opts.base_id # this is needed when an object is loaded, not reloaded
       super
     end
       
     protected  
       def missing_delegate_error 
-        raise ObjectNotFound, "Attachment '#{attachment_id}' for '#{base_object.inspect}' not found. Base object id = '#{base_object.id}'"
+        raise ObjectNotFound, "Attachment '#{attachment_id}' for '#{base_class}' with #{base_id} not found."
       end  
       
       def load_delegate
-        self.delegate = base_object.class::Storage.attachment( base_object.id, attachment_id )
+        self.delegate = base_class::Storage.attachment( base_id, attachment_id )
       end   
   end            
   

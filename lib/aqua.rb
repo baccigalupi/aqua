@@ -31,8 +31,7 @@ require 'aqua/support/string_extensions'
 require 'aqua/store/storage' 
   # object methods
 require 'aqua/object/tank'
-  # a little more monkey patching for object packaging
-require 'aqua/support/initializers'
+require 'aqua/object/initializers'
 
 
 # LIBRARY SETUP -----------------------------------

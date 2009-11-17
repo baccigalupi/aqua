@@ -146,7 +146,7 @@ module Aqua
           CouchDB.delete( uri )
         end  
     
-        # # Query the <tt>documents</tt> view. Accepts all the same arguments as view.
+        # Query the <tt>documents</tt> view. Accepts all the same arguments as view.
         def documents(params = {})
           keys = params.delete(:keys)
           url = CouchDB.paramify_url( "#{uri}/_all_docs", params )

@@ -29,6 +29,10 @@ describe Aqua::Unpack do
       before(:each) do 
         @new_user = User.load( @user.id )
       end
+      
+      it 'should add the base_id to the translator' do 
+        @new_user._translator.base_id.should == @user.id
+      end  
         
       it 'should initiate the right kind of object' do 
         @new_user.class.should == User 
@@ -102,11 +106,13 @@ describe Aqua::Unpack do
           end
             
           it 'should retrieve the attachment as a delegate when non-stubbed methods are called' do
-            User.should_receive(:attachment).with( @new_user.id, 'image_attach.png' ).and_return( @file )
+            User::Storage.should_receive(:attachment).with( @new_user.id, 'image_attach.png' ).and_return( @file )
             @attachment.read
           end
             
-          it 'should delegate to the loaded attachment'
+          it 'should delegate to the loaded attachment' do
+            @attachment.read.should == @file.read
+          end  
         end
           
       end   

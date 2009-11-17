@@ -199,6 +199,7 @@ describe Translator, 'unpacking' do
       @pack = Translator.pack_object( @attachment ).pack 
       @opts = Translator::Opts.new
       @opts.base_object = @attachment
+      @opts.base_id = @attachment.id
     end  
     
     describe 'files' do
@@ -214,8 +215,9 @@ describe Translator, 'unpacking' do
         @stub.methods.should include( 'content_type', 'content_length' )
       end
       
-      it 'should have a base_object' do 
-        @stub.base_object.should == @attachment
+      it 'should have a information about the base object' do 
+        @stub.base_id.should == @attachment.id
+        @stub.base_class.should == Attachment
       end  
       
       it 'should get retrieved when other file methods are called' do
@@ -238,8 +240,9 @@ describe Translator, 'unpacking' do
         @stub.methods.should include( 'content_type', 'content_length' )
       end
       
-      it 'should have a base_object' do 
-        @stub.base_object.should == @attachment
+      it 'should have a information about the base object' do 
+        @stub.base_id.should == @attachment.id
+        @stub.base_class.should == Attachment
       end  
       
       it 'should get retrieved when other file methods are called' do

@@ -5,7 +5,7 @@ module Aqua
   # are saved. The class methods return an array with the packaging in the first element and the attachment
   # and externals in subsequent elements
   class Translator 
-    attr_accessor :base_object
+    attr_accessor :base_object, :base_id
     
     # PACKING ---------------------------------------------------------------------------------------
     # ===============================================================================================
@@ -33,8 +33,9 @@ module Aqua
     # @param [Aquatic Object]
     #
     # @api private
-    def initialize( base_object )
+    def initialize( base_object, base_id=nil )
       self.base_object = base_object
+      self.base_id = base_object.id || base_id
     end 
     
     # This is a wrapper method that takes the a class method and aggregates externals and attachments
@@ -226,7 +227,8 @@ module Aqua
     end 
     
     def unpack_object( doc, opts=Opts.new ) 
-      opts.base_object = self.base_object
+      opts.base_object  = self.base_object
+      opts.base_id      = self.base_object.id || self.base_id
       self.class.unpack_object( doc, opts )
     end  
     
@@ -261,8 +263,9 @@ module Aqua
     end
     
     class Opts 
-      attr_accessor :base_object
-      attr_writer :path
+      attr_accessor :base_object 
+      attr_accessor :base_id
+      attr_writer   :path
       
       def path
         @path ||= ''
