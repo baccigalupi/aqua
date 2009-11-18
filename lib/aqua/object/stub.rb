@@ -70,13 +70,13 @@ module Aqua
     # This is what is actually called in the Aqua unpack process
     def self.aqua_init( init, opts )
       init['base_object'] = opts.base_object
-      init['base_id'] = opts.base_id # this is needed when an object is loaded, not reloaded
+      init['base_id'] = opts.base_id || opts.base_object.id # this is needed when an object is loaded, not reloaded
       super
     end
       
     protected  
       def missing_delegate_error 
-        raise ObjectNotFound, "Attachment '#{attachment_id}' for '#{base_class}' with #{base_id} not found."
+        raise ObjectNotFound, "Attachment '#{attachment_id}' for '#{base_class}' with id='#{base_id}' not found."
       end  
       
       def load_delegate
