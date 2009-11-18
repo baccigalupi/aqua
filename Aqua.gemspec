@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{aqua}
-  s.version = "0.1.6"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kane Baccigalupi"]
-  s.date = %q{2009-10-08}
-  s.description = %q{Even with ORMs like ActiveRecord, DataMapper which ease the pain of relational data storage, considerable developer effort goes into wrangling Ruby objects into their databases. Document-oriented databases have made it possible to store nested data structures that easily map to Ruby objects. Aqua (http://github.com/baccigalupi/aqua) is a new Ruby library that aims to painlessly persists objects, allowing developers to focus more on object oriented code and less on storage. Currently Aqua is in pre-alpha testing, with the following big things left to implement: A data query DSL and implementation; Support of all objects in the Standard Library; Class and code storage to allow the sharing and persistence of classes with their data.}
+  s.date = %q{2009-11-18}
+  s.description = %q{A Ruby Object Database ... just add water (and CouchDB). Even with ORMs like ActiveRecord, DataMapper which ease the pain of relational data storage, considerable developer effort goes into wrangling Ruby objects into their databases. Document-oriented databases have made it possible to store nested data structures that easily map to Ruby objects. Aqua (http://github.com/baccigalupi/aqua) is a new Ruby library that aims to painlessly persists objects, allowing developers to focus more on object oriented code and less on storage. Currently Aqua is in pre-alpha testing, with the following big things left to implement: A data query DSL and implementation; Support of all objects in the Standard Library; Class and code storage to allow the sharing and persistence of classes with their data. }
   s.email = %q{baccigalupi@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -31,10 +31,12 @@ Gem::Specification.new do |s|
      "lib/aqua/object/extensions/ar_style.rb",
      "lib/aqua/object/extensions/property.rb",
      "lib/aqua/object/extensions/validation.rb",
+     "lib/aqua/object/initializers.rb",
      "lib/aqua/object/pack.rb",
      "lib/aqua/object/query.rb",
      "lib/aqua/object/stub.rb",
      "lib/aqua/object/tank.rb",
+     "lib/aqua/object/translator.rb",
      "lib/aqua/object/unpack.rb",
      "lib/aqua/store/couch_db/attachments.rb",
      "lib/aqua/store/couch_db/couch_db.rb",
@@ -42,10 +44,10 @@ Gem::Specification.new do |s|
      "lib/aqua/store/couch_db/design_document.rb",
      "lib/aqua/store/couch_db/http_client/adapter/rest_client.rb",
      "lib/aqua/store/couch_db/http_client/rest_api.rb",
+     "lib/aqua/store/couch_db/result_set.rb",
      "lib/aqua/store/couch_db/server.rb",
      "lib/aqua/store/couch_db/storage_methods.rb",
      "lib/aqua/store/storage.rb",
-     "lib/aqua/support/initializers.rb",
      "lib/aqua/support/mash.rb",
      "lib/aqua/support/set.rb",
      "lib/aqua/support/string_extensions.rb",
@@ -54,15 +56,15 @@ Gem::Specification.new do |s|
      "spec/object/object_fixtures/array_udder.rb",
      "spec/object/object_fixtures/canned_hash.rb",
      "spec/object/object_fixtures/gerbilmiester.rb",
-     "spec/object/object_fixtures/grounded.rb",
      "spec/object/object_fixtures/log.rb",
      "spec/object/object_fixtures/persistent.rb",
-     "spec/object/object_fixtures/sugar.rb",
      "spec/object/object_fixtures/user.rb",
      "spec/object/pack_spec.rb",
      "spec/object/query_spec.rb",
      "spec/object/stub_spec.rb",
      "spec/object/tank_spec.rb",
+     "spec/object/translator_packing_spec.rb",
+     "spec/object/translator_unpacking_spec.rb",
      "spec/object/unpack_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
@@ -72,16 +74,16 @@ Gem::Specification.new do |s|
      "spec/store/couchdb/design_document_spec.rb",
      "spec/store/couchdb/fixtures_and_data/document_fixture.rb",
      "spec/store/couchdb/fixtures_and_data/image_attach.png",
+     "spec/store/couchdb/result_set_spec.rb",
      "spec/store/couchdb/server_spec.rb",
      "spec/store/couchdb/storage_methods_spec.rb",
      "utils/code_statistics.rb",
      "utils/console"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://github.com/baccigalupi/aqua}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.1}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{Aqua: A Ruby Object Database ... just add water (and CouchDB)}
   s.test_files = [
     "spec/aqua_spec.rb",
@@ -89,15 +91,15 @@ Gem::Specification.new do |s|
      "spec/object/object_fixtures/array_udder.rb",
      "spec/object/object_fixtures/canned_hash.rb",
      "spec/object/object_fixtures/gerbilmiester.rb",
-     "spec/object/object_fixtures/grounded.rb",
      "spec/object/object_fixtures/log.rb",
      "spec/object/object_fixtures/persistent.rb",
-     "spec/object/object_fixtures/sugar.rb",
      "spec/object/object_fixtures/user.rb",
      "spec/object/pack_spec.rb",
      "spec/object/query_spec.rb",
      "spec/object/stub_spec.rb",
      "spec/object/tank_spec.rb",
+     "spec/object/translator_packing_spec.rb",
+     "spec/object/translator_unpacking_spec.rb",
      "spec/object/unpack_spec.rb",
      "spec/spec_helper.rb",
      "spec/store/couchdb/attachments_spec.rb",
@@ -105,13 +107,14 @@ Gem::Specification.new do |s|
      "spec/store/couchdb/database_spec.rb",
      "spec/store/couchdb/design_document_spec.rb",
      "spec/store/couchdb/fixtures_and_data/document_fixture.rb",
+     "spec/store/couchdb/result_set_spec.rb",
      "spec/store/couchdb/server_spec.rb",
      "spec/store/couchdb/storage_methods_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 2
+    s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
     else
