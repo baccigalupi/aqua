@@ -40,10 +40,18 @@ describe Aqua::Query do
   
   it 'should query on a time' do
     User.index_on(:created_at)
-    users = User.query( :created_at, :equals => Time.now )
+    users = User.query( :created_at, :equals => @time )
     users.size.should == 1
-    users.first.should == @user
-  end  
+    users.first.username.should == 'kane'
+  end
+  
+  it 'should find all records with an attribute' do
+    User.index_on(:created_at)
+    users = User.query( :created_at )
+    users.size.should == 2
+    users.first.username.should == 'kane'
+    users.last.username.should == 'B'
+  end    
    
 end  
    

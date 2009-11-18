@@ -15,8 +15,7 @@ module Aqua::Unpack
     # @api public 
     def load( id ) 
       doc = _get_store( id )
-      translator = Aqua::Translator.new( new, id )
-      translator.unpack_object( doc ) 
+      build( doc )
     end
     
     # Retrieves objects storage from its engine.
@@ -27,7 +26,15 @@ module Aqua::Unpack
       doc = self::Storage.get( id )
       raise ArgumentError, "#{self} with id of #{doc_id} was not found" unless doc
       doc 
-    end  
+    end
+     
+    # Creates a new object from the doc; It is used by queries which return a set of docs.
+    # Also used by load to do the same thing ...
+    # @param [Document, Hash, Mash] converted object
+    def build( doc )
+      translator = Aqua::Translator.new( new, id )
+      translator.unpack_object( doc ) 
+    end    
   end
   
   module InstanceMethods

@@ -23,9 +23,21 @@ module Aqua::Query
     def query( index, opts={} )
       opts = Mash.new( opts )
       equals = opts.delete(:equals)
-      opts[:equals] = CGI.escape( equals.to_aqua( equals ).to_json ) if equals
-      results = storage.query( index, opts )
-    end    
+      opts[:equals] = _encode_query( equals ) if equals
+      _build_results( storage.query( index, opts ) )
+    end
+    
+    def _encode_query( object ) 
+      CGI.escape( Aqua::Translator.pack_object( object ).pack.to_json )
+    end
+    
+    def _build_results( docs )
+      if docs.is_a? Array
+        docs.map{ |doc| build( doc ) }
+      else
+        build( doc )
+      end    
+    end        
   end
   
   module InstanceMethods
