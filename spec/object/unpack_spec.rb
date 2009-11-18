@@ -118,31 +118,86 @@ describe Aqua::Unpack do
     end     
   end
   
-  describe 'reloading' do
-    before(:each) do
-      # dup the @user and change everything! but don't save
-      @changed_user = @user.dup
-      @changed_user.username = 'not kane'
-      @changed_user.name = []
-      @changed_user.dob = Date.parse('1/1/2001')
-      @changed_user.created_at = Time.parse('1/1/2001')
-      @changed_user.log = Log.new(:message => 'some other message')
-      @changed_user.other_user = @user
-    end 
+  describe 'reloading' do 
+    describe 'with no-initialization' do
+      before(:each) do
+        # dup the @user and change everything! but don't save
+        @changed_user = @user.dup
+        @changed_user.username = 'not kane'
+        @changed_user.name = []
+        @changed_user.dob = Date.parse('1/1/2001')
+        @changed_user.created_at = Time.parse('1/1/2001')
+        @changed_user.log = Log.new(:message => 'some other message')
+        @changed_user.other_user = @user
+      end 
+      
+      it 'should not raise an error' do  
+        lambda{ @changed_user.reload }.should_not raise_error
+      end  
+      
+      it 'should reset to saved instance variables' do 
+        @changed_user.reload
+        @changed_user.username.should == @user.username
+        @changed_user.name.should == @user.name
+        @changed_user.dob.should == @user.dob
+        @changed_user.created_at.to_s.should == @user.created_at.to_s
+        @changed_user.log.created_at.to_s.should == @user.log.created_at.to_s
+        @changed_user.log.message.should == @user.log.message
+        # since this is a stub, not the same object, lets test how it works 
+        @changed_user.other_user.name.should == @user.other_user.name
+      end   
+    end
     
-    it 'should have the same object id'
+    describe 'with initialization and #replace methods' do
+      class ArrayD < Array
+        aquatic
+        attr_accessor :bucket
+      end
+        
+      before(:each) do
+        @arrayd = ArrayD.new([1,2])
+        @arrayd.bucket = 34
+        @arrayd.commit!
+        
+        # change the instance, but don't commit
+        @arrayd[0] = 'one'
+        @arrayd[1] = 'two'
+        @arrayd << 'and more'
+        @arrayd.bucket = @arrayd.join(' ... ') 
+      end
+        
+      it 'should not raise an error' do
+        lambda{ @arrayd.reload }.should_not raise_error
+      end 
+      
+      it 'should reset to saved initialization' do
+        @arrayd.reload
+        @arrayd[0].should == 1
+        @arrayd[1].should == 2
+        @arrayd[2].should == nil
+      end  
+      
+      it 'should reset to saved instance variables' do
+        @reloaded = @arrayd.reload 
+        @reloaded.should == @arrayd
+        @arrayd.bucket.should == 34
+      end  
+    end
     
-    it 'should refresh its data back to database state' do 
-      pending( 'not yet implemented, duh!' )
-      @changed_user.reload
-      @changed_user.username.should == @user.username
-      @changed_user.name.should == @user.name
-      @changed_user.dob.should == @user.dob
-      @changed_user.created_at.to_s.should == @user.created_at.to_s
-      @changed_user.log.should == @user.log
-      @changed_user.other_user.should == @user.other_user
-    end   
-  end
-
+    describe 'with initialization and no #replace methods' do 
+      it 'should raise an exception' do 
+        class Event < Range
+          aquatic
+          attr_accessor :name 
+        end
+        event = Event.new( Time.parse('11/19/2009'), Time.parse('11/21/2009') )
+        event.name = 'RubyConf 09', 
+        event.commit!
+        
+        lambda {event.reload}.should raise_error( NotImplementedError )  
+      end  
+    end     
+  end         
+  
 end  
    

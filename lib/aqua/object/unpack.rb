@@ -31,51 +31,15 @@ module Aqua::Unpack
   end
   
   module InstanceMethods
-    # Reloads database information into the object.
-    # @param [optional true, false] Default is true. If true the exceptions will be swallowed and 
-    #   false will be returned. If false, then any exceptions raised will stop the show.
-    # @return [Object, false] Will return false or raise error on failure and self on success.
-    #
-    # @api public
-    def reload( mask_exceptions = true ) 
-      if id.nil?
-        if mask_exceptions
-          false
-        else
-          raise ObjectNotFound, "#{self.class} instance must have an id to be reloaded"
-        end    
-      else
-        begin
-          _reload
-        rescue Exception => e 
-          if mask_exceptions
-            false
-          else 
-            raise e
-          end    
-        end      
-      end  
-    end 
-    
     # Reloads database information into the object, and raises an error on failure.
     # @return [Object] Will return raise error on failure and return self on success.
     #
     # @api public
-    def reload!
-      reload( false )
-    end  
-    
-    private 
-      # Actual mechanism for reloading an object from stored data.
-      # @return [Object] Will return raise error on failure and return self on success.
-      #
-      # @api private
-      def _reload
-        doc = self.class._get_store( id )
-        _translator.replace_object( self )
-        self
-      end
-    public  
+    def reload 
+      doc = self.class._get_store( id )
+      _translator.reload_object( self, doc )
+      self
+    end 
   end
 
 end       

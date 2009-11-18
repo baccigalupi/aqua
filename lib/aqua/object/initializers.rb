@@ -154,6 +154,7 @@ class Rational
 end
 
 class Range
+  # todo: make this work for non int objects, time, date, etc ...
   def self.aqua_init( init, opts=Aqua::Translator::Opts.new ) 
     eval( init )
   end

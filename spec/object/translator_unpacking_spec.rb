@@ -251,4 +251,12 @@ describe Translator, 'unpacking' do
       end 
     end
   end     
+
+  describe 'reloading' do 
+    it 'should be tested separately' do
+      pending( 'regression tests are in unpack_spec')
+    end   
+  end         
+  
+
 end  

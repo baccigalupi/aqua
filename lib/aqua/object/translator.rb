@@ -34,9 +34,14 @@ module Aqua
     #
     # @api private
     def initialize( base_object, base_id=nil )
+      load_base( base_object, base_id )
+    end 
+    
+    # Method used by initialized and reload_object to set necessary base object data
+    def load_base( base_object, base_id=nil)
       self.base_object = base_object
       self.base_id = base_object.id || base_id
-    end 
+    end  
     
     # This is a wrapper method that takes the a class method and aggregates externals and attachments
     # @api private
@@ -235,31 +240,63 @@ module Aqua
     def self.unpack_object( doc, opts=Opts.new )
       if doc.respond_to?(:from_aqua)
         doc.from_aqua # these are basic types, like nil, strings, true/false, or symbols
-      else
-        # create the class 
-        klass = get_class( doc['class'] )
-        obj = if (init = doc['init']) &&  klass.respond_to?( :aqua_init )
-          klass.aqua_init( init, opts )
-        else
-          klass.new   
-        end
-
+      else 
+        obj = new_from_doc( doc, opts )
+        
         # mixin the id and rev
         if obj.aquatic? && !obj._embedded?
           obj.id = doc.id if doc.id
           obj._rev = doc.rev if doc.rev
         end   
         
-        # add the ivars  
-        if ivars = doc['ivars']
-          ivars.each do |ivar_name, ivar_hash|
-            opts.path += "#{ivar_name}"
-            unpacked_ivar = unpack_object( ivar_hash, opts ) 
-            obj.instance_variable_set( ivar_name, unpacked_ivar )
-          end  
-        end
+        unpack_ivars( obj, doc, opts )
         obj  
       end    
+    end
+    
+    def self.new_from_doc( doc, opts  )
+      klass = get_class( doc['class'] )
+      obj = if (init = doc['init']) &&  klass.respond_to?( :aqua_init )
+        klass.aqua_init( init, opts )
+      else
+        klass.new   
+      end 
+    end
+    
+    def reload_from_init( doc )
+      if init = doc['init']
+        raise NotImplementedError, "Class #{base_object.class} does not implement a #replace method and can't be reloaded" unless base_object.respond_to?( :replace )
+        init_unpacked = unpack_object( {'class' => init.class.to_s, 'init' => init } ) 
+        base_object.replace( init_unpacked )
+      end
+      base_object 
+    end
+    
+    def unpack_ivars( doc )
+      opts = Opts.new
+      opts.base_object  = self.base_object
+      opts.base_id      = self.base_object.id || self.base_id
+      self.class.unpack_ivars( base_object, doc, opts )
+    end    
+     
+    
+    def self.unpack_ivars( obj, doc, opts ) 
+      # add the ivars  
+      if ivars = doc['ivars']
+        ivars.each do |ivar_name, ivar_hash|
+          opts.path += "#{ivar_name}"
+          unpacked_ivar = unpack_object( ivar_hash, opts ) 
+          obj.instance_variable_set( ivar_name, unpacked_ivar )
+        end  
+      end   
+    end
+    
+    def reload_object( obj, doc )
+      load_base( obj ) # loads this object as the base for the translator
+      reload_from_init( doc ) 
+      # todo: clear all non-hidden ivars too 
+      unpack_ivars( doc )
+      base_object._rev = doc.rev if doc.rev
     end
     
     class Opts 

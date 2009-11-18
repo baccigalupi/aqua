@@ -6,7 +6,5 @@ class Persistent
     _aqua_opts
   end
   
-  
-  
 end  
   

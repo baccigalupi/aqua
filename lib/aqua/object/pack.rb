@@ -11,7 +11,7 @@ module Aqua
         extend ClassMethods
         include InstanceMethods
       
-        unless instance_methods.include?( 'id=' ) || new.instance_variables.include?( '@id' )
+        unless instance_methods.include?( 'id=' ) # || new.instance_variables.include?( '@id' )
           attr_accessor :id
         end
       
