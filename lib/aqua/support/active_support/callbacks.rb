@@ -1,9 +1,9 @@
 # This is stolen from the experimental branch of Rails 3. When the callbacks in the released
 # version are like this then the library will require active_support/callbacks, and be done!
-require File.dirname(__FILE__) + '/array'
-require File.dirname(__FILE__) + '/class'
-require File.dirname(__FILE__) + '/kernel'
-require File.dirname(__FILE__) + '/concern'
+require File.expand_path( File.dirname(__FILE__) + '/array' )
+require File.expand_path( File.dirname(__FILE__) + '/class' )
+require File.expand_path( File.dirname(__FILE__) + '/kernel')
+require File.expand_path( File.dirname(__FILE__) + '/concern')
 
 module ActiveSupport
   # Callbacks are hooks into the lifecycle of an object that allow you to trigger logic
