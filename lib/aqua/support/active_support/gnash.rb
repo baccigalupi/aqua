@@ -139,5 +139,5 @@ unless defined?(HashWithIndifferentAccess)
   end
 end
 
-Mash = HashWithIndifferentAccess unless defined?( Mash ) # because Mash is easier to write, thanks Merb!
+Gnash = HashWithIndifferentAccess unless defined?( Gnash ) # because Gnash and Mash is taken
         

@@ -9,7 +9,7 @@ Server =    CouchDB::Server unless defined?( Server )
 Design =    CouchDB::DesignDocument unless defined?( Design )
 ResultSet =    CouchDB::ResultSet unless defined?( ResultSet ) 
 
-require File.dirname(__FILE__) + '/fixtures_and_data/document_fixture' # Document ... a Mash with the collection of methods
+require File.dirname(__FILE__) + '/fixtures_and_data/document_fixture' # Document ... a Gnash with the collection of methods
 
 describe CouchDB::DesignDocument do 
   before(:each) do
@@ -46,7 +46,7 @@ describe CouchDB::DesignDocument do
     end
       
     it 'should be a Hash-like object' do 
-      @design.views.should == Mash.new
+      @design.views.should == Gnash.new
     end
     
     describe '<<, add, add!' do

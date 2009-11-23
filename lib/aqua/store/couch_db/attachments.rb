@@ -5,7 +5,7 @@ module Aqua
       # objects. Initializing and adding to the collection assures the types of both keys and values. The 
       # collection implements a lazy-loading scheme, such that when an attachment is requested and not found,
       # it will try to load it from CouchDB.
-      class Attachments < Mash
+      class Attachments < Gnash
         attr_reader :document
         attr_reader :stubs
         

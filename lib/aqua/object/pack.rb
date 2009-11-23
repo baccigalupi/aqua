@@ -1,6 +1,6 @@
 # This module is responsible for packing objects into Storage Objects
-# The Storage Object is expected to be a Mash-Like thing (Hash with indifferent access).
-# It is the job of the storage engine to convert the Mash into the actual storage ivars.
+# The Storage Object is expected to be a Gnash-Like thing (Hash with indifferent access).
+# It is the job of the storage engine to convert the Gnash into the actual storage ivars.
 module Aqua
   module Pack
   

@@ -56,7 +56,7 @@ module Aqua
     #
     # @param Object to pack 
     # @param [String] path to this particular object within the parent object
-    # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+    # @return [Gnash] Indifferent hash that is the data/metadata deconstruction of an object.
     #
     # @api private
     def self.pack_ivars( obj, path='' )
@@ -89,7 +89,7 @@ module Aqua
     #
     # @param Object to pack 
     # @param [String] path, so that unsaved externals can find and set their id after creation
-    # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+    # @return [Gnash] Indifferent hash that is the data/metadata deconstruction of an object.
     #
     # @api private  
     def self.pack_object( obj, path='' )
@@ -115,7 +115,7 @@ module Aqua
     # Packs the an object requiring no initialization.  
     #
     # @param Object to pack
-    # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+    # @return [Gnash] Indifferent hash that is the data/metadata deconstruction of an object.
     #
     # @api private  
     def self.pack_vanilla( obj, path='' )
@@ -135,7 +135,7 @@ module Aqua
     #
     # @param Object to pack
     # @param [String] path to this part of the object
-    # @return [Mash] Indifferent hash that is the data/metadata deconstruction of an object.
+    # @return [Gnash] Indifferent hash that is the data/metadata deconstruction of an object.
     #
     # @api private    
     def self.pack_to_stub( obj, path='' )
@@ -167,7 +167,7 @@ module Aqua
     # packed representation, externals and attachments
     class Rat 
       attr_accessor :pack, :externals, :attachments
-      def initialize( pack=Mash.new, externals=Mash.new, attachments=[] )
+      def initialize( pack=Gnash.new, externals=Gnash.new, attachments=[] )
         self.pack = pack
         self.externals = externals
         self.attachments = attachments

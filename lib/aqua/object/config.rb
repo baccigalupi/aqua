@@ -19,10 +19,10 @@ module Aqua::Config
   end
   
   module ClassMethods 
-    def configure_aqua(opts={})
+    def configure_aqua(opts={}) 
       database = opts.delete(:database)
       self::Storage.database = database
-      @_aqua_opts = Mash.new( _aqua_opts ).merge!(opts)
+      @_aqua_opts = Gnash.new( _aqua_opts ).merge!(opts)
     end
     
     def _aqua_opts

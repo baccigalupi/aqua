@@ -218,7 +218,28 @@ describe Aqua::Pack do
       @user.grab_bag = {'1' => '2'}
       lambda{ @user.commit! }.should_not raise_error
     end        
-  end  
+  end
+  
+  describe 'databases' do 
+    it 'should have a default "aqua"' do
+      User::Storage.database.uri.should == 'http://127.0.0.1:5984/aqua'
+    end  
+    
+    it 'should be configurable' do
+      User.configure_aqua :database => 'users' 
+      User::Storage.database.uri.should == "http://127.0.0.1:5984/aqua_users"
+    end
+      
+    it 'should save a document to the configured database' do
+      pending( 'when this become inportant again' )  
+      build_user_ivars
+      User.configure_aqua :database => 'users' 
+      User::Storage.database.uri.should == "http://127.0.0.1:5984/aqua_users"
+      @user.commit!
+      # puts @user.class::Storage.database.uri
+      lambda{ User.load( @user.id ) }.should_not raise_error
+    end  
+  end
   
   describe 'classes' do
     it 'should have a separate database' 

@@ -8,7 +8,7 @@ Database =  CouchDB::Database unless defined?( Database )
 Design =    CouchDB::DesignDocument unless defined?( Design )
 ResultSet =    CouchDB::ResultSet unless defined?( ResultSet )
 
-require File.dirname(__FILE__) + '/fixtures_and_data/document_fixture' # Document ... a Mash with the collection of methods
+require File.dirname(__FILE__) + '/fixtures_and_data/document_fixture' # Document ... a Gnash with the collection of methods
 class Docintalk < Document 
   def talk 
     'Hello, I am a Docintalk'

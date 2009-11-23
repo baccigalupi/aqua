@@ -18,7 +18,7 @@ module Aqua
         # @api public
         def initialize( name=nil, opts={})
           name = nil if name && name.empty?
-          opts = Mash.new( opts ) unless opts.empty?
+          opts = Gnash.new( opts ) unless opts.empty?
           @name = name if name
           initialize_server( opts[:server] )
           @uri = "#{server.uri}/#{namespaced( name )}" 

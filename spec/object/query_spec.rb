@@ -3,6 +3,7 @@ require_fixtures
 
 describe Aqua::Query do
   before(:each) do
+    User::Storage.database = nil
     User::Storage.database.delete_all
     @time = Time.now
     @date = Date.parse('12/23/1969')
@@ -40,7 +41,7 @@ describe Aqua::Query do
   
   it 'should query on a time' do
     User.index_on(:created_at)
-    users = User.query( :created_at, :equals => @time )
+    users = User.query( :created_at, :equals => @time ) 
     users.size.should == 1
     users.first.username.should == 'kane'
   end

@@ -1,4 +1,4 @@
-class CannedHash < Mash 
+class CannedHash < Gnash 
   def yum
     @yum ||= 'Corned Beef!'
   end  

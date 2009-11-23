@@ -4,7 +4,7 @@
 module Aqua
   module Store 
     module CouchDB
-      class DesignDocument < Mash
+      class DesignDocument < Gnash
         
         # the DesignDocument is essentially a special type of Document.
         include Aqua::Store::CouchDB::StorageMethods
@@ -29,7 +29,7 @@ module Aqua
         alias :document_initialize :initialize
         
         def initialize( hash={} )
-          hash = Mash.new( hash ) unless hash.empty?
+          hash = Gnash.new( hash ) unless hash.empty?
           self.id = hash.delete(:name) if hash[:name]
           document_initialize( hash )  # TODO: can't this just be a call to super?
         end 
@@ -74,7 +74,7 @@ module Aqua
         # @return [Array]
         # @api public
         def views
-          self[:views] ||= Mash.new
+          self[:views] ||= Gnash.new
         end 
         
         # Adds or updates a view with the given options
@@ -84,7 +84,7 @@ module Aqua
         # @option arg [String] :map Javascript map function, optional
         # @option arg [String] :reduce Javascript reduce function, optional
         #
-        # @return [Mash] Map/Reduce mash of javascript functions
+        # @return [Gnash] Map/Reduce mash of javascript functions
         #
         # @example 
         #   design_doc << 'attribute_name'
@@ -97,7 +97,7 @@ module Aqua
             view_name = arg
             opts = {}
           elsif arg.class.ancestors.include?( Hash )
-            opts = Mash.new( arg )
+            opts = Gnash.new( arg )
             view_name = opts.delete( :name )
             raise ArgumentError, 'Option must include a :name that is the view\'s name' unless view_name
           else
@@ -148,7 +148,7 @@ module Aqua
         # reduce=false Trunk only (0.9)
         
         def query( view_name, opts={} )
-          opts = Mash.new( opts ) unless opts.empty? 
+          opts = Gnash.new( opts ) unless opts.empty? 
           doc_class = opts[:document_class] 
           
           params = []

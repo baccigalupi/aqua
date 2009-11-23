@@ -21,7 +21,7 @@ module Aqua::Query
     end
     
     def query( index, opts={} )
-      opts = Mash.new( opts )
+      opts = Gnash.new( opts )
       equals = opts.delete(:equals)
       opts[:equals] = _encode_query( equals ) if equals
       _build_results( storage.query( index, opts ) )

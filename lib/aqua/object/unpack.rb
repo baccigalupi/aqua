@@ -30,7 +30,7 @@ module Aqua::Unpack
      
     # Creates a new object from the doc; It is used by queries which return a set of docs.
     # Also used by load to do the same thing ...
-    # @param [Document, Hash, Mash] converted object
+    # @param [Document, Hash, Gnash] converted object
     def build( doc, id=nil )
       translator = Aqua::Translator.new( new, id )
       translator.unpack_object( doc ) 

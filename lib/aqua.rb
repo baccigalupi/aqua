@@ -24,7 +24,7 @@ require 'tempfile'
 # require local libs
 $:.unshift File.join(File.dirname(__FILE__))
   # monkey pathches
-require 'aqua/support/mash'
+require 'aqua/support/active_support/gnash'
 require 'aqua/support/string_extensions'
   # storage 
 require 'aqua/store/storage' 
@@ -67,7 +67,7 @@ module Aqua
       load_internal_engine( engine )
       true
     elsif engine.class == Hash
-      engine = Mash.new( engine )
+      engine = Gnash.new( engine )
       require engine[:require]
       include_engine( engine[:module] )
       true

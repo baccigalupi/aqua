@@ -9,7 +9,7 @@ module Aqua
         attr_reader :namespace
     
         def initialize(opts={})
-          opts = Mash.new(opts) unless opts.empty?
+          opts = Gnash.new(opts) unless opts.empty?
           self.uri =              opts[:server] || 'http://127.0.0.1:5984'
           self.uuid_batch_count = opts[:uuid_batch_count] || 1000 
           self.namespace =        opts[:namespace].to_s 

@@ -6,7 +6,7 @@ module Aqua
     module CouchDB
       # This module of storage methods was built to be flexible enough to step in as a replacement 
       # for CouchRest core or another super lite CouchDB library. A lot of the methods are added for that
-      # convenience, and not for the needs of Aqua. Adding the module to a Mash/Hash class is sufficient
+      # convenience, and not for the needs of Aqua. Adding the module to a Gnash/Hash class is sufficient
       # to get the full core access library.
       #
       # @see Aqua::Storage for details on the require methods for a storage library.
@@ -22,7 +22,7 @@ module Aqua
         module ClassMethods 
           # Initializes a new storage document and saves it without raising any errors
           # 
-          # @param [Hash, Mash]
+          # @param [Hash, Gnash]
           # @return [Aqua::Storage, false] On success it returns an aqua storage object. On failure it returns false.
           # 
           # @api public
@@ -33,7 +33,7 @@ module Aqua
     
           # Initializes a new storage document and saves it raising any errors.
           # 
-          # @param [Hash, Mash]
+          # @param [Hash, Gnash]
           # @return [Aqua::Storage] On success it returns an aqua storage object. 
           # @raise Any of the CouchDB exceptions
           # 
@@ -116,13 +116,13 @@ module Aqua
           # Stores stores a map name for a given index, allowing the same map 
           # to be used for various reduce functions. This means only one index is created.
           # @param [String] field being indexed, or the sub field
-          # @param [Hash, Mash] Hash of functions used to create views
+          # @param [Hash, Gnash] Hash of functions used to create views
           # @option opts [String] :map Javascript/CouchDB map function
           # @option opts [String] :reduce Javascript/CouchDB reduce function
           # 
           # @api public 
           def index_on( field, opts={} )
-            opts = Mash.new( opts )
+            opts = Gnash.new( opts )
             design_document(true).add!( opts.merge!(:name => field) )
             unless indexes.include?( field )
               indexes << field.to_sym  
@@ -159,7 +159,7 @@ module Aqua
           # @api public
           def query( index, opts={} )
             raise ArgumentError, 'Index not found' unless views.include?( index.to_s )
-            opts = Mash.new(opts)
+            opts = Gnash.new(opts)
             opts.merge!(:document_class => self) unless opts[:document_class]
             opts.merge!(:reduced => design_document.views[index][:reduce] ? true : false )
             design_document.query( index, opts )
@@ -184,7 +184,7 @@ module Aqua
           
           # @api public
           def count( index, opts={} )
-            opts = Mash.new(opts)
+            opts = Gnash.new(opts)
             opts[:reduce] = "
               function (key, values, rereduce) {
                   return sum(values);
@@ -194,7 +194,7 @@ module Aqua
           
           # @api public
           def sum( index, opts={} )
-            opts = Mash.new(opts)
+            opts = Gnash.new(opts)
             opts[:reduce] = "
               function (keys, values, rereduce) {
                 var key_values = []
@@ -213,7 +213,7 @@ module Aqua
           alias :avg :average
           
           def min( index, opts={} )
-            opts = Mash.new(opts)
+            opts = Gnash.new(opts)
             opts[:reduce] = "
               function (keys, values, rereduce) {
                 var key_values = []
@@ -228,7 +228,7 @@ module Aqua
           alias :minimum :min
           
           def max( index, opts={} )
-            opts = Mash.new(opts)
+            opts = Gnash.new(opts)
             opts[:reduce] = "
               function (keys, values, rereduce) {
                 var key_values = []
@@ -248,12 +248,12 @@ module Aqua
         module InstanceMethods
           # Initializes a new storage document. 
           # 
-          # @param [Hash, Mash]
-          # @return [Aqua::Storage] a Hash/Mash with some extras
+          # @param [Hash, Gnash]
+          # @return [Aqua::Storage] a Hash/Gnash with some extras
           #
           # @api public
           def initialize( hash={} )
-            hash = Mash.new( hash ) unless hash.empty?
+            hash = Gnash.new( hash ) unless hash.empty?
             
             hashed_id = hash.delete(:id) || hash.delete(:_id)
             self.id = hashed_id if hashed_id
