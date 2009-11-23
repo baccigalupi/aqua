@@ -88,7 +88,7 @@ module Aqua
       # @api private
       def _pack
         class_name = self.class.to_s
-        self.__pack = Storage.new
+        self.__pack = self.class::Storage.new
         self.__pack.id = @id if @id
         self.__pack[:_rev] = _rev if _rev 
         self.__pack.merge!( _translator.pack_object( self ) ) 

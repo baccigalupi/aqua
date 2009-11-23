@@ -231,12 +231,10 @@ describe Aqua::Pack do
     end
       
     it 'should save a document to the configured database' do
-      pending( 'when this become inportant again' )  
       build_user_ivars
       User.configure_aqua :database => 'users' 
       User::Storage.database.uri.should == "http://127.0.0.1:5984/aqua_users"
       @user.commit!
-      # puts @user.class::Storage.database.uri
       lambda{ User.load( @user.id ) }.should_not raise_error
     end  
   end
