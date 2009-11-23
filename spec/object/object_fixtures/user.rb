@@ -9,7 +9,7 @@ class User
     :password,  # hidden value
     :grab_bag,   # non Aquatic Object
     :other_user # a non-embeddable Aquatic Object
-  hide_attributes :password
+  transient_attr :password
   
   def initialize( hash={} )
     hash.each do |key, value|

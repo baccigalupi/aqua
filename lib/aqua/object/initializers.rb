@@ -12,7 +12,7 @@ module Aqua
         include InstanceMethods
         extend ClassMethods
         
-        unless methods.include?( :hide_attributes )
+        unless methods.include?( :transient_attr )
           include Aqua::Pack::HiddenAttributes
         end
       end
@@ -104,7 +104,7 @@ class Symbol
 end  
 
 class Date
-  hide_attributes :sg, :of, :ajd
+  transient_attr :sg, :of, :ajd
   
   def self.aqua_init( init, opts=Aqua::Translator::Opts.new     )
     parse( init )
@@ -235,7 +235,7 @@ class Hash
 end
 
 class OpenStruct
-  hide_attributes :table
+  transient_attr :table
   
   def to_aqua_init( path='' ) 
     instance_variable_get("@table").to_aqua_init( path )
@@ -301,7 +301,7 @@ end
 class Tempfile
   include Aqua::FileInitializations
   
-  hide_attributes :clean_proc, :data, :tmpname, :tmpfile, :_dc_obj
+  transient_attr :clean_proc, :data, :tmpname, :tmpfile, :_dc_obj
   
   def filename
     path.match(/([^\/]*)\.\d*\.\d*\z/).captures.first

@@ -3,7 +3,7 @@ require 'set'
 
 class Set 
   include Aqua::Initializers 
-  hide_attributes :hash 
+  transient_attr :hash 
   
   def to_aqua_init( path='' )
     Aqua::Translator.pack_object( instance_variable_get("@hash").keys )

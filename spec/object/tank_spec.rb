@@ -23,7 +23,7 @@ describe Aqua::Tank do
   
   describe 'declaring a class as aquatic' do
     it 'should add pack methods to the class and its instances' do 
-      Log.should respond_to(:hide_attributes)
+      Log.should respond_to(:transient_attr)
       Log.new.should respond_to(:commit)
     end
       
@@ -41,7 +41,7 @@ describe Aqua::Tank do
   
   describe 'including Aqua::Pack on the class' do 
     it 'should add pack methods to the class and its instances' do 
-      Persistent.should respond_to(:hide_attributes)
+      Persistent.should respond_to(:transient_attr)
       Persistent.new.should respond_to(:commit)
     end
       

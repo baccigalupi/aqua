@@ -32,7 +32,7 @@ Currently, Aqua uses CouchDB for its storage. Make sure you have CouchDB install
       :password,   # hidden value
       :credentials # hash with salt and encrypted password, or ...
     
-    hide_attributes :password # Aqua can hide certain instance variables that you would prefer not save
+    transient_attr :password # Aqua can hide certain instance variables that you would prefer not save
   
     # possible way to initialize your data ... 
     def initialize( hash={} )

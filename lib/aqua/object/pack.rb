@@ -15,7 +15,7 @@ module Aqua
           attr_accessor :id
         end
       
-        hide_attributes :_store, :__pack, :id, :_rev, :_translator 
+        transient_attr :_store, :__pack, :id, :_rev, :_translator 
       end  
     end
   
@@ -42,12 +42,12 @@ module Aqua
         # class User 
         #   include Aqua::Object
         #   attr_accessor :username, :email, :password, :password_confirmation, :cryped_password, :salt
-        #   hide_attributes :password, :password_confirmation 
+        #   transient_attr :password, :password_confirmation 
         #   # ... lots more user code here ...
         # end
         # In this case it is useful for omitting sensitive information while persisting the object, but 
         # maintaining the password and confirmation temporarily requires the use of instance variables.
-        def hide_attributes( *ivars )
+        def transient_attr( *ivars )
           ivars.each do |ivar|
             raise ArgumentError, '' unless ivar.class == Symbol
             _hidden_attributes << "@#{ivar}" unless _hidden_attributes.include?( "@#{ivar}" )

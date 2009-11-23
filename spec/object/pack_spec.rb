@@ -22,7 +22,7 @@ describe Aqua::Pack do
     end  
       
     it 'should add a class method for designating hidden instance variables' do
-      User.should respond_to( :hide_attributes )
+      User.should respond_to( :transient_attr )
     end
     
     it 'class method should hide instance variables designated by the user as hidden' do

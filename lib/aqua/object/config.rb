@@ -14,7 +14,7 @@ module Aqua::Config
       extend ClassMethods
       configure_aqua
       
-      hide_attributes :_aqua_opts
+      transient_attr :_aqua_opts
     end   
   end
   
